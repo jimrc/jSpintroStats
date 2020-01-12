@@ -370,29 +370,28 @@ function cat1CIinteract(d, i) {
   // function (passed to graphical elements) to
   // open tooltip to show success and failure counts in the selected sample;
 
-  var cat1Popup = document.getElementById('cat1WhichDot');
-  var cat1PopupContent = document.getElementById('cat1SelectedSample');
-  cat1Popup.style.display = 'block';
-  cat1PopupContent.innerHTML =
+  var cat1Tooltip = document.getElementById('cat1WhichDot');
+  var cat1TooltipContent = document.getElementById('cat1SelectedSample');
+  cat1Tooltip.style.display = 'block';
+  cat1TooltipContent.innerHTML =
     'Proportion ' +
     c1Data[0].label +
     ':  p&#770; =  ' +
-    c1CIdata[0][i].toPrecision(4) +
-    '<br> Click to Close';
+    c1CIdata[0][i].toPrecision(4) ;
 }
 
 function cat1TestInteract(d, i) {
-  // open popup box to show success and failure counts in the selected sample;
-  var cat1Popup[] = document.getElementById('cat1WhichDot'),
-    cat1PopupContent = document.getElementById('cat1SelectedSample'),
+  // open Tooltip box to show success and failure counts in the selected sample;
+  var cat1Tooltip[] = document.getElementById('cat1WhichDot'),
+    cat1TooltipContent = document.getElementById('cat1SelectedSample'),
     prop;
-  cat1Popup.style.display = 'block';
+  cat1Tooltip.style.display = 'block';
   if (c1Tstdata.length === 2) {
     prop = c1Tstdata[0][i];
   } else {
     prop = c1Tstdata[i];
   }
-  cat1PopupContent.innerHTML =
+  cat1TooltipContent.innerHTML =
     'Proportion ' +
     c1Data[0].label +
     ':  p&#770; =  ' +
