@@ -8,8 +8,8 @@
 /*eslint quotes: [2, "single", "avoid-escape"]*/
 
 var margin = [{ top: 50 }, { right: 20 }, { bottom: 50 }, { left: 20 }],
-  width = Number(400), // - margin.right - margin.left,
-  height = Number(300), // - margin.top - margin.bottom;
+  swidth = Number(400), // - margin.right - margin.left,
+  sheight = Number(300), // - margin.top - margin.bottom;
   r = 110, //radius
   tr = 150, //text radius
   ir = 75, //inner radius
@@ -73,7 +73,7 @@ var lineFunction = d3
 // now draw the pointer
 
 function drawDonut() {
-  var w = width;
+  var w = swidth;
   spinGroups = document.getElementById('spinCats').value.split(','); // labels of each
   spinProb = jStat.map(
     document.getElementById('spinProbs').value.split(','),
@@ -262,7 +262,7 @@ function spinsTill1() {
     angle,
     i = 0,
     spinColor = -1,
-    w = width;
+    w = swidth;
   spinData.length = 0;
 
   if (spinStopRule !== 'OneOfOneType') {
@@ -354,7 +354,7 @@ function spinsTillAll() {
 
 function showSpinSequence(spinData) {
   var nDraws = spinData.length;
-  var spacing = (width - 20) / (nDraws + 1); //for sampled circles
+  var spacing = (swidth - 20) / (nDraws + 1); //for sampled circles
   // console.log([nDraws, spacing]);
   function xspace(i) {
     return i * spacing - r + 10;

@@ -9,10 +9,10 @@ var changed = "N",
     z2,
     zText;
 
-   
-var width = 540 - margin.left - margin.right,
+
+var z_width = 540 - margin.left - margin.right,
     height = 320 - margin.top - margin.bottom;
-var	xRange = d3.scaleLinear().range([0, width]).domain(d3.extent(z)),
+var	xRange = d3.scaleLinear().range([0, z_width]).domain(d3.extent(z)),
 	yRange = d3.scaleLinear().range([height, margin.top]).domain([0, jStat.normal.pdf(0, 0, 1)]);
 
 var xAxis = d3.axisBottom(xRange)
@@ -20,20 +20,20 @@ var xAxis = d3.axisBottom(xRange)
 
 var yAxis = d3.axisLeft(yRange)
     .ticks(5);
-           
+
 var pdfline = d3.line()
     .x(function(d) { return xRange(d); })
     .y(function(d) { return yRange(jStat.normal.pdf(d, 0, 1)); });
-    
-   
+
+
 var Zsvg = d3.select("#zPlotGoesHere")
      .append("svg")
-        .attr("width", width + margin.left + margin.right)
+        .attr("width", z_width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
     .append("g")
-        .attr("transform", 
+        .attr("transform",
               "translate(" + margin.left + "," + margin.top + ")");
-  
+
   Zsvg.append("g")			// Add the X Axis
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height + ")")
@@ -54,7 +54,7 @@ var pdfLine = Zsvg.append("path")
   //  consider: move prob and z input into the svg?
 
 
-// add buttons for desired area  
+// add buttons for desired area
         Zsvg.append("text")      // create Lower Area Button
           .attr("x",  4  )
           .attr("y", 20)
@@ -73,10 +73,10 @@ var pdfLine = Zsvg.append("path")
            .style("stroke-width",2 )
            .style("fill","lightblue")
            .style("fill-opacity", 1.0E-6)
-           .on("click",  function(){ 
+           .on("click",  function(){
 				area = "L";
 				filterZ( area);});
-           
+
          Zsvg.append("text")      // create Upper Area Button
           .attr("x", 425   )
           .attr("y", 20)
@@ -95,10 +95,10 @@ var pdfLine = Zsvg.append("path")
            .style("stroke-width",2 )
            .style("fill","lightblue")
            .style("fill-opacity", 1.0E-6)
-           .on("click",  function(){ 
+           .on("click",  function(){
 				area = "U";
 				filterZ( area);});
-           
+
          Zsvg.append("text")      // create Center Area Button
           .attr("x", 275   )
           .attr("y", 24)
@@ -117,10 +117,10 @@ var pdfLine = Zsvg.append("path")
            .style("stroke-width",2 )
            .style("fill","lightblue")
            .style("fill-opacity", 1.0E-6)
-           .on("click",  function(){ 
+           .on("click",  function(){
 				area = "C";
 				filterZ( area);});
-           
+
          Zsvg.append("text")      // create Extremes Area Button
           .attr("x", 4   )
           .attr("y", 114)
@@ -139,10 +139,10 @@ var pdfLine = Zsvg.append("path")
            .style("stroke-width",2 )
            .style("fill","lightblue")
            .style("fill-opacity", 1.0E-6)
-           .on("click", function(){ 
+           .on("click", function(){
 				area = "E";
 				filterZ( area);});
-           
+
          Zsvg.append("text")      // create 2nd Extremes Area Button
           .attr("x", 397   )
           .attr("y", 114)
@@ -161,7 +161,7 @@ var pdfLine = Zsvg.append("path")
            .style("stroke-width",2 )
            .style("fill","lightblue")
            .style("fill-opacity", 1.0E-6)
-           .on("click",  function(){ 
+           .on("click",  function(){
 				area = "E";
 				filterZ( area);});
 // See form validation example https://www.w3schools.com/js/js_validation.asp
@@ -170,7 +170,7 @@ function filterZ( area) {
 	var add = false,
 	    output, pOut, pIn,
 	    xpLoc, xzLoc, ypLoc, yzLoc,
-	    zIn, zAbs, zOut,zero = 0.000 ;  
+	    zIn, zAbs, zOut,zero = 0.000 ;
     if (changed ==="Z") {
    		zIn = +document.getElementById("zInput").value + zero; // trouble if I input 1 with no decimal, it gets 10??
    		//console.log(zIn.typeOf);
@@ -204,21 +204,21 @@ function filterZ( area) {
 		output =  jStat.seq(-zIn, 4.0,  200);
 		zOut =   -zIn.toPrecision(4);
 	} else 	if (area === "E") {
-   	    zAbs = -jStat.normal.inv(pIn/2.0, 0, 1); 
+   	    zAbs = -jStat.normal.inv(pIn/2.0, 0, 1);
 		output =  jStat.seq(-4.0, -zAbs, 150);  // lower end
 		drawZArea( output, false);
 		output = jStat.seq(zAbs, 4.0,  150);
 		add = true;
 		zOut = plusminus.concat(zAbs.toPrecision(4));
 	} else{   // center
-   	    zAbs = -jStat.normal.inv((1.0 - pIn)/2, 0, 1); 
+   	    zAbs = -jStat.normal.inv((1.0 - pIn)/2, 0, 1);
 		output =  jStat.seq(-zAbs, zAbs, 200);
 		zOut = plusminus.concat(zAbs.toPrecision(4));
 	}
-    printZResults(zOut );  
+    printZResults(zOut );
    }
-   drawZArea(output, add) ; 
-}  
+   drawZArea(output, add) ;
+}
 
   function drawZArea(filteredZs, add){
   	 // clear out old areas
@@ -238,7 +238,7 @@ function filterZ( area) {
             })
             .y0(yRange(0))
             .y1(function(d) {
-              return yRange(d);    // y_coords will shift from 0 to full value 
+              return yRange(d);    // y_coords will shift from 0 to full value
             });
         var path = Zsvg.append("path")
         .datum(filteredZs)
@@ -256,8 +256,8 @@ function filterZ( area) {
         		return function( t ) {
           			return area( interpolator( t ) );
         }
-      } );	    
-  };                       
+      } );
+  };
 
 
 function printPResults(pTxt ){
@@ -265,7 +265,7 @@ function printPResults(pTxt ){
 	if (pText){
 		pText.remove();
 	}
-	if(zText){ 
+	if(zText){
 		zText.remove();
 	}
 	pText = Zsvg.append("text")
@@ -279,7 +279,7 @@ function printZResults(zTxt ){
 	if (pText){
 		pText.remove();
 	}
-	if(zText){ 
+	if(zText){
 		zText.remove();
 	}
 	zText = Zsvg.append("text")

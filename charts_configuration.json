@@ -1,0 +1,85 @@
+{
+  "files": {
+    "scatter": "scatter.json"
+  },
+  "document_state": {
+    "scatter": "none"
+  },
+  "chart_ids": {
+    "scatter": "scatter_chart"
+  },
+  "svg": {
+    "width": "80%",
+    "height": "80%"
+  },
+  "plot_attributes": {
+    "title": {
+      "family": "Helvetica",
+      "size": 20
+    },
+    "tooltip": {
+      "curve": 5,
+      "point": 20,
+      "fill": "rgba(10,10,10,.2)",
+      "stroke": "#ffffff",
+      "opacity": 0.8,
+      "text": "black",
+      "emphasis": "red",
+      "family": "Helvetica",
+      "size": 14,
+      "default_separation_from_object": 3
+    },
+    "axes": {
+      "family": "Helvetica",
+      "size": 10,
+      "ticks": {
+        "size": 5
+      },
+      "maxCharacters": {
+        "x": 10
+      },
+      "labels": {
+        "family": "Helvetica",
+        "size": 14
+      }
+    },
+    "buttons": {
+      "family": "Courier New",
+      "size": 12,
+      "stroke": "black",
+      "fill": {
+        "not_selected": "white",
+        "selected": "black"
+      }
+    }
+  },
+  "plots": {
+    "scatter": {
+      "point": {
+        "radius": 5
+      },
+      "opacity": {
+        "hover": 0.5,
+        "nonhover": 0.8
+      }
+    },
+    "line": {
+      "width": 5,
+      "stroke": "#2196F3",
+      "fill": "none",
+      "hidden_radius": 10,
+      "opacity": {
+        "hover": 0.5,
+        "nonhover": 0.8
+      }
+    }
+  },
+  "colors": {
+    "palette": [
+        "#F44336", "#E91E63", "#9C27B0", "#673AB7", "#3F51B5", "#2196F3",
+        "#03A9F4", "#00BCD4", "#009688", "#4CAF50", "#8BC34A", "#CDDC39",
+        "#FFEB3B", "#FFC107", "#FF9800", "#FF5722", "#795548", "#9E9E9E",
+        "#607D8B"
+    ]
+  }
+}

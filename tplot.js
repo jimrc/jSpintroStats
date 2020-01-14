@@ -9,18 +9,18 @@ var tchanged = "N",
     t2,
     ttText;
 
-   
-var width = 540 - margin.left - margin.right,
-    height = 320 - margin.top - margin.bottom;
+
+var t_width = 540 - margin.left - margin.right,
+    t_height = 320 - margin.top - margin.bottom;
 
 
  //ytAxis = d3.svg.axis().scale(ytRange)
    // .orient("left").ticks(5);
-    
-drawTcurve = function(){   
+
+drawTcurve = function(){
 	//var new = true;
   tdf= +document.getElementById("dfT").value;
-  xtRange = d3.scaleLinear().range([0, width]).domain(d3.extent(tseq));
+  xtRange = d3.scaleLinear().range([0, t_width]).domain(d3.extent(tseq));
   ytRange = d3.scaleLinear().range([height, margin.top]).domain([0, jStat.studentt.pdf(0, tdf)]);
  xtAxis = d3.axisBottom(xtRange)
     .ticks(7);
@@ -28,16 +28,16 @@ drawTcurve = function(){
   pdftline = d3.line()
     .x(function(d) { return xtRange(d); })
     .y(function(d) { return ytRange(jStat.studentt.pdf(d, tdf)); });
-	
+
 	if(typeof(tsvg) === "object"){
 	  d3.selectAll("path").remove();
 	} else{
   	tsvg = d3.select("#tPlotGoesHere")
      .append("svg")
-        .attr("width", width + margin.left + margin.right)
+        .attr("width", t_width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
     .append("g")
-        .attr("transform", 
+        .attr("transform",
               "translate(" + margin.left + "," + margin.top + ")");
   }
   tsvg.append("g")			// Add the X Axis
@@ -54,7 +54,7 @@ drawTcurve = function(){
 
 
 // add buttons for desired area
-//if(typeof(tsvg) === "object"){  
+//if(typeof(tsvg) === "object"){
         tsvg.append("text")      // create Lower Area Button
           .attr("x",  4  )
           .attr("y", 20)
@@ -73,10 +73,10 @@ drawTcurve = function(){
            .style("stroke-width",2 )
            .style("fill","lightblue")
            .style("fill-opacity", 1.0E-6)
-           .on("click",  function(){ 
+           .on("click",  function(){
 				area = "L";
 				filtert( area);});
-           
+
          tsvg.append("text")      // create Upper Area Button
           .attr("x", 425   )
           .attr("y", 20)
@@ -95,10 +95,10 @@ drawTcurve = function(){
            .style("stroke-width",2 )
            .style("fill","lightblue")
            .style("fill-opacity", 1.0E-6)
-           .on("click",  function(){ 
+           .on("click",  function(){
 				area = "U";
 				filtert( area);});
-           
+
          tsvg.append("text")      // create Center Area Button
           .attr("x", 275   )
           .attr("y", 24)
@@ -117,10 +117,10 @@ drawTcurve = function(){
            .style("stroke-width",2 )
            .style("fill","lightblue")
            .style("fill-opacity", 1.0E-6)
-           .on("click",  function(){ 
+           .on("click",  function(){
 				area = "C";
 				filtert( area);});
-           
+
          tsvg.append("text")      // create Extremes Area Button
           .attr("x", 4   )
           .attr("y", 114)
@@ -139,10 +139,10 @@ drawTcurve = function(){
            .style("stroke-width",2 )
            .style("fill","lightblue")
            .style("fill-opacity", 1.0E-6)
-           .on("click", function(){ 
+           .on("click", function(){
 				area = "E";
 				filtert( area);});
-           
+
          tsvg.append("text")      // create 2nd Extremes Area Button
           .attr("x", 397   )
           .attr("y", 114)
@@ -161,20 +161,20 @@ drawTcurve = function(){
            .style("stroke-width",2 )
            .style("fill","lightblue")
            .style("fill-opacity", 1.0E-6)
-           .on("click",  function(){ 
+           .on("click",  function(){
 				area = "E";
 				filtert( area);});
-  
-  
+
+
 }
 
 function filtert( area) {
 	var ptOut, ptIn,
-		tadd = false, toutput, 
+		tadd = false, toutput,
 	    xptLoc, xttLoc, yptLoc, yttLoc,
-	    tscoreIn, tscoreAbs, tscoreOut, zero = 0.000 ;  
+	    tscoreIn, tscoreAbs, tscoreOut, zero = 0.000 ;
     if (tchanged ==="T") {
-   		tscoreIn = +document.getElementById("tInput").value; 
+   		tscoreIn = +document.getElementById("tInput").value;
    		//console.log(tIn.typeof);
     	tscoreAbs = Math.abs(tscoreIn);
 	     //console.log(typeof(tscoreIn));
@@ -208,22 +208,22 @@ function filtert( area) {
 		toutput =  jStat.seq(-tscoreIn, 7.0,  200);
 		tscoreOut =   -tscoreIn.toPrecision(4);
 	} else 	if (area === "E") {
-   	    tscoreAbs = -jStat.studentt.inv(ptIn/2.0, tdf); 
+   	    tscoreAbs = -jStat.studentt.inv(ptIn/2.0, tdf);
 		toutput =  jStat.seq(-7.0, -tscoreAbs, 150);  // lower end
 		drawtArea( toutput, false);
 		toutput = jStat.seq(tscoreAbs, 7.0,  150);
 		tadd = true;
 		tscoreOut = plusminus.concat(tscoreAbs.toPrecision(4));
 	} else{   // center
-   	    tscoreAbs = -jStat.studentt.inv((1.0 - ptIn)/2, tdf); 
+   	    tscoreAbs = -jStat.studentt.inv((1.0 - ptIn)/2, tdf);
 		toutput =  jStat.seq(-tscoreAbs, tscoreAbs, 200);
 		tscoreOut = plusminus.concat(tscoreAbs.toPrecision(4));
 	}
-    printtResults(tscoreOut );  
+    printtResults(tscoreOut );
    }
 	//console.log(typeof(toutput));
-   drawtArea(toutput, tadd) ; 
-}  
+   drawtArea(toutput, tadd) ;
+}
 
   function drawtArea(filteredts, tadd){
   	 // clear out old areas
@@ -244,7 +244,7 @@ function filtert( area) {
             })
             .y0(yRange(0))
             .y1(function(d) {
-              return ytRange(d);    // y_coords will shift from 0 to full value 
+              return ytRange(d);    // y_coords will shift from 0 to full value
             });
         Tpath = tsvg.append("path")
         .datum(filteredts)
@@ -262,8 +262,8 @@ function filtert( area) {
         		return function( t ) {
           			return area( interpolator( t ) );
         }
-      } );	    
-  };                       
+      } );
+  };
 
 
 function printPtResults(pTxt ){
@@ -271,7 +271,7 @@ function printPtResults(pTxt ){
 	if (ptText){
 		ptText.remove();
 	}
-	if(ttText){ 
+	if(ttText){
 		ttText.remove();
 	}
 	ptText = tsvg.append("text")
@@ -286,7 +286,7 @@ function printtResults(tTxt ){
 	if (ptText){
 		ptText.remove();
 	}
-	if(ttText){ 
+	if(ttText){
 		ttText.remove();
 	}
 	ttText = tsvg.append("text")

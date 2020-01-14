@@ -17,7 +17,10 @@
 	<script type="text/javascript" src="HelperPkgs/papaparse.min.js"></script>
 	<script type="text/javascript" src="helpers.js"></script>
 	<script type="text/javascript" src="./rangeslide/dist/rangeslide.js"></script>
-
+	<script>
+		 var charts_config = d3.json("charts_configuration.json");
+     //var scatter_data = d3.json(charts_config.files.scatter)
+ </script>
 	<!--
 	######################################
 	Sidebar Menu Navigator
@@ -425,49 +428,19 @@ function actionsFunc(actns) {
 		</div>
 
 		<div id="cat1Output" style="display: none">
-
 			<!--  Show Inference Plot -->
-			<div class="w3-cell-row w3-mobile">
-
-				<!-- Box to Tooltip info on a single data point
-				<div class="w3-container w3-cell w3-mobile" id="cat1WhichDot" style="width: 200px; height:10%; display:none;" onclick="this.style.display='none'">
-					<br>
-					<br>
-					<br>
-					<div class="w3-card-4 w3-pale-green" id="cat1SelectedSample">
-						&nbsp;
-					</div>
-				</div>
-				-->
-				<div class="w3-container w3-cell w3-mobile" id="cat1Inference" style="width:420px">
+			<div class="w3-container w3-cell w3-mobile" id="cat1Inference" style="width:420px">
 					<!--  Inference plot goes here for CI or Test of 1 proportion -->
 					<svg id="cat1InfSVG" height="300px" width="400px"></svg>
-				</div>
-
 			</div>
-
-      <div id="cat1wrapper" class="wrapper">
-
-            <div id="tooltip" class="tooltip">
-                <div class="tooltip-range" id="range">
-                </div>
-                <div class="tooltip-value">
-                    Proportion <span id="count"></span> Success
-                </div>
-            </div>
-
-        </div>
-
 			<!-- Show Results in Text-->
 
-			<div id="cat1Results" class="w3-display-container" style="width:400px; display:none"></div>
+			<div id="cat1Results" class="w3-display-container" style="width:95%; display:none"></div>
 
 			<!-- Input for more simulations -->
 			<div id="cat1MoreSims" style="width:360px; display:none">
 				<div class="w3-cell-row">
-					<div class='w3-cell  w3-mobile' style='width: 20%'>
-						Add
-					</div>
+					<div class='w3-cell  w3-mobile' style='width: 20%'>			Add		</div>
 					<div class='w3-cell  w3-mobile' style='width: 20%'>
 						<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat1More' placeholder='0' onchange='cat1MoreSimFn()'>
 					</div>
@@ -479,7 +452,6 @@ function actionsFunc(actns) {
 
 		</div>
 		<!-- End of c1Output -->
-
 	</div>
 
 	<!-- End of cat1 Test- Estimate -->

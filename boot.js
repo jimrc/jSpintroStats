@@ -50,9 +50,9 @@
 	   };
 
 
-var width = 640 - margin.left - margin.right,   //20 to 590
-    height = 440 + margin.top - margin.bottom;
-var  yht = height * .7 - margin.top;          // 250
+var bwidth = 640 - margin.left - margin.right,   //20 to 590
+    bheight = 440 + margin.top - margin.bottom;
+var  yht = bheight * .7 - margin.top;          // 250
 
      //need range of x's to determine x plot axis
  for( ndx = 0; ndx< popSize; ndx++){
@@ -73,13 +73,13 @@ for(ndx = 1; ndx < 100 ; ndx++){
 
 //if( document.getElementsByClassName("Page")[0] == "BootDemo"){
 var Bootsvg = d3.select("#BootDemo").append("svg")             // 640w x 440h
-    .attr("width", width + margin.left + margin.right)
+    .attr("width", bwidth + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
   var bootX = d3.scaleLinear()
-    .range([30, width -20])
+    .range([30, bwidth -20])
     .domain([0, 80]);
 
   var bootY = d3.scaleLinear()
@@ -102,7 +102,7 @@ var Bootsvg = d3.select("#BootDemo").append("svg")             // 640w x 440h
     .data(CI)
     .enter().append("line")
     .attr("x1", bootY(12))
-    .attr("x2", width)
+    .attr("x2", bwidth)
     .attr("y1", bootY(0))
     .attr("y2", 28)
     .style("stroke-width",2)
@@ -126,7 +126,7 @@ function rescale() {
 
    // add pop title
  var Ptext =  Bootsvg.append("text")
-     .attr("x", width/5 )
+     .attr("x", bwidth/5 )
      .attr("y",0.03)
      .attr("font-size", 24 + 'px')
      .attr("fill", "blue")
