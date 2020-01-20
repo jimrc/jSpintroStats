@@ -384,7 +384,6 @@ function cat1CIinteract(d, i) {
 
   //var cat1Tooltip = document.getElementById("cat1WhichDot");
   var cat1TooltipContent = document.getElementById("cat1SelectedSample");
-  cat1Tooltip.style.display = "block";
   cat1TooltipContent.innerHTML =
     "Proportion " +
     c1Data[0].label +
@@ -424,8 +423,9 @@ function make_tooltip(obj, text_array, chart_group, canvas, margins) {
   var y = obj.node().transform.baseVal.consolidate().matrix.f
 
   // for convenience
-  var tooltip_config =
-  var sep = 5;
+  var tooltip_config =charts_config.plot_attributes.tooltip
+  var sep = tooltip_config.default_seperation_from_object
+
   // Add the tooltip to the chart and as a child - the text group
   var tooltip = chart_group.append("g").attr("class", "tooltip_group")
   var text_group = tooltip.append("g").attr("class", "tooltip_text_group")

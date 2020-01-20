@@ -544,10 +544,15 @@ function histodot(sample, colors, svgObject, interactFunction) {
       return circleColors[d.color];
     })
     .style("fill-opacity", 0.6)
-    .on("click", interactFunction);
+    .on("click", interactFunction)
+    .on("mouseleave", mouseoutFunction );
 
   //return [Dots, sample];
 }
+
+  function mouseoutFunction(d, i) {
+   chart_group.select("g.tooltip_group").remove()
+  }
 
 function discreteChart(sample, svgObject, interactFunction) {
   // stacks dots up creating integer y values (1, 2, 3,...) for each unique x value
@@ -670,7 +675,7 @@ function discreteChart(sample, svgObject, interactFunction) {
     .style("fill-opacity", 0.6)
     .on("click", interactFunction);
   return [Dots, sample];
-}
+}                                     // end of discreteChart
 
 function ciColor(resample, cnfLvl) {
   // changes colors for CI illustration

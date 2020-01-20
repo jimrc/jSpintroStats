@@ -17,10 +17,20 @@
 	<script type="text/javascript" src="HelperPkgs/papaparse.min.js"></script>
 	<script type="text/javascript" src="helpers.js"></script>
 	<script type="text/javascript" src="./rangeslide/dist/rangeslide.js"></script>
+
+<!--  From riptutorial -->
 	<script>
 		 var charts_config = d3.json("charts_configuration.json");
-     //var scatter_data = d3.json(charts_config.files.scatter)
  </script>
+   <script src="RRR-d3/helpers.js" defer></script>
+  <script src="RRR-d3/make_axes.js" defer></script>
+  <script src="RRR-d3/make_scatter_chart.js"  defer></script>
+  <script src="RRR-d3/make_buttons.js" defer ></script>
+  <script src="RRR-d3/make_margins.js" defer ></script>
+  <script src="RRR-d3/make_svg.js" defer ></script>
+  <script src="RRR-d3/make_title.js" defer ></script>
+  <script src="RRR-d3/make_tooltip.js" defer ></script>
+
 	<!--
 	######################################
 	Sidebar Menu Navigator
@@ -1254,6 +1264,8 @@ function actionsFunc(actns) {
 					<div class="w3-container w3-cell w3-mobile" id="quant2SummaryText" style="width:310px; display:none">
 					</div>
 					<div class="w3-container w3-cell w3-mobile" id="quant2SummarySVGgoesHere">
+					<<script> make_scatter_chart(shuttle)</script>
+        	</div>
 						<svg id="quant2SumSVG" height="300px" width="400px"></svg>
 					</div>
 				</div>
