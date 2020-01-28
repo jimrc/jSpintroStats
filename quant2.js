@@ -119,7 +119,8 @@ function summarizeSlope() {
 		document.getElementById("quant2WhichSlope").style.display = "none";
 	}
 
-	scatterPlot(q2Values, quant2SumSVG, q2InteractFnA, intercept, slope );
+  makeScatterPlot(q2Values, "quant2SumSVG");
+	//scatterPlot(q2Values, quant2SumSVG, q2InteractFnA, intercept, slope );
 	// display next step: select inference
 	document.getElementById("quant2SelectInf").style.display = 'block';
 	document.getElementById("quant2ObsdSlope").innerHTML =

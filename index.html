@@ -19,18 +19,7 @@
 	<script type="text/javascript" src="./rangeslide/dist/rangeslide.js"></script>
 
 <!--  From riptutorial -->
-	<script>
-		 var charts_config = d3.json("charts_configuration.json");
- </script>
-   <script src="RRR-d3/helpers.js" defer></script>
-  <script src="RRR-d3/make_axes.js" defer></script>
-  <script src="RRR-d3/make_scatter_chart.js"  defer></script>
-  <script src="RRR-d3/make_buttons.js" defer ></script>
-  <script src="RRR-d3/make_margins.js" defer ></script>
-  <script src="RRR-d3/make_svg.js" defer ></script>
-  <script src="RRR-d3/make_title.js" defer ></script>
-  <script src="RRR-d3/make_tooltip.js" defer ></script>
-
+	 <script src="makeScatterPlot.js" ></script>
 	<!--
 	######################################
 	Sidebar Menu Navigator
@@ -1245,18 +1234,7 @@ function actionsFunc(actns) {
 						<option value='dental'>Dental distance</option>
 						<option value='other'>Other</option>
 					</select>
-					<div class="w3-container w3-cell w3-mobile" id="q2WhichDotA" style="width: 300px; height:10%; display:none;" onclick="this.style.display='none'">
-						<br>
-						<br>
-						<br>
-						<div class="w3-card-4 w3-pale-green" id="q2SelectedSampleA">
-							&nbsp;
-						</div>
-					</div>
-				</div>
 
-				<div class="w3-cell">
-					&nbsp;&nbsp;
 				</div>
 				<div class="w3-cell" style="display:block" id="quant2Summry">
 					<h4> &nbsp; &nbsp;Summary</h4>
@@ -1264,9 +1242,8 @@ function actionsFunc(actns) {
 					<div class="w3-container w3-cell w3-mobile" id="quant2SummaryText" style="width:310px; display:none">
 					</div>
 					<div class="w3-container w3-cell w3-mobile" id="quant2SummarySVGgoesHere">
-					<<script> make_scatter_chart(shuttle)</script>
-        	</div>
-						<svg id="quant2SumSVG" height="300px" width="400px"></svg>
+						</div>
+						<svg id="quant2SumSVG" height="400px" width="400px"></svg >
 					</div>
 				</div>
 			</div>
