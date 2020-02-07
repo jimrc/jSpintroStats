@@ -1,13 +1,4 @@
 {
-  "files": {
-    "scatter": "scatter.json"
-  },
-  "document_state": {
-    "scatter": "none"
-  },
-  "chart_ids": {
-    "scatter": "scatter_chart"
-  },
   "svg": {
     "width": "80%",
     "height": "80%"
@@ -73,13 +64,5 @@
         "nonhover": 0.8
       }
     }
-  },
-  "colors": {
-    "palette": [
-        "#F44336", "#E91E63", "#9C27B0", "#673AB7", "#3F51B5", "#2196F3",
-        "#03A9F4", "#00BCD4", "#009688", "#4CAF50", "#8BC34A", "#CDDC39",
-        "#FFEB3B", "#FFC107", "#FF9800", "#FF5722", "#795548", "#9E9E9E",
-        "#607D8B"
-    ]
   }
 }

@@ -1224,7 +1224,7 @@ function actionsFunc(actns) {
 			<h3>Estimate slope and correlation or test to see if slope is zero. </h3>
 		</div>
 		<div class="w3-container" id="quant2DataIn-Summary">
-			<div class="w3-cell-row w3-mobile">
+			<!--div class="w3-cell-row w3-mobile" -->
 				<div class="w3-cell" style="width:50%">
 					<h4> Choose Data</h4>
 					<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='quant2DataName' onchange="summarizeSlope()">
@@ -1239,7 +1239,7 @@ function actionsFunc(actns) {
 				<div class="w3-cell" style="display:block" id="quant2Summry">
 					<h4> &nbsp; &nbsp;Summary</h4>
 
-					<div class="w3-container w3-cell w3-mobile" id="quant2SummaryText" style="width:310px; display:none">
+					<div class="w3-container w3-cell w3-mobile" id="quant2SummaryText" style="display:none">
 					</div>
 					<div class="w3-container w3-cell w3-mobile" id="quant2SummarySVGgoesHere">
 						</div>
@@ -1247,7 +1247,6 @@ function actionsFunc(actns) {
 					</div>
 				</div>
 			</div>
-		</div>
 		<br>
 		<!--                             Select Your Inference                        -->
 		<div class="w3-container w3-mobile" id="quant2SelectInf" style="display:none">
@@ -1301,12 +1300,12 @@ function actionsFunc(actns) {
 		</div>
 		<!--  Show Inference Plot -->
 		<div class="w3-cell-row w3-mobile">
-			<div class="w3-container w3-cell w3-mobile" id="quant2Inference" style="width:420px">
+			<div class="w3-container w3-cell w3-mobile" id="quant2Inference" style="width:420px; display: none">
 				<!--  Inference plot goes here for CI or Test of slope -->
-				<svg id="quant2InfSVG" height="300px" width="400px"></svg>
+				<svg id="quant2InfSVG" height="400px" width="400px"></svg>
 			</div>
 
-			<!-- Box to Tooltip info on a single data point -->
+			<!-- Box to Tooltip info on a single data point
 			<div class="w3-container w3-cell w3-mobile" id="quant2WhichSlope" style="width: 300px; height:10%; display:none;" onclick="this.style.display='none'">
 				<br>
 				<br>
@@ -1314,7 +1313,7 @@ function actionsFunc(actns) {
 				<div class="w3-card-4 w3-pale-green" id="quant2SelectedSample">
 					&nbsp;
 				</div>
-			</div>
+			</div-->
 		</div>
 
 		<!-- Show Results -->

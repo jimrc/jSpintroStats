@@ -1,4 +1,4 @@
-function makeScatterPlot(data, plot) {
+function makeRegressionPlot(data, plot) {
     // draw scatterplot of 2 quantitative variables and add regression line
     var svg, chart_group, data_extent, canvas, margins, max_draw_space
     if( plot ==="undefined") { plot = "scatter_chart"}
@@ -23,7 +23,7 @@ function makeScatterPlot(data, plot) {
       slope = coVar / xVar,
       intercept = ybar - (slope * xbar),
       correlation = coVar / Math.sqrt(yVar * xVar);
-  
+
   svg = make_chart_svg(plot)
   if (svg.select("g." + plot + "_group").empty()) {
     chart_group = svg.append("g").attr("class", plot + "_group")
@@ -45,7 +45,7 @@ function makeScatterPlot(data, plot) {
     //
     // add padding to keep dots away from axes //
     const xrange =  1.1*(data_extent.max.x -  data_extent.min.x);
-    const yrange =  1.1*(data_extent.max.y -  data_extent.min.y);    
+    const yrange =  1.1*(data_extent.max.y -  data_extent.min.y);
     data_extent.max.x = (data_extent.max.x + data_extent.min.x + xrange)/2;
     data_extent.max.y = (data_extent.max.y + data_extent.min.y + yrange)/2;
     data_extent.min.x = (data_extent.max.x + data_extent.min.x - xrange)/2;
@@ -58,7 +58,7 @@ function makeScatterPlot(data, plot) {
 
   var max_draw_space = {
     "x": canvas.x - margins.x.left - margins.x.right - margins.axes.y,
-    "y": canvas.y - margins.y.top - margins.y.bottom - margins.axes.x - margins.title 
+    "y": canvas.y - margins.y.top - margins.y.bottom - margins.axes.x - margins.title
   };
 
 //  max_draw_space = calculate_maximum_drawing_space(canvas, margins)
@@ -101,10 +101,10 @@ function makeScatterPlot(data, plot) {
    chart_group.select("g.tooltip_group").remove()
   }
 
-    
+
     //  Add regression line *********************************//
     var regLine
-    
+
     if ( regLine = d3.select("line.regression")){
 	regLine.remove()
     }
@@ -116,7 +116,113 @@ function makeScatterPlot(data, plot) {
         .attr("x2", x_scale(xmax )+margins.x.left + margins.axes.y)
 	.attr("y2", y_scale(xmax * slope + intercept)+ margins.y.top + margins.title)
 	.style("stroke", "black");
-    
+
+
+  chart_group.select("g.axes").raise()
+
+}
+function makeScatterPlot(data, plot) {
+    // draw scatterplot of 2 quantitative variables and add regression line
+    var svg, chart_group, data_extent, canvas, margins, max_draw_space
+    if( plot ==="undefined") { plot = "scatter_chart"}
+
+    // calculate slope and intercept *** //
+    var crossprod = 0.00, dataLength = data.length, i, keys, x = [], y = [],
+	xydata = [];
+    keys = Object.keys(data[0]);
+    // console.log(keys)
+    for(i =0; i< dataLength; i++){
+    	x.push( +data[i][keys[0]]);
+      	y.push( +data[i][keys[1]]);
+      	crossprod += x[i] * y[i];     // add up cross product
+	xydata.push( {x: x[i], y: y[i]})
+    }
+
+    var xbar = d3.mean(x),
+      xVar = d3.variance(x),
+      ybar = d3.mean(y),
+      yVar = d3.variance(y),
+      coVar = (crossprod - dataLength * xbar * ybar) /(dataLength-1) ,
+      slope = coVar / xVar,
+      intercept = ybar - (slope * xbar),
+      correlation = coVar / Math.sqrt(yVar * xVar);
+
+  svg = make_chart_svg(plot)
+  if (svg.select("g." + plot + "_group").empty()) {
+    chart_group = svg.append("g").attr("class", plot + "_group")
+  } else {
+    chart_group = svg.select("g." + plot + "_group")
+  }
+  chart_group.data(xydata)
+
+  data_extent = {
+    "max": {
+	"x": d3.max(x),
+	"y": d3.max(y)
+    },
+    "min": {
+	"x": d3.min(x),
+	"y": d3.min(y)
+    }
+  }
+    //
+    // add padding to keep dots away from axes //
+    const xrange =  1.1*(data_extent.max.x -  data_extent.min.x);
+    const yrange =  1.1*(data_extent.max.y -  data_extent.min.y);
+    data_extent.max.x = (data_extent.max.x + data_extent.min.x + xrange)/2;
+    data_extent.max.y = (data_extent.max.y + data_extent.min.y + yrange)/2;
+    data_extent.min.x = (data_extent.max.x + data_extent.min.x - xrange)/2;
+    data_extent.min.y = (data_extent.max.y + data_extent.min.y - yrange)/2;
+    var  xmin = data_extent.min.x,
+         xmax = data_extent.max.x;
+
+  canvas = extract_canvas_from_svg(svg)
+    margins = make_margins(chart_group, canvas, data_extent )
+
+  var max_draw_space = {
+    "x": canvas.x - margins.x.left - margins.x.right - margins.axes.y,
+    "y": canvas.y - margins.y.top - margins.y.bottom - margins.axes.x - margins.title
+  };
+
+//  max_draw_space = calculate_maximum_drawing_space(canvas, margins)
+  //make_title(chart_group, ["Scatterplot"], margins, canvas, max_draw_space)
+  var x_scale = d3.scaleLinear().domain([data_extent.min.x, data_extent.max.x]).range([0, max_draw_space.x])
+  var y_scale = d3.scaleLinear().domain([data_extent.max.y, data_extent.min.y]).range([0, max_draw_space.y])
+
+  var x_axis_label = keys[0]
+  var y_axis_label = keys[1]
+  make_axes(chart_group, x_scale, y_scale, canvas, margins, max_draw_space, x_axis_label, y_axis_label)
+
+  var scatter_group = chart_group.selectAll("g." + plot + "_scatter_group").data(xydata)
+    chart_group.selectAll("g." + plot + "_scatter_group")
+              .data(xydata)
+              .enter()
+              .append("g")
+              .attr("class", plot + "_scatter_group")
+              .append("circle")
+              .attr("r", charts_config.point.radius)
+              .attr("fill", charts_config.point.fill)
+              .style("opacity", charts_config.point.opacity)
+
+  scatter_group = d3.selectAll("g." + plot + "_scatter_group")
+    scatter_group.attr("transform",
+		       function(d, i) {
+	return "translate(" + (x_scale(d.x) + margins.x.left + margins.axes.y) +
+	    "," + (y_scale(d.y)+ margins.y.top + margins.title ) + ")"
+             }
+		      )
+  //************* Add tooltips ********************************//
+  scatter_group.on("click", mouseClickFunction)
+  scatter_group.on("mouseleave", mouseOutFunction)
+
+  function mouseClickFunction(d, i) {
+   var d = d3.select(this).datum()
+   make_tooltip(d3.select(this), ["x: "+d.x, "y: "+d.y], chart_group, canvas, margins)
+  }
+
+  function mouseOutFunction(d, i) {
+   chart_group.select("g.tooltip_group").remove()
+  }
 
   chart_group.select("g.axes").raise()
 
@@ -306,7 +412,7 @@ function make_chart_svg(plot) {
   var section = d3.select("#"+plot)
   var chart_width = parseNumber(charts_config.svg.width)
   var chart_height = parseNumber(charts_config.svg.height)
-  
+
   var chart_width_string, chart_height_string
   //if (typeofNumber(chart_width) == "float") {
     //chart_width_string = (chart_width * section.node().clientWidth ) + "px"
@@ -424,7 +530,7 @@ function make_title(chart_group, text_array, margins, canvas, maximum_drawing_sp
     .attr("x", margins.axes.y + margins.x.left + maximum_drawing_space.x / 2)
     .attr("y", margins.y.top + (charts_config.title.size * (i) + charts_config.title.size / 2))
     margins.title = chart_title.node().getBBox().height + charts_config.title.size
-    maximum_drawing_space.y = canvas.y - margins.y.top - margins.y.bottom - margins.axes.x - margins.title 
+    maximum_drawing_space.y = canvas.y - margins.y.top - margins.y.bottom - margins.axes.x - margins.title
   }
 }
 
@@ -518,7 +624,7 @@ function keys(data) {
   return Object.keys(data)
 }
 
-    
+
     var placements = d3.keys(valid_placements)
 
   var tooltip_placement
@@ -533,7 +639,7 @@ function keys(data) {
     // UpperRight, LowerLeft, Lower Right
     // would it be possible to choose upperRight when x > xbar? for resampling charts
     // choose open space for scatterplots?
-    
+
   // Reposition the tooltip to its correct location
   tooltip.attr("transform", "translate("+(tooltip_placement.x - bubble_box.x)+","+(tooltip_placement.y - bubble_box.y)+")")
 }
@@ -671,5 +777,3 @@ var charts_config = {
     ]
   }
 }
-
-

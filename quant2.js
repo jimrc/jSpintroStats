@@ -1,10 +1,8 @@
 // subroutine to estimate a slope or correlation or test for slope of zero
 // Inputs:   choose a prebuilt data set
 //  TODO:  allow input of csv file and parse it.
-// TODO: Changing data should remove inference plot
-//  TODO: Estimating and Testing each give weird points in inference plot
+// TODO:  confidence level is not tracking changes in rangeslider
 //  TODO: clicking a point should show resampled slope (and correlation?)
-//  TODO: Clicking [Test] button first time in doesn't show the inference plot
 
     var correlation,
     	intercept,
@@ -50,7 +48,9 @@
 
  var svgq2 = d3.select("#quant2InfSVG"),
       svgSumq2=d3.select("#quant2SumSVG");
- //document.getElementById("quant2MoreSims").style.display = 'none';
+document.getElementById("quant2MoreSims").style.display = 'none';
+document.getElementById("quant2Results").style.display = "none";
+document.getElementById("quant2Output").style.display = "none";
 
 function summarizeSlope() {
       // builds summary table and dot plot for 2 quantitative variables
@@ -101,10 +101,10 @@ function summarizeSlope() {
 			//{"label": "SD from line", "xx": }
 			];
       q2Summ.innerHTML = "<br> x&#773; =  " + xbar.toPrecision(5) + "\t  y&#773; =  " + ybar.toPrecision(5) +
-						 "<br> Sample Size = " + dataLength +
+						 "\t Sample Size = " + dataLength +
 						 "<br> Slope of Least Squares Regression Line = " + slope.toPrecision(4) +
-						 "\t correlation = " + correlation.toPrecision(4)
-                         ;
+						 "<br> Correlation = " + correlation.toPrecision(4)
+              ;
       q2Summ.style = "display: block";
 
 	//check for any old output plots. If present, erase them due to change in data
@@ -119,28 +119,12 @@ function summarizeSlope() {
 		document.getElementById("quant2WhichSlope").style.display = "none";
 	}
 
-  makeScatterPlot(q2Values, "quant2SumSVG");
+  makeRegressionPlot(q2Values, "quant2SumSVG");
 	//scatterPlot(q2Values, quant2SumSVG, q2InteractFnA, intercept, slope );
 	// display next step: select inference
 	document.getElementById("quant2SelectInf").style.display = 'block';
 	document.getElementById("quant2ObsdSlope").innerHTML =
 						"&nbsp;&nbsp;" + slope.toPrecision(4) +" from above.";
-}
-
-function q2InteractFnA(d, i){
-		// open box to show (x, y) coordinates in the selected point;
-	var q2Modal = document.getElementById("q2WhichDotA"),
-		 q2ModalContent = document.getElementById("q2SelectedSampleA");
-	q2Modal.style.display = "block";
-	q2ModalContent.innerHTML = "Coordinates: (" + q2Values[i].x.toPrecision(4) + ", "+
-									q2Values[i].y.toPrecision(4) +
-	  							") <br> Click to Close" ;
-	// open modal box to show slope of the selected resample;
-	window.onclick = function(event) {
-    if (event.target == q2Modal) {
-        q2Modal.style.display = "none";
-    	}
-	}
 }
 
 function q2CLChange(arg) {
@@ -158,16 +142,16 @@ function q2CLChange(arg) {
 			 cnfLvl = tempColors[3];
 			q2CIdata = [q2CIdata[0], tempColors[0] ];
 			//console.log(q2CIdata[0][1]);
-			q2InfOutput = histodot(q2CIdata, tempColors, quant2InfSVG, q2CIinteract);
+			q2InfOutput = makeScatterPlot(q2CIdata, "quant2InfSVG");
 		}
 		document.getElementById("quant2Inference").style.display = "block";
 		q2ftr = document.getElementById("quant2Results");
-		q2ftr.style.display = 'block';
+		//q2ftr.style.display = 'block';
 	 	q2ftr.innerHTML = //"<div style = 'height = 10'> </div>" +
 	   "<div style = 'width:360px'> Plot shows slopes of Best Fit Lines in  "+ sq2Len + " Re-samples" +
 	   "<br> <br>"+ Math.round(cnfLvl*100)+
 	   "% Confidence Interval: (" + q2lowerBd +", "+ q2upperBd +" )</div>";
-		document.getElementById("quant2MoreSims").style.display = 'block';
+		//document.getElementById("quant2MoreSims").style.display = 'block';
 }
 
 var q2CIrangeslide = rangeslide("#quant2ConfLvl", {
@@ -187,7 +171,7 @@ var q2CIrangeslide = rangeslide("#quant2ConfLvl", {
 
 
 function estimateSlope(nReps){
-	//function to estimate the true mean based on resamples of original numeric data
+	//function to estimate the true slope based on resamples of original (x, y) data
 	var cnfLvl = q2CnfLvl,
 		CI = [];
 
@@ -243,7 +227,6 @@ function testSlope(tailChoice){
 
 
 	 if(tailChoice === 'undefined'){
-		document.getElementById("quant2Inference").style.display = "block";
 	 	q2hdr = document.getElementById("quant2Output");
 	 	q2hdr.innerHTML = "<div class = 'w3-cell-row'> <div class = 'w3-cell' style = 'width:50%'> "+
 	 		" Stronger evidence is sample slope </div>"+
@@ -385,22 +368,22 @@ function q2TestUpdate(){
  	 //console.log(d3.sum(q2Color));
  	 q2Pval = extCount / sq2Len;
  	 q2Tstdata = [sampleq2, q2Color];
-   	q2InfOutput = histodot(sampleq2, q2Color, quant2InfSVG, q2TestInteract );
-	document.getElementById("quant2Inference").style.display = "block";
+   	q2InfOutput = makeScatterPlot(sampleq2, "quant2InfSVG" );
+	//document.getElementById("quant2Inference").style.display = "block";
 
 	 q2ftr = document.getElementById("quant2Results");
-	 q2ftr.style.display = 'block';
+	 //q2ftr.style.display = 'block';
 	 q2ftr.innerHTML =
 	   "<div  style = 'width:320px'> Slopes in " + sq2Len +" Resamples from H<sub>0</sub> <br>"+
 	   "p-value (strength of evidence): " + formatPvalue(extCount, sq2Len) + "</div>";
-	 document.getElementById("quant2MoreSims").style.display = 'block';
+	 //document.getElementById("quant2MoreSims").style.display = 'block';
 
 }
 
 function q2CIinteract(d,i){
 	console.log(d.x,i);
 	var q2modal = document.getElementById("quant2SelectedSample");
-	q2modal.style.display = "block";
+	//q2modal.style.display = "block";
 	q2modal.innerHTML = "Slope: " + q2CIdata[0][i];
 	// open modal box to show slopes in the selected resample;
 	window.onclick = function(event) {
@@ -414,7 +397,7 @@ function q2TestInteract(d,i){
 	// open modal box to show slope in the selected sample;
 	console.log(d.x, i);
 	var q2modal = document.getElementById("quant2SelectedSample");
-	q2modal.style.display = "block";
+	//q2modal.style.display = "block";
 	q2modal.innerHTML = "Slope: " + q2Tstdata[0][i];
 	// open modal box to show slope in the selected resample;
 	window.onclick = function(event) {
