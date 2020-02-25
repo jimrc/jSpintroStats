@@ -1,4 +1,3 @@
-
 /*eslint quotes: [2, "double", "avoid-escape"]*/
 // Turning pages and elements on or off
 
@@ -434,6 +433,60 @@ function dbl_histodot(sample, colors, labels, svgObject, interactFunction) {
   return [Dots, myArray];
 }
 
+function stackDots(sample, colors) {
+  // stacks dots up creating integer y values (1, 2, 3,...) for x value within a "bin" of similar values
+  // input is an array containing x values and an array of colors
+  var color,
+    j = 0,
+    leftX,
+    myArray = [],
+    nN = sample.length,
+    radii,
+    xbinWidth,
+    xmin,
+    xmax,
+    width = parseNumber(charts_config.svg.width);
+    sample = sample.sort(function(a, b) {
+    return a.x - b.x;
+  });
+  // assume colors are already sorted by x value
+  if(colors.length < nN){
+    color = colors[0]
+    for (i=0; i< nN; i++){
+      colors[j] = colors
+    }
+  }
+  xmin = sample[0].x;
+  xmin *= xmin <= 0 ? 1.01 : 0.99;
+  xmax = sample[nN - 1].x;
+  xmax *= xmax >= 0 ? 1.01 : 0.99;
+  var radii = nN < 101 ? 10 : nN < 501 ? 7 : nN < 1001 ? 5 : nN < 5001 ? 4 : 3; // perhaps this should relate to width/height of svg]
+  xbinWidth = (xmax - xmin) / (width / radii); //sturgesFormula(myArray).binLength;
+  // console.log(xbinWidth);
+  //  first dot goes at y=1, then add one to each from there
+  j = 0;
+  ypos = 1; // y value is a count starting at 1
+  leftX = xmin;
+  sampMax = 1;
+  while (j < nN) {
+    if (Math.abs(sample[j].x - leftX) > xbinWidth) {
+      leftX = sample[j].x; // start a fresh bin with left edge at sample[j] xvalue
+      if (ypos > sampMax) {
+        sampMax = ypos;
+      } // only check max y height at right edge of each bin
+      ypos = 1;
+    }
+    //if (sample[j].color !== "undefined") {
+    //  color = sample[j].color;
+    //} else {
+    //  color = 1;
+    //}
+    myArray[j] = { x: sample[j++].x, y: ypos++, color: colors[j] };
+  }
+  //console.log(myArray);
+  return myArray;
+}
+
 function histodot(sample, colors, svgObject, interactFunction) {
   // stacks dots up creating integer y values (1, 2, 3,...) for x value within a "bin" of similar values
   // builds a d3 svg plot in the svg object which will respond to a mouse-click by calling
@@ -545,14 +598,14 @@ function histodot(sample, colors, svgObject, interactFunction) {
     })
     .style("fill-opacity", 0.6)
     .on("click", interactFunction)
-    .on("mouseleave", mouseoutFunction );
+    .on("mouseleave", mouseoutFunction);
 
   //return [Dots, sample];
 }
 
-  function mouseoutFunction(d, i) {
-   chart_group.select("g.tooltip_group").remove()
-  }
+function mouseoutFunction(d, i) {
+  chart_group.select("g.tooltip_group").remove();
+}
 
 function discreteChart(sample, svgObject, interactFunction) {
   // stacks dots up creating integer y values (1, 2, 3,...) for each unique x value
@@ -675,7 +728,7 @@ function discreteChart(sample, svgObject, interactFunction) {
     .style("fill-opacity", 0.6)
     .on("click", interactFunction);
   return [Dots, sample];
-}                                     // end of discreteChart
+} // end of discreteChart
 
 function ciColor(resample, cnfLvl) {
   // changes colors for CI illustration
