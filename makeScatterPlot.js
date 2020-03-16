@@ -1,10 +1,10 @@
 function makeRegressionPlot(data, plot, xlabel, ylabel) {
   // draw scatterplot of 2 quantitative variables and add regression line
   var svg, chart_group, data_extent, canvas, margins, max_draw_space;
-  if (plot === "undefined") {
-    plot = "scatter_chart";
-  }
 
+  if (document.getElementById(plot).style.display === "none") {
+    document.getElementById(plot).style.display = "block";
+  }
   // calculate slope and intercept *** //
   var crossprod = 0.0,
     dataLength = data.length,
@@ -13,12 +13,13 @@ function makeRegressionPlot(data, plot, xlabel, ylabel) {
     y = [],
     xydata = [],
     keys = Object.keys(data[0]);
+  //console.log(data[0]);
   // console.log(keys)
   for (i = 0; i < dataLength; i++) {
     x.push(+data[i][keys[0]]);
     y.push(+data[i][keys[1]]);
     crossprod += x[i] * y[i]; // add up cross product
-    xydata.push({ x: x[i], y: y[i] });
+    xydata.push({ x: x[i], y: y[i], color: "blue" });
   }
 
   var xbar = d3.mean(x),
@@ -40,12 +41,12 @@ function makeRegressionPlot(data, plot, xlabel, ylabel) {
 
   data_extent = {
     max: {
-      x: d3.max(x),
-      y: d3.max(y)
+      x: d3.max(x) * 1.01,
+      y: d3.max(y) * 1.01
     },
     min: {
-      x: d3.min(x),
-      y: d3.min(y)
+      x: d3.min(x) * 0.99,
+      y: d3.min(y) * 0.99
     }
   };
   //
@@ -64,12 +65,7 @@ function makeRegressionPlot(data, plot, xlabel, ylabel) {
 
   var max_draw_space = {
     x: canvas.x - margins.x.left - margins.x.right - margins.axes.y,
-    y:
-      canvas.y -
-      margins.y.top -
-      margins.y.bottom -
-      margins.axes.x -
-      margins.title
+    y: canvas.y - margins.y.top -  margins.y.bottom - margins.axes.x - margins.title
   };
 
   //  max_draw_space = calculate_maximum_drawing_space(canvas, margins)
@@ -85,6 +81,7 @@ function makeRegressionPlot(data, plot, xlabel, ylabel) {
 
   var x_axis_label = xlabel;
   var y_axis_label = ylabel;
+  //console.log(max_draw_space);
   make_axes(
     chart_group,
     x_scale,
@@ -95,6 +92,28 @@ function makeRegressionPlot(data, plot, xlabel, ylabel) {
     x_axis_label,
     y_axis_label
   );
+
+    //  Add regression line *********************************//
+    var regLine;
+    if ((regLine = d3.select("line.regression"))) {
+      regLine.remove();
+    }
+    if (slope){
+      var regLine = chart_group
+        .append("line")
+        .attr("class", "regression")
+        .attr("x1", x_scale(xmin) + margins.x.left + margins.axes.y)
+        .attr(
+          "y1",
+          y_scale(xmin * slope + intercept) + margins.y.top + margins.title
+        )
+        .attr("x2", x_scale(xmax) + margins.x.left + margins.axes.y)
+        .attr(
+          "y2",
+          y_scale(xmax * slope + intercept) + margins.y.top + margins.title
+        )
+        .style("stroke", "black");
+    }
 
   var scatter_group = chart_group
     .selectAll("g." + plot + "_scatter_group")
@@ -107,7 +126,7 @@ function makeRegressionPlot(data, plot, xlabel, ylabel) {
     .attr("class", plot + "_scatter_group")
     .append("circle")
     .attr("r", charts_config.point.radius)
-    .attr("fill", charts_config.point.fill)
+    .style("fill", function(d){ return(d.color);})
     .style("opacity", charts_config.point.opacity);
 
   scatter_group = d3.selectAll("g." + plot + "_scatter_group");
@@ -128,7 +147,7 @@ function makeRegressionPlot(data, plot, xlabel, ylabel) {
     var d = d3.select(this).datum();
     make_tooltip(
       d3.select(this),
-      ["x: " + d.x, "y: " + d.y],
+      [xlabel + " : " + d.x, ylabel + ": " + d.y],
       chart_group,
       canvas,
       margins
@@ -139,41 +158,18 @@ function makeRegressionPlot(data, plot, xlabel, ylabel) {
     chart_group.select("g.tooltip_group").remove();
   }
 
-  //  Add regression line *********************************//
-  var regLine;
-
-  if ((regLine = d3.select("line.regression"))) {
-    regLine.remove();
-  }
-
-  var regLine = chart_group
-    .append("line")
-    .attr("class", "regression")
-    .attr("x1", x_scale(xmin) + margins.x.left + margins.axes.y)
-    .attr(
-      "y1",
-      y_scale(xmin * slope + intercept) + margins.y.top + margins.title
-    )
-    .attr("x2", x_scale(xmax) + margins.x.left + margins.axes.y)
-    .attr(
-      "y2",
-      y_scale(xmax * slope + intercept) + margins.y.top + margins.title
-    )
-    .style("stroke", "black");
-
   chart_group.select("g.axes").raise();
 }
 
 
 // ***************************************************************//
-//     Plot dots without regression line                          //
+//     Function to plot dots without regression line                          //
 //                                                                //
 //  **************************************************************//
 
 function makeScatterPlot(data, plot, xlabel, ylabel) {
   // draw scatterplot of 2 quantitative variables of given color
   // input array with x, y, and colors
-  var circleColors = ["steelblue", "red"];
   var svg,
     chart_group,
     data_extent,
@@ -182,8 +178,9 @@ function makeScatterPlot(data, plot, xlabel, ylabel) {
     max_draw_space,
     colors = [],
     xydata = [];
-  if (plot === "undefined") {
-    plot = "scatter_chart";
+    //console.log(data[0]);
+  if (document.getElementById(plot).style.display === "none") {
+      document.getElementById(plot).style.display = "block";
   }
   //var xydata =[];
   // calculate slope and intercept *** //
@@ -195,7 +192,7 @@ function makeScatterPlot(data, plot, xlabel, ylabel) {
   for(i =0; i< dataLength; i++){
   	x.push( +data[i].x);
     y.push( +data[i].y);
-    xydata.push( {x: x[i], y: y[i]})
+    xydata.push( {x: x[i], y: y[i], color: data[i].color})
   }
 
   svg = make_chart_svg(plot);
@@ -208,12 +205,12 @@ function makeScatterPlot(data, plot, xlabel, ylabel) {
 
   data_extent = {
     max: {
-      x: d3.max(x),
-      y: d3.max(y)
+      x: d3.max(x) * 1.01,
+      y: d3.max(y) * 1.01
     },
     min: {
-      x: d3.min(x),
-      y: d3.min(y)
+      x: d3.min(x) * 0.99,
+      y: d3.min(y) * 0.99
     }
   };
   //
@@ -228,7 +225,7 @@ function makeScatterPlot(data, plot, xlabel, ylabel) {
     xmax = data_extent.max.x;
   canvas = extract_canvas_from_svg(svg);
   margins = make_margins(chart_group, canvas, data_extent);
-console.log(data_extent);
+  // console.log(data_extent);
 
   var max_draw_space = {
     x: canvas.x - margins.x.left - margins.x.right - margins.axes.y,
@@ -275,9 +272,7 @@ console.log(data_extent);
     .attr("class", plot + "_scatter_group")
     .append("circle")
     .attr("r", charts_config.point.radius)
-    .attr("fill", function(d) {
-      return circleColors[d.color];
-    })
+    .style("fill", function(d){ return (d.color);})
     .style("opacity", charts_config.point.opacity);
 
   scatter_group = d3.selectAll("g." + plot + "_scatter_group");
@@ -295,10 +290,11 @@ console.log(data_extent);
   scatter_group.on("mouseleave", mouseOutFunction);
 
   function mouseClickFunction(d, i) {
+    //ToDo:  Prettify output by rounding appropriately
     var d = d3.select(this).datum();
     make_tooltip(
       d3.select(this),
-      [keys[0] + ": " + d.x + keys[1] + ": " + d.y],
+      [xlabel + ": " + d.x.toPrecision(3)],
       chart_group,
       canvas,
       margins
@@ -310,6 +306,7 @@ console.log(data_extent);
   }
 
   chart_group.select("g.axes").raise();
+  return xydata;
 }
 
 /**************************************************************************
@@ -368,17 +365,16 @@ function calculate_space_needed_by_axes(chart_group, data_extent, margins) {
 
   // Make the axes
   var x_axis_scaled = d3
-    .axisBottom()
-    .scale(x_scale)
+    .axisBottom(x_scale)
     .tickSize(charts_config.axes.tickssize)
     .ticks(6);
   var y_axis_scaled = d3
-    .axisLeft()
-    .scale(y_scale)
+    .axisLeft(y_scale)
     .tickSize(charts_config.axes.tickssize)
     .ticks(6);
 
   // Place and maintain the axis as an SVG object
+  try{
   var x_axis = temp
     .append("g")
     .attr("class", "temp")
@@ -391,7 +387,9 @@ function calculate_space_needed_by_axes(chart_group, data_extent, margins) {
     .call(y_axis_scaled)
     .attr("font-size", charts_config.axes.size)
     .attr("font-family", charts_config.axes.family);
+} catch(err) {
 
+}
   // Add the axes labels. y-axis is rotated
   var x_axis_label = temp
     .append("text")
@@ -404,7 +402,7 @@ function calculate_space_needed_by_axes(chart_group, data_extent, margins) {
     .attr("font-family", charts_config.axes.labelsfamily)
     .attr("font-size", charts_config.axes.labelsize)
     .attr("transform", "rotate(-90)");
-
+    //console.log(x_axis_label.node().getBBox());
   // Retrieve the rectangle encapsulating the text labels and the axes
   var x_axis_label_box = x_axis_label.node().getBBox();
   var y_axis_label_box = y_axis_label.node().getBBox();
@@ -419,6 +417,7 @@ function calculate_space_needed_by_axes(chart_group, data_extent, margins) {
 
   // Remove these SVG elements
   temp.remove();
+  console.log(x_axis_space_consumed, y_axis_space_consumed);
   return { x: x_axis_space_consumed, y: y_axis_space_consumed };
 }
 
@@ -544,11 +543,13 @@ function make_margins(chart_group, canvas, data_extent) {
     }
   };
   // Update axes margins based off space used by their rendered SVG elements
+  console.log(data_extent, margins)
   axes_margins = calculate_space_needed_by_axes(
     chart_group,
     data_extent,
     margins
   );
+  //console.log(axes_margins);
   margins.axes.x = axes_margins.x;
   margins.axes.y = axes_margins.y;
   //console.log(margins);

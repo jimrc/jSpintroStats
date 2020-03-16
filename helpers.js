@@ -1,4 +1,8 @@
 /*eslint quotes: [2, "double", "avoid-escape"]*/
+
+function prettyRound(x, digits = 4) {
+  // takes a numeric argument, produces a rounded version depending on string length.
+}
 // Turning pages and elements on or off
 
 function toggleContent1() {
@@ -433,11 +437,12 @@ function dbl_histodot(sample, colors, labels, svgObject, interactFunction) {
   return [Dots, myArray];
 }
 
-function stackDots(sample, colors) {
-  // stacks dots up creating integer y values (1, 2, 3,...) for x value within a "bin" of similar values
-  // input is an array containing x values and an array of colors
-  var color,
-    j = 0,
+function stackDots(sample) {
+  // stacks dots up creating integer y values (1, 2, 3,...)
+  // for x value within a "bin" of similar values
+  // input is an array containing x values sorted in order.
+  // output is an array of  x, y pairs
+  var j = 0,
     leftX,
     myArray = [],
     nN = sample.length,
@@ -446,19 +451,21 @@ function stackDots(sample, colors) {
     xmin,
     xmax,
     width = parseNumber(charts_config.svg.width);
-    sample = sample.sort(function(a, b) {
-    return a.x - b.x;
-  });
-  // assume colors are already sorted by x value
-  if(colors.length < nN){
-    color = colors[0]
-    for (i=0; i< nN; i++){
-      colors[j] = colors
+  if(nN < 1) {
+    return;
+  }
+  // just in case, we'll sort the x values
+  if(sample[0].x){
+    for( i = 0; i < nN; i++){
+      sample[i] = sample[i].x
     }
   }
-  xmin = sample[0].x;
+   sample = sample.sort(function(a, b) {
+      return a - b;
+    });
+  xmin = +sample[0];
   xmin *= xmin <= 0 ? 1.01 : 0.99;
-  xmax = sample[nN - 1].x;
+  xmax = +sample[nN - 1];
   xmax *= xmax >= 0 ? 1.01 : 0.99;
   var radii = nN < 101 ? 10 : nN < 501 ? 7 : nN < 1001 ? 5 : nN < 5001 ? 4 : 3; // perhaps this should relate to width/height of svg]
   xbinWidth = (xmax - xmin) / (width / radii); //sturgesFormula(myArray).binLength;
@@ -469,19 +476,14 @@ function stackDots(sample, colors) {
   leftX = xmin;
   sampMax = 1;
   while (j < nN) {
-    if (Math.abs(sample[j].x - leftX) > xbinWidth) {
-      leftX = sample[j].x; // start a fresh bin with left edge at sample[j] xvalue
+    if (Math.abs(+sample[j] - leftX) > xbinWidth) {
+      leftX = +sample[j]; // start a fresh bin with left edge at sample[j] xvalue
       if (ypos > sampMax) {
         sampMax = ypos;
       } // only check max y height at right edge of each bin
       ypos = 1;
     }
-    //if (sample[j].color !== "undefined") {
-    //  color = sample[j].color;
-    //} else {
-    //  color = 1;
-    //}
-    myArray[j] = { x: sample[j++].x, y: ypos++, color: colors[j] };
+    myArray[j] = { x: +sample[j++], y: ypos++ };
   }
   //console.log(myArray);
   return myArray;
@@ -731,22 +733,22 @@ function discreteChart(sample, svgObject, interactFunction) {
 } // end of discreteChart
 
 function ciColor(resample, cnfLvl) {
-  // changes colors for CI illustration
+  // input vector must be already sorted numerically
+  // sets colors for CI illustration: 1 for outside, 0 for inside the interval
+  // returns a vector of colors (0 or 1), lower bd, upper bd, confidence level
   var color = [],
     lowerBd,
     upperBd,
     quantile,
     twoTail,
     sLen = resample.length;
-  resample = resample.sort(function(a, b) {
-    return a - b;
-  });
+
   if (sLen > 0) {
     twoTail = Math.round((1 - cnfLvl) * sLen);
     quantile = Math.floor(twoTail / 2);
     if (twoTail % 2) {
-      // check for odd number
-      cnfLvl = (sLen - twoTail - 1) / sLen;
+      // check for odd number in the 2 tails
+      cnfLvl = (sLen - twoTail - 1) / sLen; // reduce confidence level to get even number of samples
       quantile += 1;
       // reduce to lower confidence
     }

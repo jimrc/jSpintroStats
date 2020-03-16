@@ -1247,22 +1247,23 @@ function actionsFunc(actns) {
 						<svg id="quant2SumSVG" height="400px" width="400px"></svg >
 					</div>
 				</div>
-			</div>
 		<br>
 		<!--                             Select Your Inference                        -->
 		<div class="w3-container w3-mobile" id="quant2SelectInf" style="display:none">
 			Either
 			<button id="EstimateSlope" onclick="q2Inference = 'estimate';
-		q2CIdata = estimateSlope(100);
-		q2InfOutput = makeScatterPlot(q2CIdata, quant2InfSVG, 'Slope', ' ');
-		" class="w3-button w3-pale-blue w3-medium w3-round-xlarge">
+				drawq2Inf = true;
+				q2CIdata = estimateSlope(100);
+				"
+				class="w3-button w3-pale-blue w3-medium w3-round-xlarge">
 				&nbsp; Estimate a slope.
 			</button>
 			&nbsp; OR &nbsp;
 			<button id="TestSlope" onclick="q2Inference = 'test';
-		q2Tstdata = testSlope( noChoice);
-		q2InfOutput = makeScatterPlot(q2Tstdata, quant2InfSVG,'Slope', ' ' );
-		" class="w3-button w3-pale-blue w3-medium w3-round-xlarge">
+				drawq2Inf = true;
+				q2Tstdata = testSlope( noChoice);
+				"
+				class="w3-button w3-pale-blue w3-medium w3-round-xlarge">
 				&nbsp; Test: Is true slope equal 0?
 			</button>
 		</div>
@@ -1296,26 +1297,14 @@ function actionsFunc(actns) {
 			Choose a Confidence Level:
 		</div>
 
-
 		<div id="quant2Output" style="display:none">
 		</div>
 		<!--  Show Inference Plot -->
-		<div class="w3-cell-row w3-mobile">
-			<div class="w3-container w3-cell w3-mobile" id="quant2Inference" style="width:420px; display: none">
+
+		<div class="w3-container w3-cell w3-mobile" id="quant2Inference" style="width:420px; display:none">
 				<!--  Inference plot goes here for CI or Test of slope -->
 				<svg id="quant2InfSVG" height="400px" width="400px"></svg>
 			</div>
-
-			<!-- Box to Tooltip info on a single data point
-			<div class="w3-container w3-cell w3-mobile" id="quant2WhichSlope" style="width: 300px; height:10%; display:none;" onclick="this.style.display='none'">
-				<br>
-				<br>
-				<br>
-				<div class="w3-card-4 w3-pale-green" id="quant2SelectedSample">
-					&nbsp;
-				</div>
-			</div-->
-		</div>
 
 		<!-- Show Results -->
 
@@ -1327,7 +1316,8 @@ function actionsFunc(actns) {
 					Add
 				</div>
 				<div class='w3-cell  w3-mobile' style='width: 20%'>
-					<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='quant2More' placeholder='0' onchange='quant2MoreSimFn()'>
+					<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='quant2More' placeholder='0'
+					onchange='quant2MoreSimFn()'>
 				</div>
 				<div class='w3-cell  w3-mobile' style='width: 40%'>
 					&nbsp;simulated slopes
