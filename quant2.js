@@ -510,6 +510,7 @@ function quant2MoreSimFn() {
       resampleq2 = resampleq2.sort(function(a, b) {
         return a - b;
       });
+      
       //  Need to add more (x, y) points and transition in the colors.
       q2CLChange({ value: q2CnfLvl });
       return resampleq2;

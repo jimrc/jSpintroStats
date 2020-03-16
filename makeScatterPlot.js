@@ -417,7 +417,7 @@ function calculate_space_needed_by_axes(chart_group, data_extent, margins) {
 
   // Remove these SVG elements
   temp.remove();
-  console.log(x_axis_space_consumed, y_axis_space_consumed);
+  //console.log(x_axis_space_consumed, y_axis_space_consumed);
   return { x: x_axis_space_consumed, y: y_axis_space_consumed };
 }
 
@@ -543,7 +543,7 @@ function make_margins(chart_group, canvas, data_extent) {
     }
   };
   // Update axes margins based off space used by their rendered SVG elements
-  console.log(data_extent, margins)
+  // console.log(data_extent, margins)
   axes_margins = calculate_space_needed_by_axes(
     chart_group,
     data_extent,
