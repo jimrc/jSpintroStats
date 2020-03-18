@@ -7,7 +7,8 @@
 <link rel="stylesheet" href="./style.css">
 <body>
 
-	<!-- Load D3  -->
+	<!-- Load javascript and data -->
+	<script type="text/javascript" src="./mainSpintroStat.js"></script>
 	<script type="text/javascript" src="./HelperPkgs/d3.v5.js"></script>
 	<script type="text/javascript" src="./HelperPkgs/alertify.min.js"></script>
 	<script type="text/javascript" src="./costs.js"></script>
@@ -38,22 +39,22 @@
 			1 Cat <i class="fa fa-caret-down"></i>
 		</button>
 		<div id="cat1Actions" class="w3-dropdown-content w3-hide w3-light-blue w3-card-4">
-			<button class="w3-button w3-hover-white w3-mobile" onclick="choosePage('TestEstC1')">
+			<button class="w3-button w3-hover-white w3-mobile" onclick="choosePage('TestEst')">
 				Test/Estimate
 			</button>
-			<button class="w3-button w3-hover-white w3-mobile" onclick="choosePage('CIDemoC1')">
+			<button class="w3-button w3-hover-white w3-mobile" onclick="choosePage('Demo')">
 				CI Demo
 			</button>
-			<button class="w3-button w3-hover-white w3-mobile" onclick="choosePage('LurkingDemoC1')">
+			<button class="w3-button w3-hover-white w3-mobile" onclick="choosePage('Demo')">
 				Lurking Demo
 			</button>
-			<button class="w3-button w3-hover-white w3-mobile" onclick="choosePage('Spinner')">
+			<button class="w3-button w3-hover-white w3-mobile" onclick="choosePage('Demo')">
 				Spinner
 			</button>
-			<button class="w3-button w3-hover-white w3-mobile" onclick="choosePage('Mixer')">
+			<button class="w3-button w3-hover-white w3-mobile" onclick="choosePage('Demo')">
 				Mixer
 			</button>
-			<button class="w3-button w3-hover-white w3-mobile" onclick="choosePage('Ztable')">
+			<button class="w3-button w3-hover-white w3-mobile" onclick="choosePage('Table')">
 				Normal Prob's
 			</button>
 		</div>
@@ -63,22 +64,22 @@
 			1 Quant <i class="fa fa-caret-down"></i>
 		</button>
 		<div id="quant1Actions" class="w3-dropdown-content w3-hide w3-light-blue w3-card-4">
-			<button class=" w3-button w3-hover-white w3-mobile" onclick="choosePage('TestEstQ1')">
+			<button class=" w3-button w3-hover-white w3-mobile" onclick="choosePage('TestEst')">
 				Test/Estimate
 			</button>
-			<button class=" w3-button w3-hover-white w3-mobile" onclick="choosePage('BootDemo')">
+			<button class=" w3-button w3-hover-white w3-mobile" onclick="choosePage('Demo')">
 				Bootstrap Demo
 			</button>
-			<button class=" w3-button w3-hover-white w3-mobile" onclick="choosePage('SamplingDemo')">
+			<button class=" w3-button w3-hover-white w3-mobile" onclick="choosePage('Demo')">
 				Sampling Demo
 			</button>
-			<button class=" w3-button w3-hover-white w3-mobile" onclick="choosePage('LurkingDemoQ1')">
+			<button class=" w3-button w3-hover-white w3-mobile" onclick="choosePage('Demo')">
 				Lurking Demo
 			</button>
-			<button class=" w3-button w3-hover-white w3-mobile" onclick="choosePage('Power')">
+			<button class=" w3-button w3-hover-white w3-mobile" onclick="choosePage('Demo')">
 				Power
 			</button>
-			<button class=" w3-button w3-hover-white w3-mobile" onclick="choosePage('Ttable')">
+			<button class=" w3-button w3-hover-white w3-mobile" onclick="choosePage('Table')">
 				T Prob's
 			</button>
 		</div>
@@ -88,10 +89,10 @@
 			2 Cat <i class="fa fa-caret-down"></i>
 		</button>
 		<div id="cat2Actions" class="w3-dropdown-content w3-hide w3-light-blue w3-card-4">
-			<button class=" w3-button w3-hover-white w3-mobile" onclick="choosePage('TestEstC2')">
+			<button class=" w3-button w3-hover-white w3-mobile" onclick="choosePage('TestEst')">
 				Test/Estimate
 			</button>
-			<button class=" w3-button w3-hover-white w3-mobile" onclick="choosePage('Ztable')">
+			<button class=" w3-button w3-hover-white w3-mobile" onclick="choosePage('Table')">
 				Normal Prob's
 			</button>
 		</div>
@@ -101,13 +102,13 @@
 			2 Quant <i class="fa fa-caret-down"></i>
 		</button>
 		<div id="quant2Actions" class="w3-dropdown-content w3-hide w3-light-blue w3-card-4">
-			<button class=" w3-button w3-hover-white w3-mobile" onclick="choosePage('TestEstQ2')">
+			<button class=" w3-button w3-hover-white w3-mobile" onclick="choosePage('TestEst')">
 				Test/Estimate
 			</button>
-			<button class=" w3-button w3-hover-white w3-mobile" onclick="choosePage('RegressionDemo')">
+			<button class=" w3-button w3-hover-white w3-mobile" onclick="choosePage('Demo')">
 				Regression Demo
 			</button>
-			<button class=" w3-button w3-hover-white w3-mobile" onclick="choosePage('Ttable')">
+			<button class=" w3-button w3-hover-white w3-mobile" onclick="choosePage('Table')">
 				T Prob's
 			</button>
 		</div>
@@ -117,10 +118,10 @@
 			1 Cat, 1 Quant <i class="fa fa-caret-down"></i>
 		</button>
 		<div id="cat1quant1Actions" class="w3-dropdown-content w3-hide w3-light-blue w3-card-4">
-			<button class=" w3-button w3-hover-white w3-mobile" onclick="choosePage('TestEstC1Q1')">
+			<button class=" w3-button w3-hover-white w3-mobile" onclick="choosePage('TestEst')">
 				Test/Estimate
 			</button>
-			<button class=" w3-button w3-hover-white w3-mobile" onclick="choosePage('Ttable')">
+			<button class=" w3-button w3-hover-white w3-mobile" onclick="choosePage('Table')">
 				T Prob's
 			</button>
 		</div>
@@ -153,42 +154,78 @@
 			</div>
 		</div>
 
+	<div id="OneCat" class="w3-container vType" style="display:none">
+		<span onclick="this.parentElement.style.display='none'"
+			class="w3-button w3-large w3-display-bottomright">Back</span>
+		<div class="w3-display-container w3-white" style="height:30px;">
+			<div class="w3-bar w3-light-blue w3-card-2 w3-left-align w3-large w3-mobile w3-display-topmiddle">
+				<button class="w3-bar-item w3-button w3-hover-white w3-mobile"
+				onclick="vbleChoice ='c1'; inference =  'test_est' ">
+					Test/Estimate
+				</button>
+				<button class="w3-bar-item w3-button w3-hover-white w3-mobile"
+				onclick="vbleChoice ='c1'; inference =  'CI_demo' ">
+					CI Demo
+				</button>
+				<button class="w3-bar-item w3-button w3-hover-white w3-mobile"
+				onclick="vbleChoice ='c1'; inference =  'spinner' ">
+					Spinner
+				</button>
+				<button class="w3-bar-item w3-button w3-hover-white w3-mobile"
+				onclick="vbleChoice ='c1'; inference =  'mixer' ">
+					Mixer
+				</button>
+				<button class="w3-bar-item w3-button w3-hover-white w3-mobile"
+				onclick=" vbleChoice ='c1'; inference =  'ztable'">
+					Normal Probabilities
+				</button>
+			</div>
+		</div>
+	</div>
+
 		<div id="OneQuant" class="w3-container vType" style="display:none">
-			<span onclick="this.parentElement.style.display='none'" class="w3-button w3-large w3-display-bottomright">Back</span>
 
 			<div class="w3-display-container w3-white" style="height:50px;">
 				<div class="w3-bar w3-light-blue w3-card-2 w3-left-align w3-large w3-mobile w3-display-topmiddle">
-					<button class="w3-bar-item w3-button w3-hover-white w3-mobile" onclick="choosePage('TestEstQ1')">
+					<button class="w3-bar-item w3-button w3-hover-white w3-mobile"
+					onclick="vbleChoice ='q1'; inference ='test_est' ">
 						Test/Estimate
 					</button>
-					<button class="w3-bar-item w3-button w3-hover-white w3-mobile" onclick="choosePage('BootDemo')">
+					<button class="w3-bar-item w3-button w3-hover-white w3-mobile"
+					onclick="vbleChoice ='q1'; inference ='boot_demo' ">
 						Bootstrap Demo
 					</button>
-					<button class="w3-bar-item w3-button w3-hover-white w3-mobile" onclick="choosePage('SamplingDemo')">
+					<button class="w3-bar-item w3-button w3-hover-white w3-mobile"
+					onclick=" vbleChoice ='q1'; inference = 'sampling_demo'">
 						Sampling Demo
 					</button>
-					<button class="w3-bar-item w3-button w3-hover-white w3-mobile" onclick="choosePage('LurkingDemoQ1')">
+					<button class="w3-bar-item w3-button w3-hover-white w3-mobile"
+					onclick="vbleChoice ='q1'; inference = 'lurking_demo'">
 						Lurking Demo
 					</button>
-					<button class="w3-bar-item w3-button w3-hover-white w3-mobile" onclick="choosePage('Power')">
+					<button class="w3-bar-item w3-button w3-hover-white w3-mobile"
+					onclick="vbleChoice ='q1'; inference =  'Power'">
 						Power
 					</button>
-					<button class="w3-bar-item w3-button w3-hover-white w3-mobile" onclick="choosePage('Ttable')">
+					<button class="w3-bar-item w3-button w3-hover-white w3-mobile"
+					onclick=" vbleChoice ='q1'; inference = 'ttable'">
 						T Probabilities
 					</button>
 				</div>
 			</div>
 		</div>
-	</div>
+
 
 	<div id="TwoCat" class="w3-container vType" style="display:none">
 		<span onclick="this.parentElement.style.display='none'" class="w3-button w3-large w3-display-bottomright">Back</span>
 		<div class="w3-display-container w3-white" style="height:30px;">
 			<div class="w3-bar w3-light-blue w3-card-2 w3-left-align w3-large w3-mobile w3-display-topmiddle">
-				<button class="w3-bar-item w3-button w3-hover-white w3-mobile" onclick="choosePage('TestEstC2')">
+				<button class="w3-bar-item w3-button w3-hover-white w3-mobile"
+				onclick="vbleChoice ='c2'; inference =  'test_est' ">
 					Test/Estimate
 				</button>
-				<button class="w3-bar-item w3-button w3-hover-white w3-mobile" onclick="choosePage('Ztable2')">
+				<button class="w3-bar-item w3-button w3-hover-white w3-mobile"
+				onclick=" vbleChoice ='c2'; inference =  'ztable'">
 					Normal Probabilities
 				</button>
 			</div>
@@ -199,13 +236,16 @@
 		<span onclick="this.parentElement.style.display='none'" class="w3-button w3-large w3-display-bottomright">Back</span>
 		<div class="w3-display-container w3-white" style="height:50px;">
 			<div class="w3-bar w3-light-blue w3-card-2 w3-left-align w3-large w3-mobile w3-display-topmiddle">
-				<button class="w3-bar-item w3-button w3-hover-white w3-mobile" onclick="choosePage('TestEstQ2')">
+				<button class="w3-bar-item w3-button w3-hover-white w3-mobile"
+				onclick=" vbleChoice ='q2'; inference = 'test_est'">
 					Test/Estimate
 				</button>
-				<button class="w3-bar-item w3-button w3-hover-white w3-mobile" onclick="choosePage('RegressionDemo')">
+				<button class="w3-bar-item w3-button w3-hover-white w3-mobile"
+				onclick=" vbleChoice ='q2'; inference = 'RegressionDemo' ">
 					Regression Demo
 				</button>
-				<button class="w3-bar-item w3-button w3-hover-white w3-mobile" onclick="choosePage('Ttable2')">
+				<button class="w3-bar-item w3-button w3-hover-white w3-mobile"
+				onclick="vbleChoice ='q2'; inference =  'ttable'">
 					T Probabilities
 				</button>
 			</div>
@@ -216,45 +256,57 @@
 		<span onclick="this.parentElement.style.display='none'" class="w3-button w3-large w3-display-bottomright">Back</span>
 		<div class="w3-display-container w3-white" style="height:50px;">
 			<div class="w3-bar w3-light-blue w3-card-2 w3-left-align w3-large w3-mobile w3-display-topmiddle">
-				<button class="w3-bar-item w3-button w3-hover-white w3-mobile" onclick="choosePage('TestEstC1Q1')">
+				<button class="w3-bar-item w3-button w3-hover-white w3-mobile"
+				onclick=" vbleChoice ='c1q1'; inference = 'test_est' ">
 					Test/Estimate
 				</button>
-				<button class="w3-bar-item w3-button w3-hover-white w3-mobile" onclick="choosePage('Ttable3')">
+				<button class="w3-bar-item w3-button w3-hover-white w3-mobile"
+				onclick=" vbleChoice ='c1q1'; inference = 'ttable' ">
 					T Probabilities
 				</button>
 			</div>
 		</div>
 	</div>
+</div>
 
-	<script>
-function w3Open() {
-  document.getElementById("main").style.marginLeft = "25%";
-	document.getElementById("mySidebar").style.width = "25%";
-	document.getElementById("mySidebar").style.display = "block";
-	//document.getElementById("openNav").style.display = 'none';
-}
 
-function w3Close() {
-	document.getElementById("main").style.marginLeft = "0%";
-	document.getElementById("mySidebar").style.display = "none";
+	<!-- **************************************************
+				MAIN BODY
+	*****************************************************************
 
-	//document.getElementById("openNav").style.display = "inline-block";
-}
+	1) Test or Estimate:
+	-->
+<div id="TestEst" class="w3-container Page" style="display:none">
+  <h4 id = "testEstHeader"> Test/Estimate </h4>
+  <div id = "dataInSummary" class="w3-container"  style="display:none">
+  	 Data Input
+  </div>
+  <div  id = "inferenceChoices" class="w3-container" style="display:none">
+     Choose Inference
+  </div>
+	<div id = "inferenceOutput" class="w3-container"   style="display:none">
+		 Inference Output
+	</div>
 
-function actionsFunc(actns) {
-  var x = document.getElementById(actns);
-  if (x.className.indexOf("w3-show") == -1) {
-	  x.className += " w3-show";
-		x.previousElementSibling.className += " w3-blue";
-	} else {
-		x.className = x.className.replace(" w3-show", "");
-		x.previousElementSibling.className = x.previousElementSibling.className.replace(" w3-blue", "");
-	}
-}
-</script>
+</div>
 
-	<div id="Info" class="w3-container vType" style="display:none">
-		<span onclick="this.parentElement.style.display='none'" class="w3-button w3-large w3-display-bottomright">Back</span>
+	<!-- 2)  run a Demo -->
+
+<div id="Demo" class="w3-container Page" style="display:none">
+  <h4 id = "demoHeader"> Demonstration </h4>
+   <div id = "demoPlot1" class = "w3-container" style = "display:none">
+			demo plot 1
+   </div>
+   <div id = "demoPlot2" class = "w3-container" style = "display:none">
+			demo plot 2
+   </div>
+
+</div>
+
+<!-- 3) Info -- About spintroStats -->
+
+	<div id="Info" class="w3-container Page" style="display:none"
+	onclick="this.style.display='none'" >
 		<h3>What Is SpIntro Stats? </h3>
 		<p>
 			SpIntro Stats is an open project to provide a set of simulation web apps for introductory statistics.
@@ -266,57 +318,68 @@ function actionsFunc(actns) {
 			We hope users find it useful, but no explicit or implicit warrantee is made for accuracy of results.
 			<br>
 			For our discussion group see <a href='https://groups.google.com/forum/#!forum/spintro-stats'> the spintro-stats </a> google group
-			and our code is available as a <a href='https://github.com/MTstateIntroStats/SpIntro-Stats'> github repository </a>
+			and our code is available as a <a href='https://github.com/jimrc/jSpintroStats'> github repository </a>
 		</p>
+		Click to return.
 	</div>
 
-	<script>
-		function openVble(vbleName) {
-			var i,
-				y = document.getElementsByClassName("Page"),
-				x = document.getElementsByClassName("vType");
-			for (i = 0; i < x.length; i++) {
-				x[i].style.display = "none";
-			}
-			for (i = 0; i < y.length; i++) {
-				y[i].style.display = "none";
-			}
-			document.getElementById(vbleName).style.display = "block";
-			w3Close();
-		}
 
-		function choosePage(page) {
-			var i,
-				x = document.getElementsByClassName("Page");
-			for (i = 0; i < x.length; i++) {
-				x[i].style.display = "none";
-			}
-			document.getElementById(page).style.display = "block";
-			w3Close();
+<!-- 4)  a probability Table -->
+<div id="Table" class="w3-container Page" style="display:none">
+  <h4 id = "probTableHeader"> Standard Normal Probabilities  </h4>
+   <div id = "tableInputs" class = "w3-container" style = "display:none">
 
-		}
+			 <h3>Compute cutoffs or probabilities. &nbsp; &nbsp; &nbsp; &nbsp;
+			 <button onclick="document.getElementById('ZinfoModal').style.display='block'" class="w3-button w3-blue w3-medium w3-round-xlarge">
+				 Click for more information
+			 </button></h3>
 
-		function closePages() {
-			var i,
-				x = document.getElementsByClassName("Page");
-			for (i = 0; i < x.length; i++) {
-				x[i].style.display = "none";
-			}
-		}
+		 <div id="probModal" class="w3-modal">
+			 <div class="w3-modal-content">
+				 <div class="w3-container">
+					 <span onclick="document.getElementById('probModal').style.display='none'"
+					  class="w3-button w3-display-topright">&times;</span>
+						<div id = "probModalText">
+					 <p>
+						 Input a probability between 0 and 1 to get back a cutoff Z score.
+					 </p>
+					 <p>
+						 Input a Z score (positive or negative) to get back a probability (area under the curve).
+					 </p>
+					 </div>
+				 </div>
+			 </div>
+		 </div>
+		 <br>
 
-		function closeCat1() {
-			document.getElementById('cat1MoreSims').style.display = 'none';
-			document.getElementById('cat1OutputResults').style.display = 'none';
-		}
-	</script>
 
-	<!-- ######- **************************************************
 
-	#####################- One Categorical Actions  ###############
-	*****************************************************************
-	*
-	1) Test or Estimate:
-	-->
+		 <div class="w3-form w3-cell-row w3-mobile" id="Z1inputs">
+			 <div class="w3-cell w3-mobile">
+				 Probability: &nbsp; &nbsp;
+				 <br>
+				 <input class="w3-input w3-cell w3-border w3-mobile w3-margin-left w3-padding-large" style="width:25%; float:left;" type="text" id="pInput" value="" onchange="changed = 'P'; ">
+			 </div>
+			 <div class="w3-cell w3-mobile">
+				 OR
+			 </div>
+			 <div class="w3-cell w3-mobile">
+				 Standardized Value:
+				 <br>
+				 <input class="w3-input  w3-cell w3-border w3-mobile w3-padding-large" style="width:25%;" type="text" id="zInput" value="" onchange=" changed = 'Z'; ">
+			 </div>
+		 </div>
+		 <br>
+	  </div>
+	  <div id = "probPlot" class = "w3-container" style = "display:none">
+	 			 <h3> Fill in Probability or Z-score, then click the desired area below:</h3>
+		 <div class="w3-container w3-mobile" id="zPlotGoesHere"></div>
+		 <script type="text/javascript" src="zplot.js"></script>
+	    </div>
+	 </div>
+
+ <!--  End of 4 new page formats --
+   --  Below are the old-style pages  -->
 
 	<div id="TestEstC1" class="w3-container Page" style="display:none">
 
@@ -664,61 +727,6 @@ function actionsFunc(actns) {
 	6) Z Table:
 	// ToDo:  format output better in the svg?
 	-->
-	<div id="Ztable" class="w3-container Page" style="display:none">
-
-		<h3>Compute cutoffs or probabilities. &nbsp; &nbsp; &nbsp; &nbsp;
-			<button onclick="document.getElementById('ZinfoModal').style.display='block'" class="w3-button w3-blue w3-medium w3-round-xlarge">
-				Click for more information
-			</button></h3>
-
-		<div id="ZinfoModal" class="w3-modal">
-			<div class="w3-modal-content">
-				<div class="w3-container">
-					<span onclick="document.getElementById('ZinfoModal').style.display='none'" class="w3-button w3-display-topright">&times;</span>
-					<p>
-						Input a probability between 0 and 1 to get back a cutoff Z score.
-					</p>
-					<p>
-						Input a Z score (positive or negative) to get back a probability (area under the curve).
-					</p>
-				</div>
-			</div>
-		</div>
-		<br>
-
-		<script>
-			// Get the modal
-			var Zmodal = document.getElementById('ZinfoModal');
-
-			// When the user clicks anywhere outside of the modal, close it
-			window.onclick = function(event) {
-				if (event.target == Zmodal) {
-					Zmodal.style.display = "none";
-				}
-			}
-		</script>
-
-		<div class="w3-form w3-cell-row w3-mobile" id="Z1inputs">
-			<div class="w3-cell w3-mobile">
-				Probability: &nbsp; &nbsp;
-				<br>
-				<input class="w3-input w3-cell w3-border w3-mobile w3-margin-left w3-padding-large" style="width:25%; float:left;" type="text" id="pInput" value="" onchange="changed = 'P'; ">
-			</div>
-			<div class="w3-cell w3-mobile">
-				OR
-			</div>
-			<div class="w3-cell w3-mobile">
-				Standardized Value:
-				<br>
-				<input class="w3-input  w3-cell w3-border w3-mobile w3-padding-large" style="width:25%;" type="text" id="zInput" value="" onchange=" changed = 'Z'; ">
-			</div>
-		</div>
-		<br>
-		<h3> Fill in Probability or Z-score, then click the desired area below:</h3>
-		<div class="w3-container w3-mobile" id="zPlotGoesHere"></div>
-		<script type="text/javascript" src="zplot.js"></script>
-
-	</div>
 
 	<!-- ************************************************************
 	######-  One Quantitative Actions  ########################
@@ -909,8 +917,7 @@ function actionsFunc(actns) {
 			</form>
 		</div>
 		<script type="text/javascript" src="boot.js"></script>
-		<!--   <span onclick="openVble('BootDemo')" class="w3-button w3-large w3-display-bottomright">Back</span>
-		-->
+
 	</div>
 
 	<!-- ######-  One Quantitative Actions
@@ -1172,9 +1179,7 @@ function actionsFunc(actns) {
 		<script type="text/javascript" src="hypergeometric-random/hyperGeom.js"></script>
 
 	</div>
-	<!--
-	span onclick="openVble('TestEstC2')" class="w3-button w3-large w3-display-bottomright">Back</span
-	-->
+
 
 	<!-- ######-  Two Categorical Actions
 	2) Z Table
@@ -1183,28 +1188,7 @@ function actionsFunc(actns) {
 	TODO:  if a later input is of a different type, earlier input should disappear
 	-->
 
-	<div id="Ztable2" class="w3-container Page" style="display:none">
-		<div class=w3-container>
-			<h3>Compute probabilities or cutoffs. </h3>
-		</div>
-		<div class="w3-form w3-quarter">
-			<input class="w3-input w3-border" type="text" name="cat2_p_txt" placeholder="Probability" onchange="var z = document.write(computeZcrit('cat2_p_txt', 'cat2_area');)">
-			<!--  this throws an ERROR - bad value -->
 
-			<Input class="w3-input w3-border" type="text" name="cat2_z_txt" placeholder="Standardized Value">
-			<br>
-			<select class="w3-select" name="cat2_area">
-				<option value="" disabled selected>Which area?</option>
-				<option value="L">Lower</option>
-				<option value="U">Upper</option>
-				<option value="E">Extremes</option>
-				<option value="C">Center</option>
-			</select>
-		</div>
-
-		<span onclick="openVble('Ztable2')" class="w3-button w3-large w3-display-bottomright">Back</span>
-
-	</div>
 
 	<!-- ************************************************************
 	######-  Two Quantitative Actions ########################
@@ -1355,29 +1339,6 @@ function actionsFunc(actns) {
 	mostly works, but output doesn't show nicely in the svg
 	-->
 
-	<div id="Ttable2" class="w3-container Page" style="display:none">
-		<div class=w3-container>
-			<h3>Compute probabilities or cutoffs. </h3>
-			<div class="w3-form w3-quarter">
-				<input class="w3-input w3-border" type="text" name="q2_p_txt" placeholder="Probability" onchange="var z = document.write(computeZcrit('q2_p_txt', 'q2_area');)">
-				<!--  this throws an ERROR - bad value -->
-
-				<Input class="w3-input w3-border" type="text" name="q2_t_txt" placeholder="Standardized Value">
-				<br>
-				<Input class="w3-input w3-border" type="text" name="q2_tdf_txt" placeholder="DF">
-				<br>
-				<select class="w3-select" name="q2_area">
-					<option value="" disabled selected>Which area?</option>
-					<option value="L">Lower</option>
-					<option value="U">Upper</option>
-					<option value="E">Extremes</option>
-					<option value="C">Center</option>
-				</select>
-			</div>
-		</div>
-		<span onclick="openVble('TwoQuant')" class="w3-button w3-large w3-display-bottomright"></span>
-
-	</div>
 
 	<!-- ************************************************************
 	######-  One Categorical, One Quantitative Actions ######-
@@ -1542,8 +1503,7 @@ function actionsFunc(actns) {
 				</select>
 			</div>
 		</div>
-		<!--      <span onclick="openVble('Ttable3')" class="w3-button w3-large w3-display-bottomright">Back</span>
-		-->
+
 	</div>
 
 </body>

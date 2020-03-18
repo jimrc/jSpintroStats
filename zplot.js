@@ -4,7 +4,7 @@ var changed = "N",
     p,
     plusminus = "+/-",
     pText,
-    z = jStat.seq(-3.2,3.2, 303),
+    z = jStat.seq(-3.2, 3.2, 303),
     z1,
     z2,
     zText;
@@ -25,6 +25,15 @@ var pdfline = d3.line()
     .x(function(d) { return xRange(d); })
     .y(function(d) { return yRange(jStat.normal.pdf(d, 0, 1)); });
 
+
+			// Get the modal
+var Zmodal = document.getElementById('ZinfoModal');
+			// When the user clicks anywhere outside of the modal, close it
+			window.onclick = function(event) {
+				if (event.target == Zmodal) {
+					Zmodal.style.display = "none";
+				}
+}
 
 var Zsvg = d3.select("#zPlotGoesHere")
      .append("svg")
