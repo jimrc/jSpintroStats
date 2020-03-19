@@ -1,3 +1,4 @@
+
 // subroutine to make a gameboard spinner in D3 javascript.
 // Inputs:
 //     category labels and relative probabilities
@@ -5,7 +6,7 @@
 // TODO:	change color on text labels of each spin
 // TODO:  colors 3 and 4 are too similar. Use color brewer?
 // TODO:  zap old summary plot when anything above changes.
-/*eslint quotes: [2, "single", "avoid-escape"]*/
+/*eslint quotes: [2, 'single', 'avoid-escape']*/
 
 var margin = [{ top: 50 }, { right: 20 }, { bottom: 50 }, { left: 20 }],
   swidth = Number(400), // - margin.right - margin.left,
@@ -16,15 +17,15 @@ var margin = [{ top: 50 }, { right: 20 }, { bottom: 50 }, { left: 20 }],
   //circles = [],
   colors = [],
   //color = d3.scale.ordinal()
-  //    .range(["#a05d56","#ff8c00","#d0743c","#98abc5", "#8a89a6",
-  //            "#7b6888", "#6b486b" ]),
+  //    .range(['#a05d56','#ff8c00','#d0743c','#98abc5', '#8a89a6',
+  //            '#7b6888', '#6b486b' ]),
   //dColor = spinData.drawColor,
   hideSpins = false,
   nCat,
   nSpin,
   spacing = 10,
   spinDiv = d3.select('#spinSVGgoesHere'),
-  // spinSmryDiv = d3.select("#spinSmrySVGdiv"),
+  // spinSmryDiv = d3.select('#spinSmrySVGdiv'),
   pieData = [],
   spinData = [],
   spinCumProb = [], // cumulative probabilities
@@ -43,11 +44,6 @@ var svgSpin = spinDiv
   .append('g')
   .attr('transform', 'translate(' + (+r + 10) + ',' + (+r + 10) + ')');
 
-//   var svgSpinSmry = spinSmryDiv.append("svg")             // 440w x 440h
-//      .attr("width",  (440))
-//      .attr("height", (200))
-//      .append("g")
-//      .attr("transform", "translate(" + (+r +10) + ","+ ( +r+10) + ")");
 
 var arrowData = [
   { x: 4, y: 78 },
@@ -69,7 +65,7 @@ var lineFunction = d3
   })
   .y(function(d) {
     return d.y;
-  }); //.interpolate("linear");
+  }); //.interpolate('linear');
 // now draw the pointer
 
 function drawDonut() {
