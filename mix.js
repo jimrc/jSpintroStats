@@ -33,9 +33,7 @@
         nMix,
         spacing =12;
 
-   var svgMix = mixDiv.append("svg")
-      .attr("width",  w)
-      .attr("height", h)
+   var mixSVG = d3.select('#mixSVG')
       .append("g")
       .attr("transform", "translate(" +  (w/2 -20) + "," + (h/2 ) +")");
 
@@ -44,7 +42,7 @@
          .y(function(d) { return d.y; })
          ;//.interpolate("linear");
        // now draw the container
-   var box = svgMix.append("path")
+   var box = mixSVG.append("path")
          .attr("d", lineFunction(boxData))
          .attr("stroke", "blue")
          .attr("stroke-width", 2)
@@ -117,7 +115,7 @@ function initialMixState(){
     					r: mixRadius - .75} );
     	}
      }
-     mixCircles = svgMix.selectAll("f.circle")
+     mixCircles = mixSVG.selectAll("f.circle")
         .data(balls);
      mixCircles.enter()
      	.append("circle")
@@ -333,7 +331,7 @@ function showmixSequence(mixData){
 
 	// create new circles for the selected sample.
 	// hide them by setting radius to zero
-	mixDraws = svgMix.selectAll("g.circle")
+	mixDraws = mixSVG.selectAll("g.circle")
          .data(mixData[0]);
     mixDraws.enter().append("circle")
          .attr("fill", function(d, i){ return colors[d.group]; } )
@@ -383,7 +381,7 @@ function showmixSequence(mixData){
 		}
 	};
 
-     mixText = svgMix.selectAll("text")
+     mixText = mixSVG.selectAll("text")
          .data(mixData[0]);
      mixText.enter().append("text")
          .attr("x", w/2 - 2*mixRadius ) //

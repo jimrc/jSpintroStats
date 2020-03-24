@@ -37,10 +37,8 @@ var margin = [{ top: 50 }, { right: 20 }, { bottom: 50 }, { left: 20 }],
   spinRepResults = [],
   spinStopRule;
 
-var svgSpin = spinDiv
-  .append('svg') // 440w x 440h
-  .attr('width', 440)
-  .attr('height', 300)
+
+var svgSpin = d3.select('#spinSVG')
   .append('g')
   .attr('transform', 'translate(' + (+r + 10) + ',' + (+r + 10) + ')');
 
@@ -254,7 +252,7 @@ function spinMore(nDraws) {
 //  end of spinMore
 
 function spinsTill1() {
-  var spinStopper = document.getElementById('spinTil').value,
+  var spinStopper = document.getElementById('spin1').value,
     angle,
     i = 0,
     spinColor = -1,
@@ -449,32 +447,39 @@ function showSpinSequence(spinData) {
 }
 
 function hideShowSpins() {
-  hideSpins = !hideSpins;
+  hideSpins = !hideSpins;  // toggle visiblity on/off
   var xDiv = document.getElementById('spinSVGgoesHere');
-
   xDiv.style.display = hideSpins ? 'none' : 'block';
 }
 
 function spinRepeat(times) {
   var i, thisProb;
 
-  if (spinStopRule === 'Fixed') {
-    thisProb = spinProb[0];
-    spinRepResults = spinRepResults.concat(rbinom(nSpin, thisProb, times));
-    // track  number of first type?
-  } else if (spinStopRule === 'OneOfOneType') {
-    // track number of spins needed
-    thisProb = spinProb[spinMatch];
-    spinRepResults[0] = spinData.length;
-    for (i = 0; i < times; i++) {
-      spinRepResults.push(rgeom(thisProb));
+  switch (spinStopRule){
+    case 'Fixed' : {
+      thisProb = spinProb[0];
+      spinRepResults = spinRepResults.concat(rbinom(nSpin, thisProb, times));
+      // track  number of first type?
+      break;
     }
-  } else if (spinStopRule === 'OneOfEach') {
-    // track number of spins needed
-    spinRepResults[0] = spinData.length;
-    spinRepResults = spinRepResults.concat(spins2get1ofEach(times));
-  } else {
-    console.log('Bad option for spinStopRule');
+    case 'OneOfOneType': {
+      // track number of spins needed
+      thisProb = spinProb[spinMatch];
+      spinRepResults[0] = spinData.length;
+      for (i = 0; i < times; i++) {
+        spinRepResults.push(rgeom(thisProb));
+      };
+      break;
+    }
+    case 'OneOfEach': {
+      // track number of spins needed
+      spinRepResults[0] = spinData.length;
+      spinRepResults = spinRepResults.concat(spins2get1ofEach(times));
+      break;
+    }
+    default: {
+      console.log('Bad option for spinStopRule');
+    }
   }
   //plot spinResults as a histogram
 }

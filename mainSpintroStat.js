@@ -1,15 +1,10 @@
-//  javascript to setup main index.html closePages
+//  javascript to setup main index.html
 var circleColors = ["steelblue", "red"],
     demo,
     table,
     vbleChoice,
     inference;
 //    jsinput = 'spin.js',
-var  script = document.createElement('script');
-//    script.src = jsinput;
-//    script.addEventListener('load', function() {
-        // at this moment MyItemData variable is accessible as MyItemData or window.MyItemData
-//    });
 
 
 
@@ -97,11 +92,121 @@ function testEstFn(vble){
   switch(vble){
       case 'cat1' : {
         hdr = "Estimate a single proportion or test its value.";
-        dataInput = "1 Categorical Data Input";
-        infChoice = "Estimate or Test Proportion";
-        infPlot = "";
-        results = "";
-        break;
+        dataInput =
+        " 	<div class='w3-container' id='cat1DataIn-Summary'>"+
+        " 		<div class='w3-cell-row w3-mobile'>"+
+        " 			<div class='w3-cell' style='width:40%'>"+
+        " 				<h4> Enter Data</h4>"+
+        " 					<table class='w3-table w3-border'>"+
+        "   						<tr> <th>Label</th> <th>Count</th>		</tr>"+
+        "         			<tr> <td>	<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat1Label1'"+
+        "         								placeholder='Success' >			</td>"+
+        "         					<td><input class='w3-input  w3-mobile w3-pale-yellow' type='text' id='cat1N1'"+
+        "                         placeholder=' '  " +
+        "                      onchange=\" document.getElementById('cat1SummaryText').style.display = 'none';"+
+        "         								document.getElementById('cat1SummarySVGgoesHere').style.display = " +
+        "                         'none';\">  </td>  	</tr>"+
+        "         			<tr> 	<td>	<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat1Label2'"+
+        "         								placeholder='Failure' >		</td>	"+
+        "         							<td>		<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat1N2'"+
+        "        								placeholder=' ' "+
+        "                      onchange=\"document.getElementById('cat1SummaryText').style.display = 'none';"+
+        "        								 document.getElementById('cat1SummarySVGgoesHere').style.display = "  +
+        "                         'none';\"> 	</td>		</tr>"+
+        "          					</table>"+
+        "          				</div>"+
+        "          				&nbsp; &nbsp;"+
+        "          				<div class='w3-cell' style='width:50%; display:block'>"+
+        "          					<button onclick = 'summarizeP1()'>   &nbsp &nbsp  Summary</button>"+
+        "          					<div class='w3-container w3-cell w3-mobile' id='cat1SummaryText' style='display:none'>"+
+        "          						p&#770; ="+
+        "          						&nbsp; &nbsp;"+
+        "          						se(p&#770;) ="+
+        "          					</div>"+
+        "          					<div class='w3-container w3-cell w3-mobile' id='cat1SummarySVGgoesHere'></div>"+
+        "          				</div>"+
+        "          			</div>"+
+        "          			<br>"+
+        "          		</div>";
+        infPlot = " ";
+        infChoice = "		<!--   Select Your Inference                  -->"+
+        "  		<div class='w3-container w3-mobile' id='c1SelectInf'>"+
+        "  			Either"+
+        "  			<button id='EstimateP1' onclick='c1Inference = \"estimate\";"+
+        "  			c1CIdata = estimateP1();"+
+        "  			c1InfOutput = discreteChart(c1CIdata, cat1InfSVG, cat1CIinteract);"+
+        "  			' class='w3-button w3-pale-blue w3-medium w3-round-xlarge'>"+
+        "  				&nbsp; Estimate a true proportion."+
+        "  			</button>"+
+        "  			&nbsp; OR &nbsp;"+
+        "  			<button id='TestP1' onclick='c1Inference = \"test\";"+
+        "  			c1Tstdata = testP1('undefined');"+
+        "  			c1InfOutput = discreteChart(c1Tstdata, cat1InfSVG, cat1TestInteract );"+
+        "  			' class='w3-button w3-pale-blue w3-medium w3-round-xlarge'>"+
+        "  				&nbsp; Test for a particular value."+
+        "  			</button>"  +
+        "  		</div>"+
+        "  		<br>"+
+        "  		<!--  Inputs for each inference  (before plotting)  -->"+
+        "  		<div id='cat1ConfLvlInpt' style='width: 70%; display: none'>"+
+        "  			<h4>Estimate True Proportion with a Confidence Interval</h4>"+
+        "  			Choose a Confidence Level:"+
+        "  		</div>"+
+        "  		<div id='cat1TestInpt1' class='w3-cell-row w3-mobile' style='width: 70%; display: none'>"+
+        "  			<div class='w3-cell  w3-mobile' style='width: 35%'>"+
+        "  				&nbsp; &nbsp; &nbsp; Test: Is the true proportion = &nbsp;"+
+        "  			</div>"+
+        "  			<div class='w3-cell  w3-mobile' style='width: 20%'>"+
+        "  				<input class='w3-input w3-card w3-mobile w3-pale-yellow' type='text' id='cat1trueP'"+
+        "           placeholder='0.625'"+
+        "  				onchange=' svgCat1.selectAll('g').remove();"+
+        "  				document.getElementById('cat1Output').style.display = 'none';"+
+        "  				testP1(noChoice)'>"+
+        "  			</div>"+
+        "  			<div class='w3-cell  w3-mobile' style='width: 30%'>"+
+        "  			</div>"+
+        "  			<div id='cat1TestInpt2' class='w3-cell-row w3-mobile' style=' display: none'>"+
+        "  				<div class='w3-cell' style='width: 30%'>"+
+        "  					Stronger evidence is a proportion"+
+        "  				</div>"+
+        "  				<div class='w3-cell' style='width: 40%'>"+
+        "  					<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='cat1Extreme'"+
+        "  					     onchange='cat1TestUpdate()'>"+
+        "  						<option value='lower'>Less Than or =</option>"+
+        "  						<option value='both' selected>As or More Extreme Than</option>"+
+        "  						<option value='upper'>Greater Than or =</option>"+
+        "  					</select>"+
+        "  				</div>"+
+        "  				<div class='w3-cell' style='width: 20%'>"+
+        "  					&nbsp;&nbsp; p&#770; (from above)"+
+        "  				</div>"+
+        "  			</div>"+
+        "  		</div>";
+
+        results =
+        "  		<div id='cat1Output' style='display: none'>"+
+        "  			<!--  Show Inference Plot -->"+
+        "  			<div class='w3-container w3-cell w3-mobile' id='cat1Inference' style='width:420px'>"+
+        "   					<!--  Inference plot goes here for CI or Test of 1 proportion -->"+
+        "  					<svg id='cat1InfSVG' height='300px' width='400px'></svg>"+
+        "  			</div>"+
+        "  			<!-- Show Results in Text-->"+
+        "  			<div id='cat1Results' class='w3-display-container' style='width:95%; display:none'></div>"+
+        "  			<!-- Input for more simulations -->"+
+        "  			<div id='cat1MoreSims' style='width:360px; display:none'>"+
+        "  				<div class='w3-cell-row'>"+
+        "  					<div class='w3-cell  w3-mobile' style='width: 20%'>			Add		</div>"+
+        "  					<div class='w3-cell  w3-mobile' style='width: 20%'>"+
+        "  						<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat1More'"+
+        "               placeholder='0' onchange='cat1MoreSimFn()'>"+
+        "  					</div>"  +
+        "  					<div class='w3-cell  w3-mobile' style='width: 40%'>"+
+        "  						&nbsp; simulated points"+
+        "  					</div>"+
+        "  				</div>"+
+        "  			</div>"+
+        "  		</div>  ";
+        break;   // End of c1Output
       }
       case 'quant1' :  {
         hdr = "Estimate a single mean or test its value.";
@@ -148,6 +253,7 @@ function testEstFn(vble){
 
 function demoFn(demo){
   var hdr,
+    demoDivs =[],
     div1,
     div2,
     div3,
@@ -157,85 +263,262 @@ function demoFn(demo){
     block3 = document.getElementById("demoDiv3");
  switch(demo){
    case 'Spinner': {
-     hdr = 'Spinner Setup:';
-     div1 =  "Type labels in the first box separated by commas or tabs " +
-   "<br> and the same number of percentages or probability weights in the second box. " +
-    "<div class='w3-form w3-cell-row w3-mobile' id='spinInputs'> " +
-   "  <div class='w3-cell w3-mobile' style='width:40%'> " +
-   "    Labels: " +
-   "    <input class='w3-input w3-border w3-mobile w3-pale-yellow' type='text' id='spinCats'  " +
-   "    style='display:block'> " +
-   "  </div> " +
-   "  <div class='w3-cell w3-mobile'></div> " +
-   "  <div class='w3-cell w3-mobile' style='width:40%'> " +
-   "    Probability weights: " +
-   "    <input class='w3-input w3-border w3-mobile w3-pale-yellow' type='text' id='spinProbs'  " +
-   "    style='display:block'> " +
-   "  </div> " +
-   "</div> ";
-     div2 =  "Stop after: " +
-   "<div class='w3-form w3-cell-row w3-mobile' id='spinStops'> " +
-   "  <div class='w3-cell w3-mobile' style='width:30%'> " +
-   "    <input class='w3-input w3-border w3-mobile w3-pale-blue ' type='text' id='nSpins'  " +
-   "    placeholder='This many spins: ' onchange='spinNSpins();' style='display:block'> " +
-   "  </div>  &nbsp; or &nbsp; " +
-   "  <div class='w3-cell w3-mobile' style='width:30%'> " +
-   "    <input class='w3-input w3-border w3-mobile w3-pale-blue ' type='text' id='spinTil'  " +
-   "    placeholder='Getting one of this type: ' onchange='spinsTill1();' style='display:block'> " +
-   "  </div> &nbsp; or &nbsp;" +
-   "  <div class='w3-cell w3-mobile' style='width:30%'> " +
-    "    <input class='w3-input w3-border w3-mobile w3-pale-blue ' type='text' id='spinTil'  " +
-   "    placeholder='Getting one of EACH type: ' onclick='spinsTillAll();' style='display:block'> " +
-   "  </div> " +
-   "</div> " +
-   "<br> ";
-   div3 =    "<div class='w3-form w3-cell-row w3-mobile' style='display:block'> " +
-        "<div class='w3-container w3-cell w3-mobile' id='spinSVGgoesHere'> " +
-        "<svg  id='spinSVG' height=300 width=440></svg> " +
-        "</div> " +
-        "<div class='w3-cell w3-mobile'> " +
-        "  <button onclick='hideShowSpins()' class='w3-button w3-pale-green w3-medium w3-round-xlarge'> " +
-        "    &nbsp; Hide / Show " +
-        "  </button> " +
-        "</div> " +
-      "<div class='w3-form w3-cell-row w3-mobile' style='display:none' id='repeatSpins'> " +
-        "<div class='w3-btn w3-cell'></div> " +
-        "<form class='w3-cell w3-card'> " +
-          "<h4>Repeat Process:</h4> " +
-          "<div class='w3-bar'> " +
-            "<input class='w3-radio' value=100 type='radio' name='spinReps'  " +
-            "onClick='spinRepeat(100);  dotChart1(spinRepResults );' /> " +
-            "<label>100</label> " +
-            "<input class='w3-radio' value=1000 type='radio' name='spinReps'  " +
-            "onClick='spinRepeat(1000); dotChart1(spinRepResults);' checked='checked' /> " +
-            "<label>1000</label> " +
-          "  <input class='w3-radio' value=5000 type='radio' name='spinReps'  " +
-            "onClick='spinRepeat(5000); dotChart1(spinRepResults);' /> " +
-          "  <label>5000</label> " +
-          "</div> " +
-        "</form> " +
-      "</div> " +
-      "<div class='w3-container w3-cell w3-mobile' id='spinSmrySVGdiv'> " +
-      "  <svg id='spinSmrySVG'></svg> " +
-      "</div> " +
-    "</div> "
+     hdr = 'Random sampling via a spinner';
+     demoDivs = spinDivs();
      break;
    }
    case 'Mixer': {
-     hdr = 'Mixer';
+     hdr = 'Random sampling by drawing balls from a box';
+     demoDivs = mixerDivs();
+
      break;
+   }
+   case 'CIdemo': {
+     hdr = "Demonstrate 'Confidence' in a Confidence Interval";
+     demoDivs = CIdemoDivs();
+
+        break;
+   }
+   case 'lurkingC1': {
+     	hdr = 'Demo of the effects of a categorical lurking variable on proportion estimates.'
+      demoDivs = ["  ", "  ", "  "];
+      break;
+   }
+   case 'lurkingQ1': {
+     	hdr = 'Demo of the effects of a quantitative lurking variable on mean estimates.'
+      demoDivs = ["  ", "  ", "  "];
+      break;  // power  bootstrap sampling regression
+   }
+   case 'power': {
+     	hdr = 'Visual assessment of the power of a T test to find a difference in means.'
+      demoDivs = ["  ", "  ", "  "];
+      break;
+   }
+   case 'bootstrap': {
+     	hdr = 'Demo of the process of bootstrapping a mean.'
+      demoDivs = ["  ", "  ", "  "];
+      break;
+   }
+   case 'sampling': {
+     	hdr = 'Demo of sampling.'
+      demoDivs = ["  ", "  ", "  "];
+      break;
+   }
+   case 'regression': {
+     	hdr = 'Demo of how regression might be influenced by changing one point.'
+      demoDivs = ["  ", "  ", "  "];
+      break;  // power  bootstrap sampling regression
    }
    default : {
      hdr = "Unknown Demo";
    }
  }
  title.innerHTML = hdr;
- block1.innerHTML = div1;
- block2.innerHTML = div2;
- block3.innerHTML = div3;
+ block1.innerHTML = demoDivs[0];
+ block2.innerHTML = demoDivs[1];
+ block3.innerHTML = demoDivs[2];
 }
 
 
 function tableFn(distn){
 
+}
+
+spinDivs = function(){
+ div1 =  "Type labels in the first box separated by commas or tabs " +
+"<br> and the same number of percentages or probability weights in the second box. " +
+"<div class='w3-form w3-cell-row w3-mobile' id='spinInputs'> " +
+"  <div class='w3-cell w3-mobile' style='width:40%'> " +
+"    Labels: " +
+"    <input class='w3-input w3-border w3-mobile w3-pale-yellow' type='text' id='spinCats'  " +
+"    style='display:block'> " +
+"  </div> " +
+"  <div class='w3-cell w3-mobile'></div> " +
+"  <div class='w3-cell w3-mobile' style='width:40%'> " +
+"    Probability weights: " +
+"    <input class='w3-input w3-border w3-mobile w3-pale-yellow' type='text' id='spinProbs'  " +
+"    style='display:block'> " +
+"  </div> " +
+"</div> ";
+ div2 =  "Stop after: " +
+"<div class='w3-form w3-cell-row w3-mobile' id='spinStops'> " +
+"  <div class='w3-cell w3-mobile' style='width:30%'> " +
+"    <input class='w3-input w3-border w3-mobile w3-pale-blue ' type='text' id='nSpins'  " +
+"    placeholder='This many spins: ' onchange='spinNSpins();' style='display:block'> " +
+"  </div>  &nbsp; or &nbsp; " +
+"  <div class='w3-cell w3-mobile' style='width:30%'> " +
+"    <input class='w3-input w3-border w3-mobile w3-pale-blue ' type='text' id='spin1'  " +
+"    placeholder='Getting one of this type: ' onchange='spinsTill1();' style='display:block'> " +
+"  </div> &nbsp; or &nbsp;" +
+"  <div class='w3-cell w3-mobile' style='width:30%'> " +
+"<button id='spinAllButton' onclick='spinsTillAll()' class='w3-button w3-pale-blue w3-medium  " +
+    "       w3-round-xlarge'> Getting one of EACH type:  </button> " +
+"  </div> " +
+"</div> " +
+"<br> ";
+div3 =    "<div class='w3-form w3-cell-row w3-mobile' style='display:block'> " +
+    "<div class='w3-container w3-cell w3-mobile' id='spinSVGgoesHere'> " +
+    "<svg  id='spinSVG' height=300 width=440></svg> " +
+    "</div> " +
+    "<div class='w3-cell w3-mobile'> " +
+    "  <button onclick='hideShowSpins()' class='w3-button w3-pale-green w3-medium w3-round-xlarge'> " +
+    "    &nbsp; Hide / Show " +
+    "  </button> " +
+    "</div> " +
+  "<div class='w3-form w3-cell-row w3-mobile' style='display:none' id='repeatSpins'> " +
+    "<div class='w3-btn w3-cell'></div> " +
+    "<form class='w3-cell w3-card'> " +
+      "<h4>Repeat Process:</h4> " +
+      "<div class='w3-bar'> " +
+        "<input class='w3-radio' value=100 type='radio' name='spinReps'  " +
+        "onClick='spinRepeat(100);  dotChart1(spinRepResults );' /> " +
+        "<label>100</label> " +
+        "<input class='w3-radio' value=1000 type='radio' name='spinReps'  " +
+        "onClick='spinRepeat(1000); dotChart1(spinRepResults);' checked='checked' /> " +
+        "<label>1000</label> " +
+      "  <input class='w3-radio' value=5000 type='radio' name='spinReps'  " +
+        "onClick='spinRepeat(5000); dotChart1(spinRepResults);' /> " +
+      "  <label>5000</label> " +
+      "</div> " +
+    "</form> " +
+  "</div> " +
+  "<div class='w3-container w3-cell w3-mobile' id='spinSmrySVGdiv'> " +
+  "  <svg id='spinSmrySVG'></svg> " +
+  "</div> " +
+"</div> ";
+return [div1, div2, div3];
+};
+
+mixerDivs = function(){
+  var div1, div2, div3;
+  div1 =
+    " 	<p>	Setup: Type as many labels in the first box, separated by commas, " +
+    " 		and numbers of balls for each label in the second box.	</p> " +
+    " 	<div class='w3-form w3-cell-row w3-mobile' id='mixInputs'> " +
+    " 		<div class='w3-cell w3-mobile' style='width:30%'> " +
+    " 			Labels: " +
+    " 			<input class='w3-input w3-border w3-mobile w3-pale-yellow' type='text' id='mixCats'  " +
+    "       style='display:block'> " +
+    " 		</div> " +
+    " 		<div class='w3-cell w3-mobile'></div> " +
+    " 		<div class='w3-cell w3-mobile' style='width:30%'> " +
+    " 			Numbers of balls: " +
+    " 			<input class='w3-input w3-border w3-mobile w3-pale-yellow' type='text' id='mixNs'  " +
+    "       style='display:block'> " +
+    " 		</div> " +
+    " 		<div class='w3-cell w3-mobile' style='width:40%'> " +
+    " 			Replace drawn balls? " +
+    " 			<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='mix_Replace'> " +
+    " 				<option value='yes'>Yes</option> " +
+    " 				<option value='no'>No</option> " +
+    " 			</select> " +
+    " 		</div> " +
+    " 	</div> "
+    div2 = " 	Stop after: " +
+    " 	<div class='w3-form w3-cell-row w3-mobile' id='mixStops'> " +
+    " 		<div class='w3-cell w3-mobile' style='width:30%'> " +
+    " 			<input class='w3-input w3-border w3-mobile w3-pale-blue ' type='text' id='nDraws'  " +
+    "       placeholder='This many draws:' onchange='mixNtimes()' style='display:block'> " +
+    " 		</div> " +
+    " 		&nbsp; or&nbsp; " +
+    " 		<div class='w3-cell w3-mobile' style='width:30%'> " +
+    "  			<input class='w3-input w3-border w3-mobile w3-pale-blue ' type='text' id='mixTil'  " +
+    "       placeholder='getting one of this type:' onchange='mixTill1()' style='display:block'> " +
+    " 		</div> " +
+    " 		<div class='w3-cell w3-mobile' style='width:30%'> " +
+    " 			<button id='mixAllButton' onclick='mixTillAll()' class='w3-button w3-pale-blue w3-medium  " +
+    "       w3-round-xlarge'> " +
+    " 				&nbsp; OR getting one of each type. " +
+    " 			</button> " +
+    " 		</div> " +
+    " 	</div> " +
+    " 	<br> " +
+    " 	<div class='w3-form w3-cell-row w3-mobile' style='display:block'> " +
+    " 		<div class='w3-container w3-cell w3-mobile' id='mixSVGgoesHere'></div> " +
+    "       <svg  id='mixSVG' height=300 width=440></svg> " +
+    " 		<div class='w3-cell w3-mobile'> " +
+    " 			<button onclick='hideShowMix()' class='w3-button w3-pale-green w3-medium w3-round-xlarge'> " +
+    " 				&nbsp; Hide / Show " +
+    " 			</button> " +
+    " 		</div> " +
+    " 	</div> " +
+    " 	<div class='w3-form w3-cell-row w3-mobile' style='display:none' id='repeatMix'> " +
+      " 	<div class='w3-btn w3-cell'></div> " +
+      " 	<form class='w3-cell w3-card'> " +
+      " 		<h4>Repeat Process:</h4> " +
+      " 		<div class='w3-bar'> " +
+      " 			<input class='w3-radio' value=100 type='radio' name='mixReps' onClick='mixRepeat(100);" +
+      "       dotChart1(mixRepResults, mixSmrySVG);' /> " +
+      " 			<label>100</label> " +
+      "    <input class='w3-radio' value=1000 type='radio' name='mixReps' onClick='mixRepeat(1000); " +
+      "       dotChart1(mixRepResults, mixSmrySVG);' checked='checked' /> " +
+      " 			<label>1000</label> " +
+      " 	<input class='w3-radio' value=5000 type='radio' name='mixReps' onClick='mixRepeat(5000); " +
+      "       dotChart1(mixRepResults, mixSmrySVG);' /> " +
+      " 			<label>5000</label> " +
+      " 		</div> " +
+    " 		</form> " +
+    " 	</div> "
+    div3 = " 	<div class='w3-container w3-cell w3-mobile' id='mixSmrySVGdiv'> " +
+    " 		<svg id='mixSmrySVG' height=300 width=400></svg> " +
+    " 	</div> " +
+  " 	</div>";
+return [div1, div2, div3];
+};
+
+CIdemoDivs = function(){
+  var div1, div2, div3;
+  div1 = 	"<div class=w3-container> "+
+     " 	<form class='w3-cell w3-card w3-padding-small'>" +
+       " 	<h4>Confidence Level</h4>" +
+       " 	<div class='w3-bar'>" +
+       " 		<input class='w3-radio' type='radio' name='CIdemo_conf' value='80%' " +
+       "     onClick='confidence = .80; drawCI(BootCount);'>" +
+         " 	<label>80%</label>" +
+         " 	<input class='w3-radio' type='radio' name='CIdemo_conf' value='90%' " +
+         "   onClick='confidence = .90; drawCI(BootCount);'>" +
+       " 		<label>90%</label>" +
+       " 		<br>" +
+         " 	<input class='w3-radio' type='radio' name='CIdemo_conf' value='95%' " +
+         "   onClick='confidence = .95; drawCI(BootCount);' checked='checked'>" +
+       " 		<label>95%</label>" +
+         " 	<input class='w3-radio' type='radio' name='CIdemo_conf' value='99%' " +
+         "   onClick='confidence = .99; drawCI(BootCount);'>" +
+         " 	<label>99%</label>" +
+         " </div>" +
+       " </form>" +
+       " <div class='w3-btn w3-cell '></div>" +
+       " <form class='w3-cell w3-card w3-padding-small' oninput='nn.value=parseInt(CIdemo_n.value)'>" +
+       " 	Sample Size: (number of spins)" +
+       " 	<div class='w3-bar'>" +
+       " 		20" +
+       " 		<input id='slide_CI_n' type='range' name='CIdemo_n' min='20' max='100' step='5' value='50' " +
+       "     onchange='updateCIdemo_n(this.value);' />" +
+       " 		100" +
+       " 		<br>" +
+       " 		n = <output name='nn' for='CIdemo_n'></output>" +
+       " 	</div>" +
+     " 	</form>" +
+     " 	<div class='w3-btn w3-cell'></div>" +
+     " 	<form class='w3-cell w3-card w3-padding-small' oninput='pp.value=CIdemo_p.value'>"  +
+     " 		<h4>True Proportion Successes:</h4>" +
+     " 		<div class='w3-bar'>" +
+     " 			0" +
+       " 		<input id='slide_CI_p' type='range' name='CIdemo_p' min='0' max='1' step='.05' value='.5' " +
+       "     onchange='updateCIdemo_p(this.value);' />" +
+       " 		1" +
+       " 		<br>" +
+       " 		p = <output name='pp' for='CIdemo_p'></output>" +
+       " 	</div>" +
+       " </form>" +
+     " </div>";
+     div2 = " ";
+     div3 = " ";
+return [div1, div2, div3];
+};
+
+genericDemoDivs = function(){
+  var div1, div2, div3;
+
+return [div1, div2, div3];
 }
