@@ -8,16 +8,16 @@
 <body>
 
 	<!-- Load javascript and data -->
-	<script type="text/javascript" src="./mainSpintroStat.js"></script>
-	<script type="text/javascript" src="./HelperPkgs/d3.v5.js"></script>
-	<script type="text/javascript" src="./HelperPkgs/alertify.min.js"></script>
-	<script type="text/javascript" src="./costs.js"></script>
-	<script type="text/javascript" src="./norms.js"></script>
+	<script  src="./mainSpintroStat.js"></script>
+	<script  src="./HelperPkgs/d3.v5.js"></script>
+	<script  src="./HelperPkgs/alertify.min.js"></script>
+	<script  src="./costs.js"></script>
+	<script  src="./norms.js"></script>
 	<!-- Load jStat  -->
-	<script type="text/javascript" src="HelperPkgs/jstat.js"></script>
-	<script type="text/javascript" src="HelperPkgs/papaparse.min.js"></script>
-	<script type="text/javascript" src="helpers.js"></script>
-	<script type="text/javascript" src="./rangeslide/dist/rangeslide.js"></script>
+	<script  src="HelperPkgs/jstat.js"></script>
+	<script  src="HelperPkgs/papaparse.min.js"></script>
+	<script  src="./rangeslide/dist/rangeslide.js"></script>
+	<script  src="helpers.js"></script>
 
 <!--  From riptutorial -->
 	 <script src="makeScatterPlot.js" ></script>
@@ -60,7 +60,7 @@
 				Mixer
 			</button>
 			<button class="w3-button w3-hover-white w3-mobile"
-			onclick="choosePage('Table'); tableFn( 'Z')">
+			onclick="choosePage('ZTable');">
 				Normal Prob's
 			</button>
 		</div>
@@ -92,7 +92,7 @@
 				Power
 			</button>
 			<button class=" w3-button w3-hover-white w3-mobile"
-			 onclick="choosePage('Table'); tableFn('T') ">
+			 onclick="choosePage('Ttable');">
 				T Prob's
 			</button>
 		</div>
@@ -107,7 +107,7 @@
 				Test/Estimate
 			</button>
 			<button class=" w3-button w3-hover-white w3-mobile"
-			  onclick=" choosePage('Table'); tableFn ('Z'); ">
+			  onclick=" choosePage('ZTable');">
 				Normal Prob's
 			</button>
 		</div>
@@ -126,7 +126,7 @@
 				Regression Demo
 			</button>
 			<button class=" w3-button w3-hover-white w3-mobile"
-			 onclick="choosePage('Table'); tableFn('T'); ">
+			 onclick="choosePage('Ttable'); ">
 				T Prob's
 			</button>
 		</div>
@@ -141,7 +141,7 @@
 				Test/Estimate
 			</button>
 			<button class=" w3-button w3-hover-white w3-mobile"
-			  onclick="choosePage('Table'); tableFn('T')">
+			  onclick="choosePage('Ttable');">
 				T Prob's
 			</button>
 		</div>
@@ -194,11 +194,31 @@
   <div id = "dataInSummary" class="w3-container"  style="display:none">
   	 Data Input
   </div>
+	<div class='w3-container w3-mobile' id='SelectInf'>
+  			Either
+  			<button id='Estimate' onclick='inference = "estimate" '
+  			class='w3-button w3-pale-blue w3-medium w3-round-xlarge'>
+  				&nbsp; Estimate a true proportion.
+  			</button>
+  			&nbsp; OR &nbsp;
+  			<button id='Test' onclick='inference = "test" '
+  			 class='w3-button w3-pale-blue w3-medium w3-round-xlarge'>
+  				&nbsp; Test for a particular value.
+  			</button>
+  		</div>
   <div  id = "inferenceChoices" class="w3-container" style="display:none">
-     Choose Inference
+      <div id = "confLvlInpt"class="w3-container" style="display:none" >
+				Choose confidence level:
+			</div>
+			<div id = "testInpts"class="w3-container" style="display:none" >
+				Test:
+			</div>
   </div>
-	<div id = "inferenceOutput" class="w3-container"   style="display:none">
-		 Inference Output
+	<div id = "inferencePlot" class="w3-container"   style="display:none">
+		 Inference Plot
+	</div>
+	<div id = "inferenceText" class="w3-container"   style="display:none">
+		 Inference Summary
 	</div>
 
 </div>
@@ -236,22 +256,22 @@
 	</div>
 
 
-<!-- 4)  a probability Table -->
-<div id="Table" class="w3-container Page" style="display:none">
-  <h4 id = "probTableHeader"> Standard Normal Probabilities  </h4>
-   <div id = "tableInputs" class = "w3-container" style = "display:none">
+<!-- 4)  a probability Z  Table  -->
+<div id="ZTable" class="w3-container Page" style="display:none">
+  <h4 id = "probzTableHeader"> Standard Normal Probabilities  </h4>
+   <div id = "ztableInputs" class = "w3-container" style = "display:none">
 
 			 <h3>Compute cutoffs or probabilities. &nbsp; &nbsp; &nbsp; &nbsp;
-			 <button onclick="document.getElementById('probModal').style.display='block'" class="w3-button w3-blue w3-medium w3-round-xlarge">
+			 <button onclick="document.getElementById('zModal').style.display='block'" class="w3-button w3-blue w3-medium w3-round-xlarge">
 				 Click for more information
 			 </button></h3>
 
-		 <div id="probModal" class="w3-modal">
+		 <div id="zModal" class="w3-modal">
 			 <div class="w3-modal-content">
 				 <div class="w3-container">
-					 <span onclick="document.getElementById('probModal').style.display='none'"
+					 <span onclick="document.getElementById('zModal').style.display='none'"
 					  class="w3-button w3-display-topright">&times;</span>
-						<div id = "probModalText">
+						<div id = "zModalText">
 					 <p>
 						 Input a probability between 0 and 1 to get back a cutoff Z score.
 					 </p>
@@ -263,9 +283,6 @@
 			 </div>
 		 </div>
 		 <br>
-
-
-
 		 <div class="w3-form w3-cell-row w3-mobile" id="Zinputs">
 			 <div class="w3-cell w3-mobile">
 				 Probability: &nbsp; &nbsp;
@@ -291,21 +308,75 @@
 		 </div>
 		 <br>
 	  </div>
-	  <div id = "probPlot" class = "w3-container" style = "display:none">
+	  <div id = "zPlot" class = "w3-container" style = "display:none">
 	 			 <h3> Fill in Probability or Z-score, then click the desired area below:</h3>
 		 <div class="w3-container w3-mobile" id="zPlotGoesHere"></div>
 		 <script type="text/javascript" src="zplot.js"></script>
 	    </div>
 	 </div>
 
- <!--  End of 4 new page formats --
+<!-- 5)  a probability T  Table  -->
+<div id="Ttable" class="w3-container Page" style="display:none">
+
+	<h3>Compute cutoffs or probabilities. &nbsp; &nbsp; &nbsp; &nbsp;
+		<button onclick="document.getElementById('tinfoModal').style.display='block'" class="w3-button w3-blue w3-medium w3-round-xlarge">
+			Click for more information
+		</button></h3>
+
+	<div id="tinfoModal" class="w3-modal">
+		<div class="w3-modal-content">
+			<div class="w3-container">
+				<span onclick="document.getElementById('tinfoModal').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+				<P>
+					There is a different distribution for each "degrees of freedom" value, so we have to set this first.
+				</P>
+				<p>
+					Then input a probability between 0 and 1 to get back a cutoff t score.
+				</p>
+				<p>
+					Or input a t score (positive or negative) to get back a probability (area under the curve).
+				</p>
+			</div>
+		</div>
+	</div>
+	<br>
+
+	<div class="w3-form w3-cell-row w3-mobile" id="t1inputs">
+		<div class="w3-cell w3-mobile">
+			<div>
+				First enter
+				<br>
+				Degrees of Freedom:
+			</div>
+			<input class="w3-input w3-border w3-mobile" style="width:20%; float:left;" type="text" id="dfT" value="" onchange="drawTcurve()">
+
+		</div>
+		<div class="w3-cell w3-mobile">
+			Probability: &nbsp; &nbsp;
+			<br>
+			<input class="w3-input w3-cell w3-border w3-mobile w3-margin-left w3-padding-large" style="width:35%; float:left;" type="text" id="ptInput" value="" onchange="tchanged = 'P'; ">
+
+		</div>
+		<div class="w3-cell w3-mobile">
+			Standardized Value:
+			<br>
+			<input class="w3-input  w3-cell w3-border w3-mobile w3-padding-large" style="width:35%;" type="text" id="tInput" value="" onchange=" tchanged = 'T'; ">
+		</div>
+	</div>
+	<br>
+	<h3> Then fill in Probability or t-score, and click the desired area below:</h3>
+	<div class="w3-container w3-mobile" id="tPlotGoesHere"></div>
+	<script type="text/javascript" src="tplot.js"></script>
+
+</div>
+
+ <!--  End of 5 new page formats --
    --  Below are the old-style pages  -->
 
 	<div id="TestEstC1" class="w3-container Page" style="display:none">
 
 	</div>
 
-	<!-- End of cat1 Test- Estimate -->
 
 	<script type="text/javascript" src="cat1.js"></script>
 	<!-- ************************************************************
@@ -548,59 +619,6 @@
 	mostly works, but output doesn't show nicely in the svg
 	-->
 
-	<div id="Ttable" class="w3-container Page" style="display:none">
-
-		<h3>Compute cutoffs or probabilities. &nbsp; &nbsp; &nbsp; &nbsp;
-			<button onclick="document.getElementById('tinfoModal').style.display='block'" class="w3-button w3-blue w3-medium w3-round-xlarge">
-				Click for more information
-			</button></h3>
-
-		<div id="tinfoModal" class="w3-modal">
-			<div class="w3-modal-content">
-				<div class="w3-container">
-					<span onclick="document.getElementById('tinfoModal').style.display='none'" class="w3-button w3-display-topright">&times;</span>
-					<P>
-						There is a different distribution for each "degrees of freedom" value, so we have to set this first.
-					</P>
-					<p>
-						Then input a probability between 0 and 1 to get back a cutoff t score.
-					</p>
-					<p>
-						Or input a t score (positive or negative) to get back a probability (area under the curve).
-					</p>
-				</div>
-			</div>
-		</div>
-		<br>
-
-		<div class="w3-form w3-cell-row w3-mobile" id="t1inputs">
-			<div class="w3-cell w3-mobile">
-				<div>
-					First enter
-					<br>
-					Degrees of Freedom:
-				</div>
-				<input class="w3-input w3-border w3-mobile" style="width:20%; float:left;" type="text" id="dfT" value="" onchange="drawTcurve()">
-
-			</div>
-			<div class="w3-cell w3-mobile">
-				Probability: &nbsp; &nbsp;
-				<br>
-				<input class="w3-input w3-cell w3-border w3-mobile w3-margin-left w3-padding-large" style="width:35%; float:left;" type="text" id="ptInput" value="" onchange="tchanged = 'P'; ">
-
-			</div>
-			<div class="w3-cell w3-mobile">
-				Standardized Value:
-				<br>
-				<input class="w3-input  w3-cell w3-border w3-mobile w3-padding-large" style="width:35%;" type="text" id="tInput" value="" onchange=" tchanged = 'T'; ">
-			</div>
-		</div>
-		<br>
-		<h3> Then fill in Probability or t-score, and click the desired area below:</h3>
-		<div class="w3-container w3-mobile" id="tPlotGoesHere"></div>
-		<script type="text/javascript" src="tplot.js"></script>
-
-	</div>
 
 	<!-- ######-************************************************************
 	######-  Two Categorical Actions  #################################-
@@ -1058,33 +1076,6 @@
 		</script>
 	</div>
 
-	<!-- ######-  One Categorical, One Quantitative Actions
-	2) T table
-	working except for svg placement of output
-	-->
-
-	<div id="Ttable3" class="w3-container Page" style="display:none">
-		<div class=w3-container>
-			<h3>Compute probabilities or cutoffs. </h3>
-			<div class="w3-form w3-quarter">
-				<input class="w3-input w3-border" type="text" name="c1q1_p_txt" placeholder="Probability" onchange="var z = document.write(computeZcrit('c1q1_p_txt', 'c1q1_area');)">
-				<!--  this throws an ERROR - bad value -->
-
-				<Input class="w3-input w3-border" type="text" name="c1q1_t_txt" placeholder="Standardized Value">
-				<br>
-				<Input class="w3-input w3-border" type="text" name="c1q1_tdf_txt" placeholder="DF">
-				<br>
-				<select class="w3-select" name="c1q1_area">
-					<option value="" disabled selected>Which area?</option>
-					<option value="L">Lower</option>
-					<option value="U">Upper</option>
-					<option value="E">Extremes</option>
-					<option value="C">Center</option>
-				</select>
-			</div>
-		</div>
-
-	</div>
 
 </body>
 

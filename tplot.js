@@ -175,6 +175,7 @@ function filtert( area) {
 	    tscoreIn, tscoreAbs, tscoreOut, zero = 0.000 ;
     if (tchanged ==="T") {
    		tscoreIn = +document.getElementById("tInput").value;
+			document.getElementById("ptInput").value = " ";
    		//console.log(tIn.typeof);
     	tscoreAbs = Math.abs(tscoreIn);
 	     //console.log(typeof(tscoreIn));
@@ -198,7 +199,12 @@ function filtert( area) {
 		}
 		printPtResults(ptOut);
     } else if (tchanged === "P"){
+			document.getElementById("tInput").value = " ";
     	ptIn = +document.getElementById("ptInput").value;
+			if( (ptIn < 0.00) || (ptIn > 1.00)){
+				alert(" Probability must be between 0 and 1");
+				return;
+			}
     	tscoreIn = jStat.studentt.inv(ptIn, tdf);  // set for Lower, reverse sign for upper
 		//console.log(typeof(tscoreIn));
 	if (area === "L") {

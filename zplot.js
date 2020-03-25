@@ -199,6 +199,7 @@ function filterZ(area) {
     zOut,
     zero = 0.0;
   if (changed === "Z") {
+    document.getElementById("pInput").value = " ";
     zIn = +document.getElementById("zInput").value + zero; // trouble if I input 1 with no decimal, it gets 10??
     //console.log(zIn.typeOf);
     zAbs = Math.abs(zIn);
@@ -225,7 +226,12 @@ function filterZ(area) {
     }
     printPResults(pOut);
   } else if (changed === "P") {
+      document.getElementById("zInput").value = " ";
     pIn = document.getElementById("pInput").value + 0.0;
+    if( (pIn < 0.00) || (pIn > 1.00)){
+      alert(" Probability must be between 0 and 1");
+      return;
+    }
     zIn = jStat.normal.inv(pIn, 0, 1); // set for Lower, reverse sign for upper
     if (area === "L") {
       output = jStat.seq(-4.0, zIn, 200);

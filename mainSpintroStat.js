@@ -75,25 +75,103 @@ function closePages() {
 	}
 }
 
+var CIrangeslide = rangeslide("#confLvlInpt", {
+  data: confLevels,
+  showLabels: true,
+  startPosition: 0,
+  showTicks: false,
+  dataSource: "value",
+  labelsContent: "key",
+  valueIndicatorContent: "key",
+  thumbWidth: 24,
+  thumbHeight: 24,
+  handlers: {
+    valueChanged: [CLChange]
+  }
+});
+
+
+function CLChange(arg) {
+  // set colors for dots to illustrate confidence interval
+  // needs to adjust for type of inference, but inference shouldnt be a global variables
+  // new dots come from an inference specific functions
+  // Get new dots, color them, and plot them.
+  var cnfLvl = cat1CnfLvl,
+    sC1Len,
+    tempColors;
+  if (arg.value) {
+    cnfLvl = +arg.value;
+  }
+  if (CIdata) {
+    CILen = CIdata[0].length;
+    tempColors = ciColor(CIdata[0], cnfLvl);
+    if (tempColors[1]) {
+      lowerBd = tempColors[1].toPrecision(4);
+      upperBd = tempColors[2].toPrecision(4);
+      cnfLvl = tempColors[3];
+      CIdata = [c1CIdata[0], tempColors[0]];
+    } else {
+      CIdata = [CIdata[0], tempColors];
+    }
+    cat1InfOutput = discreteChart(c1CIdata, cat1InfSVG, cat1CIinteract);
+    sC1Len = CIdata[0].length;
+  } //else {
+  //  console.log('No resampled data for CI');
+  //}
+  ftr = document.getElementById("cat1Results");
+  ftr.innerHTML = //'<div style = 'height = 10'> </div>' +
+    '<div style = "width:360px"> Proportion ' +
+    cat1Label1 +
+    " in  " +
+    sC1Len +
+    " Re-samples" +
+    "<br> <br>" +
+    Math.round(cnfLvl * 100) +
+    "% Confidence Interval: (" +
+    cat1lowerBd +
+    ", " +
+    cat1upperBd +
+    " )</div> ";
+  ftr.style.display = "block";
+  document.getElementById("moreSims").style.display = "block";
+}
+
+var renew = function(){
+      //function to remove outdated info and PlotGoesHere
+       document.getElementById('cat1SummaryText').style.display = 'none';
+ 			 document.getElementById('cat1SummarySVGgoesHere').style.display =  'none';
+    };
+
+var  changeC1Dots = function(){
+       svgCat1.selectAll("g" ).remove();
+      document.getElementById('cat1Output').style.display = 'none';
+      testP1(noChoice)
+    };
+
+
 function testEstFn(vble){
   // function to customize the testEst page for a particular type of variable.
   var hdr,
     dataInput,
+    estimate = "estimate", g = "g",
     summaryText,
     summaryPlot,
     infChoice,
     infPlot,
+    infTest,
     results,
+    test = "test",
     title = document.getElementById("testEstHeader"),
     block1 = document.getElementById("dataInSummary"),
     block2 = document.getElementById("inferenceChoices"),
-    block3 = document.getElementById("inferenceOutput");
+    block3 = document.getElementById("inferencePlot"),
+    block4 = document.getElementById("inferenceText");
+
 
   switch(vble){
       case 'cat1' : {
-        hdr = "Estimate a single proportion or test its value.";
+        hdr = "<b>Estimate</b> a single proportion or <b>Test</b> its value.";
         dataInput =
-        " 	<div class='w3-container' id='cat1DataIn-Summary'>"+
         " 		<div class='w3-cell-row w3-mobile'>"+
         " 			<div class='w3-cell' style='width:40%'>"+
         " 				<h4> Enter Data</h4>"+
@@ -102,51 +180,25 @@ function testEstFn(vble){
         "         			<tr> <td>	<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat1Label1'"+
         "         								placeholder='Success' >			</td>"+
         "         					<td><input class='w3-input  w3-mobile w3-pale-yellow' type='text' id='cat1N1'"+
-        "                         placeholder=' '  " +
-        "                      onchange=\" document.getElementById('cat1SummaryText').style.display = 'none';"+
-        "         								document.getElementById('cat1SummarySVGgoesHere').style.display = " +
-        "                         'none';\">  </td>  	</tr>"+
+        "                         placeholder=' '   onchange= 'renew()'>  </td>  	</tr>"+
         "         			<tr> 	<td>	<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat1Label2'"+
         "         								placeholder='Failure' >		</td>	"+
         "         							<td>		<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat1N2'"+
-        "        								placeholder=' ' "+
-        "                      onchange=\"document.getElementById('cat1SummaryText').style.display = 'none';"+
-        "        								 document.getElementById('cat1SummarySVGgoesHere').style.display = "  +
-        "                         'none';\"> 	</td>		</tr>"+
-        "          					</table>"+
-        "          				</div>"+
-        "          				&nbsp; &nbsp;"+
-        "          				<div class='w3-cell' style='width:50%; display:block'>"+
-        "          					<button onclick = 'summarizeP1()'>   &nbsp &nbsp  Summary</button>"+
-        "          					<div class='w3-container w3-cell w3-mobile' id='cat1SummaryText' style='display:none'>"+
+        "        								placeholder=' '  onchange= 'renew()'> 	</td>		</tr> <tr></tr>"+
+        "          					</table>	&nbsp; &nbsp;"+
+        "        </div>        	&nbsp; &nbsp; 				&nbsp; &nbsp;"+
+        " 			<div class='w3-cell' style='width:2%'> </div>"+
+        "        <div class='w3-cell' style='width:45%; display:block'>"+
+        "        			<button onclick = 'summarizeP1()'>   &nbsp &nbsp  Summary</button>"+
+        "        			<div class='w3-container w3-cell w3-mobile' id='cat1SummaryText' style='display:none'>"+
         "          						p&#770; ="+
         "          						&nbsp; &nbsp;"+
         "          						se(p&#770;) ="+
-        "          					</div>"+
-        "          					<div class='w3-container w3-cell w3-mobile' id='cat1SummarySVGgoesHere'></div>"+
-        "          				</div>"+
-        "          			</div>"+
-        "          			<br>"+
-        "          		</div>";
-        infPlot = " ";
-        infChoice = "		<!--   Select Your Inference                  -->"+
-        "  		<div class='w3-container w3-mobile' id='c1SelectInf'>"+
-        "  			Either"+
-        "  			<button id='EstimateP1' onclick='c1Inference = \"estimate\";"+
-        "  			c1CIdata = estimateP1();"+
-        "  			c1InfOutput = discreteChart(c1CIdata, cat1InfSVG, cat1CIinteract);"+
-        "  			' class='w3-button w3-pale-blue w3-medium w3-round-xlarge'>"+
-        "  				&nbsp; Estimate a true proportion."+
-        "  			</button>"+
-        "  			&nbsp; OR &nbsp;"+
-        "  			<button id='TestP1' onclick='c1Inference = \"test\";"+
-        "  			c1Tstdata = testP1('undefined');"+
-        "  			c1InfOutput = discreteChart(c1Tstdata, cat1InfSVG, cat1TestInteract );"+
-        "  			' class='w3-button w3-pale-blue w3-medium w3-round-xlarge'>"+
-        "  				&nbsp; Test for a particular value."+
-        "  			</button>"  +
-        "  		</div>"+
-        "  		<br>"+
+        "      		</div>"+
+        "        	<div class='w3-container w3-cell w3-mobile' id='cat1SummarySVGgoesHere'></div>"+
+        "      	<br>"+
+        "    </div>";
+        infChoice =
         "  		<!--  Inputs for each inference  (before plotting)  -->"+
         "  		<div id='cat1ConfLvlInpt' style='width: 70%; display: none'>"+
         "  			<h4>Estimate True Proportion with a Confidence Interval</h4>"+
@@ -158,10 +210,7 @@ function testEstFn(vble){
         "  			</div>"+
         "  			<div class='w3-cell  w3-mobile' style='width: 20%'>"+
         "  				<input class='w3-input w3-card w3-mobile w3-pale-yellow' type='text' id='cat1trueP'"+
-        "           placeholder='0.625'"+
-        "  				onchange=' svgCat1.selectAll('g').remove();"+
-        "  				document.getElementById('cat1Output').style.display = 'none';"+
-        "  				testP1(noChoice)'>"+
+        "           placeholder='0.625' 		onchange= 'changeC1Dots()' "+
         "  			</div>"+
         "  			<div class='w3-cell  w3-mobile' style='width: 30%'>"+
         "  			</div>"+
@@ -183,13 +232,15 @@ function testEstFn(vble){
         "  			</div>"+
         "  		</div>";
 
-        results =
+        infPlot =
         "  		<div id='cat1Output' style='display: none'>"+
         "  			<!--  Show Inference Plot -->"+
         "  			<div class='w3-container w3-cell w3-mobile' id='cat1Inference' style='width:420px'>"+
         "   					<!--  Inference plot goes here for CI or Test of 1 proportion -->"+
         "  					<svg id='cat1InfSVG' height='300px' width='400px'></svg>"+
-        "  			</div>"+
+        "  			</div>";
+
+        results =
         "  			<!-- Show Results in Text-->"+
         "  			<div id='cat1Results' class='w3-display-container' style='width:95%; display:none'></div>"+
         "  			<!-- Input for more simulations -->"+
@@ -246,6 +297,7 @@ function testEstFn(vble){
    block1.innerHTML = dataInput;
    block2.innerHTML = infChoice;
    block3.innerHTML = infPlot;
+   block4.innerHTML = results;
 }
 
 
