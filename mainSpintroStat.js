@@ -9,8 +9,9 @@ var circleColors = ["steelblue", "red"],
       { key: "99%", value: "0.99" }
     ],
     inference,
-    samples4Test = [],
-    samples4CI = [];
+    sample4Test = [],
+    sample4CI = [],
+    testData;
 
   //  Functions to activate Header Choices ///
 function w3Open() {
@@ -754,15 +755,14 @@ function moreCI(nreps) {
 
 function moreTests(nreps, concat) {
   //generate or update test resmaple data
-  var newSample =[],
-       testColor = [],
+  var newSample =[], testColor = [],
        lowV, hiV, check, extCount,
        xLabel;
   if (typeof(concat) == 'undefined'){
     concat = false;
   }
   if( ! concat){
-    samples4Test = [];
+    sample4Test = [];
   }
   switch(variable){
       case 'cat1' : {
@@ -783,7 +783,7 @@ function moreTests(nreps, concat) {
       }
       case 'quant2' :  {
         newSample = moreQuant2TSims(q2Values, nreps);
-        xlabel = "Slopes from resampled datasets under the null hypothesis ";
+        xLabel = "Slopes from resampled datasets under the null hypothesis ";
         nullValue = 0.0;
         observed = slope;
         break;
@@ -830,8 +830,13 @@ function moreTests(nreps, concat) {
       }
       default: {  }
     }
-  // plot
-    makeScatterPlot(data, "infSVG", xLabel, " ");
+  // plotX
+  testData = stackDots(sample4Test);
+    for (i = 0; i < sLen; i++) {
+      testData[i].color = circleColors[testColor[i]];
+    }
+    console.log(testData);
+    makeScatterPlot(testData, "infSVG", xLabel, " ");
   //find p-value
     document.getElementById("inferenceText").innerHTML =
     "P-value goes here";
