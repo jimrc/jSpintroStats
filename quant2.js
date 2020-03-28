@@ -29,7 +29,6 @@ var correlation,
   q2TestDirection,
   q2SumData = [],
   q2RawData = [],
-  q2DataName,
   q2Color = [],
   q2Inference,
   q2InfOutput,
@@ -46,12 +45,12 @@ var correlation,
 
 //var svgq2 = d3.select("#quant2InfSVG"),
   //svgSumq2 = d3.select("#quant2SumSVG");
-document.getElementById("quant2MoreSims").style.display = "none";
-document.getElementById("quant2Results").style.display = "none";
-document.getElementById("quant2Output").style.display = "none";
-document.getElementById("quant2Inference").style.display = "none";
+//document.getElementById("quant2MoreSims").style.display = "none";
+//document.getElementById("quant2Results").style.display = "none";
+//document.getElementById("quant2Output").style.display = "none";
+//document.getElementById("quant2Inference").style.display = "none";
 
-function summarizeSlope() {
+function summarizeSlope(q2DataName) {
   // builds summary table and dot plot for 2 quantitative variables
   var margin = 20,  dataLength,  q2Keys,
     xbar,    xVar,    ybar,    yVar,    coVar = 0;
@@ -59,7 +58,7 @@ function summarizeSlope() {
     y = [];
   sampleq2 = resampleq2 = [];
 
-  q2DataName = document.getElementById("quant2DataName").value;
+  //q2DataName = document.getElementById("quant2DataName").value;
   q2RawData =
     q2DataName === "shuttle"
       ? shuttle
@@ -99,7 +98,7 @@ function summarizeSlope() {
       //{"label": "SD from line", "xx": }
     ];
     q2Summ.innerHTML =
-      "<br> x&#773; =  " +
+      " x&#773; =  " +
       xbar.toPrecision(5) +
       "\t  y&#773; =  " +
       ybar.toPrecision(5) +

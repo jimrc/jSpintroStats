@@ -205,7 +205,7 @@ function testEstFn(vble){
    block1.innerHTML = divs[0];
    block2.innerHTML = divs[1];
    block3.innerHTML = divs[2];
-   block4.innerHTML = divs[3];
+   //block4.innerHTML = divs[3];
    block5.innerHTML = divs[4];
 
 
@@ -310,9 +310,10 @@ function q2TestEstimate(){
   var dIn, intervalInpts, testInpts, plot, results;
   dIn =
   	" 			<div class='w3-cell' style='width:50%'>" +
-  	" 				<h4> Choose Data</h4>" +
+  	" 				<h4> Choose Data: </h4>" +
   	" 				<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='quant2DataName'" +
-  	" 				   onchange='summarizeSlope()'>" +
+  	" 				   onchange='summarizeSlope(this.value)'>" +
+  	" 					<option value='none' selected>Choose Data</option>" +
   	" 					<option value='shuttle' selected>Shuttle</option>" +
   	" 					<option value='women'>Women rate men</option>" +
   	" 					<option value='men'>Men rate women</option>" +
@@ -329,7 +330,19 @@ function q2TestEstimate(){
   	" 					<svg id='quant2SumSVG' height='400px' width='400px'></svg >" +
   	" 			</div>" ;
   intervalInpts= "Estimate Slope";
-  testInpts = "Test Slope";
+  testInpts = 	"<div class='w3-cell' >	Stronger evidence is a slope 	</div>" +
+				"	<div class='w3-cell' style='width: 30%'>" +
+				"		<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='q2testDirection' " +
+        	"  onchange='testDirection = this.value; moreTests(100, false)'>" +
+					"		<option value='lower'>Less Than or =</option>" +
+				"			<option value='both' selected>As or More Extreme Than</option>" +
+				"			<option value='upper'>Greater Than or =</option>" +
+				"		</select>" +
+				"	</div>" +
+				"	<div class='w3-cell' style='width: 30%' id='q2ObsdSlope'>" +
+				"		&nbsp;&nbsp; the &beta;&#770;<sub>1</sub> observed above." +
+				"	</div>" ;
+
   plot =
 		" <div id='quant2Output' style='display:none'>" +
 		" </div>" +
@@ -741,7 +754,10 @@ function moreCI(nreps) {
 
 function moreTests(nreps, concat) {
   //generate or update test resmaple data
-  var newSample =[];
+  var newSample =[],
+       testColor = [],
+       lowV, hiV, check, extCount,
+       xLabel;
   if (typeof(concat) == 'undefined'){
     concat = false;
   }
@@ -766,11 +782,60 @@ function moreTests(nreps, concat) {
         break;
       }
       case 'quant2' :  {
-        newSample = moreQuant2TSims(q2Data, nreps);
+        newSample = moreQuant2TSims(q2Values, nreps);
+        xlabel = "Slopes from resampled datasets under the null hypothesis ";
+        nullValue = 0.0;
+        observed = slope;
         break;
       }
       default: {   }
     };
+   //combine with old sims
+   for (i = 0; i < nreps; i++) {
+        sample4Test.push(newSample[i]);
+      }
+  // sort
+      sample4Test = sample4Test.sort(function(a, b) {
+        return a - b;
+      });
+  // get color
+  sLen = sample4Test.length;
+  switch (testDirection) {
+    case "lower": {
+      for (i = 0; i < sLen; i++) {
+        check = 0 + (sample4Test[i] <= observed);
+        extCount += check;
+        testColor[i] = check;
+      } break;
+    }
+    case "upper": {
+      for (i = 0; i < sLen; i++) {
+        check = 0 + (sample4Test[i] >= observed);
+        extCount += check;
+        testColor[i] = check;
+      }
+    }
+    case "both": {
+      lowV =  observed * (observed <= nullValue) +
+        (2 * nullValue - observed) * (observed > nullValue) +
+        1 / 1000000;
+        hiV =   observed * (observed >= nullValue) +
+        (2 * nullValue - observed) * (observed < nullValue) -
+        1 / 1000000;
+        for (i = 0; i < sLen; i++) {
+          check = 0 + ((sample4Test[i] <= lowV) | (sample4Test[i] >= hiV));
+          extCount += check;
+          testColor[i] = check;
+        }
+      }
+      default: {  }
+    }
+  // plot
+    makeScatterPlot(data, "infSVG", xLabel, " ");
+  //find p-value
+    document.getElementById("inferenceText").innerHTML =
+    "P-value goes here";
+
   }
 
 
@@ -787,8 +852,8 @@ function moreQuant2TSims(data, reps) {
     yVar,
     ysample = [];
   seq = sequence(0, dataLength - 1, 1);
-  xBar = d3.mean(data[x]);
-  xVar = d3.variance(data[x]);
+  xBar = d3.mean(data, function(d) {return d.x;} );
+  xVar = d3.variance(data,function(d) {return d.x;} );
   for (i = 0; i < reps; i++) {
     coVar = 0;
     yBar = 0;
