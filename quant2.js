@@ -3,11 +3,10 @@
 //  TODO:  allow input of csv file and parse it.
 //   clicking a point shows resampled slope (and correlation?)
 // TODO:  Test plot is making error -- doesn't show
-//         CI 's are cutof
+//         CI 's are cutoff
 //         CI plot has no colors -- am I passing them wrong?
 
-var circleColors = ["steelblue", "red"],
-  correlation,
+var correlation,
   drawq2Inf = false,
   intercept,
   i,
@@ -32,12 +31,6 @@ var circleColors = ["steelblue", "red"],
   q2RawData = [],
   q2DataName,
   q2Color = [],
-  confLevels = [
-    { key: "80%", value: "0.80" },
-    { key: "90%", value: "0.90" },
-    { key: "95%", value: "0.95" },
-    { key: "99%", value: "0.99" }
-  ],
   q2Inference,
   q2InfOutput,
   q2SmryPlot,
@@ -51,8 +44,8 @@ var circleColors = ["steelblue", "red"],
   x = [],
   y = [];
 
-var svgq2 = d3.select("#quant2InfSVG"),
-  svgSumq2 = d3.select("#quant2SumSVG");
+//var svgq2 = d3.select("#quant2InfSVG"),
+  //svgSumq2 = d3.select("#quant2SumSVG");
 document.getElementById("quant2MoreSims").style.display = "none";
 document.getElementById("quant2Results").style.display = "none";
 document.getElementById("quant2Output").style.display = "none";
@@ -61,8 +54,8 @@ document.getElementById("quant2Inference").style.display = "none";
 function summarizeSlope() {
   // builds summary table and dot plot for 2 quantitative variables
   var margin = 20,  dataLength,  q2Keys,
-    xbar,    xVar,    ybar,    yVar,    coVar = 0,
-    x = [],
+    xbar,    xVar,    ybar,    yVar,    coVar = 0;
+    x = [];
     y = [];
   sampleq2 = resampleq2 = [];
 
@@ -453,41 +446,14 @@ function q2TestUpdate() {
   //document.getElementById("quant2MoreSims").style.display = 'block';
 }
 
-function q2CIinteract(d, i) {
-  console.log(d.x, i);
-  var q2modal = document.getElementById("quant2SelectedSample");
-  //q2modal.style.display = "block";
-  q2modal.innerHTML = "Slope: " + q2CIdata[0][i];
-  // open modal box to show slopes in the selected resample;
-  window.onclick = function(event) {
-    if (event.target == q2modal) {
-      q2modal.style.display = "none";
-    }
-  };
-}
-
-function q2TestInteract(d, i) {
-  // open modal box to show slope in the selected sample;
-  console.log(d.x, i);
-  var q2modal = document.getElementById("quant2SelectedSample");
-  //q2modal.style.display = "block";
-  q2modal.innerHTML = "Slope: " + q2Tstdata[0][i];
-  // open modal box to show slope in the selected resample;
-  window.onclick = function(event) {
-    if (event.target == q2modal) {
-      q2modal.style.display = "none";
-    }
-  };
-}
-
-function quant2MoreSimFn() {
+function quant2MoreSimFn(more) {
   // function to add more points to an estimate or test of slope
   // estimates are stored in  resampleq2,  tests slopes in sampleq2
   var sq2Len,
-    more = +document.getElementById("quant2More").value,
+    //more = +document.getElementById("quant2More").value,
     newValues = [];
   if (more > 0) {
-    if (q2Inference === "test") {
+    if (inference === "test") {
       // assume slope is zero, generate samples of x and of y independently
       // fit new line to each
       newValues = resampleSlope4Test(q2Values, more);
@@ -510,7 +476,7 @@ function quant2MoreSimFn() {
       resampleq2 = resampleq2.sort(function(a, b) {
         return a - b;
       });
-      
+
       //  Need to add more (x, y) points and transition in the colors.
       q2CLChange({ value: q2CnfLvl });
       return resampleq2;

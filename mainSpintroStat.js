@@ -1,12 +1,16 @@
 //  javascript to setup main index.html
 var circleColors = ["steelblue", "red"],
     demo,
-    table,
     vbleChoice,
-    inference;
-//    jsinput = 'spin.js',
-
-
+    confLevels = [
+      { key: "80%", value: "0.80" },
+      { key: "90%", value: "0.90" },
+      { key: "95%", value: "0.95" },
+      { key: "99%", value: "0.99" }
+    ],
+    inference,
+    samples4Test = [],
+    samples4CI = [];
 
   //  Functions to activate Header Choices ///
 function w3Open() {
@@ -36,30 +40,29 @@ function actionsFunc(actns) {
 	}
 }
 
-function openVble(vbleName) {
+//function openVble(vbleName) {
   // perhaps this is no longer needed?
-	var i,
-			y = document.getElementsByClassName("Page"),
-			x = document.getElementsByClassName("vType");
-	for (i = 0; i < x.length; i++) {
-				x[i].style.display = "none";
-	}
-	for (i = 0; i < y.length; i++) {
-			y[i].style.display = "none";
-	}
-	document.getElementById(vbleName).style.display = "block";
-	w3Close();
-}
+	//var i,
+	//		y = document.getElementsByClassName("Page"),
+	//		x = document.getElementsByClassName("vType");
+	//for (i = 0; i < x.length; i++) {
+	//			x[i].style.display = "none";
+	//}
+	//for (i = 0; i < y.length; i++) {
+	//		y[i].style.display = "none";
+	//}
+	//document.getElementById(vbleName).style.display = "block";
+	//w3Close();
+//}
 
 function choosePage(page, vble) {
-	//close all pages but this one
 	var i,
-			x = document.getElementsByClassName("Page");
-	for (i = 0; i < x.length; i++) {
-			x[i].style.display = "none";
-	}
+    x = document.getElementById(page).childNodes;
+  //close all pages
+  closePages();
+  // open this one we're focused on
 	document.getElementById(page).style.display = "block";
-      // display al children on this page
+  // display all children on this page
   x = document.getElementById(page).childNodes;
 	for (i = 1; i < x.length; i += 2) {
 			x[i].style.display = "block";
@@ -136,13 +139,13 @@ function CLChange(arg) {
   document.getElementById("moreSims").style.display = "block";
 }
 
-var renew = function(){
+function renew (){
       //function to remove outdated info and PlotGoesHere
        document.getElementById('cat1SummaryText').style.display = 'none';
  			 document.getElementById('cat1SummarySVGgoesHere').style.display =  'none';
     };
 
-var  changeC1Dots = function(){
+function  changeC1Dots(){
        svgCat1.selectAll("g" ).remove();
       document.getElementById('cat1Output').style.display = 'none';
       testP1(noChoice)
@@ -152,163 +155,229 @@ var  changeC1Dots = function(){
 function testEstFn(vble){
   // function to customize the testEst page for a particular type of variable.
   var hdr,
-    dataInput,
+    divs = [],
     estimate = "estimate", g = "g",
     summaryText,
     summaryPlot,
-    infChoice,
-    infPlot,
-    infTest,
-    results,
     test = "test",
+    clvlInpt = document.getElementById("confLvlInpt"),
+    testInpt = document.getElementById("testInpt"),
     title = document.getElementById("testEstHeader"),
     block1 = document.getElementById("dataInSummary"),
-    block2 = document.getElementById("inferenceChoices"),
-    block3 = document.getElementById("inferencePlot"),
-    block4 = document.getElementById("inferenceText");
+    block2 = document.getElementById("confLvlInpt"),
+    block3 = document.getElementById("testInpt"),
+    block4 = document.getElementById("inferencePlot"),
+    block5 = document.getElementById("inferenceText");
 
+    var svgInf = d3.select("#infSVG"),
+        svgSum = d3.select("#sumSVG");
 
   switch(vble){
       case 'cat1' : {
         hdr = "<b>Estimate</b> a single proportion or <b>Test</b> its value.";
-        dataInput =
-        " 		<div class='w3-cell-row w3-mobile'>"+
-        " 			<div class='w3-cell' style='width:40%'>"+
-        " 				<h4> Enter Data</h4>"+
-        " 					<table class='w3-table w3-border'>"+
-        "   						<tr> <th>Label</th> <th>Count</th>		</tr>"+
-        "         			<tr> <td>	<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat1Label1'"+
-        "         								placeholder='Success' >			</td>"+
-        "         					<td><input class='w3-input  w3-mobile w3-pale-yellow' type='text' id='cat1N1'"+
-        "                         placeholder=' '   onchange= 'renew()'>  </td>  	</tr>"+
-        "         			<tr> 	<td>	<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat1Label2'"+
-        "         								placeholder='Failure' >		</td>	"+
-        "         							<td>		<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat1N2'"+
-        "        								placeholder=' '  onchange= 'renew()'> 	</td>		</tr> <tr></tr>"+
-        "          					</table>	&nbsp; &nbsp;"+
-        "        </div>        	&nbsp; &nbsp; 				&nbsp; &nbsp;"+
-        " 			<div class='w3-cell' style='width:2%'> </div>"+
-        "        <div class='w3-cell' style='width:45%; display:block'>"+
-        "        			<button onclick = 'summarizeP1()'>   &nbsp &nbsp  Summary</button>"+
-        "        			<div class='w3-container w3-cell w3-mobile' id='cat1SummaryText' style='display:none'>"+
-        "          						p&#770; ="+
-        "          						&nbsp; &nbsp;"+
-        "          						se(p&#770;) ="+
-        "      		</div>"+
-        "        	<div class='w3-container w3-cell w3-mobile' id='cat1SummarySVGgoesHere'></div>"+
-        "      	<br>"+
-        "    </div>";
-        infChoice =
-        "  		<!--  Inputs for each inference  (before plotting)  -->"+
-        "  		<div id='cat1ConfLvlInpt' style='width: 70%; display: none'>"+
-        "  			<h4>Estimate True Proportion with a Confidence Interval</h4>"+
-        "  			Choose a Confidence Level:"+
-        "  		</div>"+
-        "  		<div id='cat1TestInpt1' class='w3-cell-row w3-mobile' style='width: 70%; display: none'>"+
-        "  			<div class='w3-cell  w3-mobile' style='width: 35%'>"+
-        "  				&nbsp; &nbsp; &nbsp; Test: Is the true proportion = &nbsp;"+
-        "  			</div>"+
-        "  			<div class='w3-cell  w3-mobile' style='width: 20%'>"+
-        "  				<input class='w3-input w3-card w3-mobile w3-pale-yellow' type='text' id='cat1trueP'"+
-        "           placeholder='0.625' 		onchange= 'changeC1Dots()' "+
-        "  			</div>"+
-        "  			<div class='w3-cell  w3-mobile' style='width: 30%'>"+
-        "  			</div>"+
-        "  			<div id='cat1TestInpt2' class='w3-cell-row w3-mobile' style=' display: none'>"+
-        "  				<div class='w3-cell' style='width: 30%'>"+
-        "  					Stronger evidence is a proportion"+
-        "  				</div>"+
-        "  				<div class='w3-cell' style='width: 40%'>"+
-        "  					<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='cat1Extreme'"+
-        "  					     onchange='cat1TestUpdate()'>"+
-        "  						<option value='lower'>Less Than or =</option>"+
-        "  						<option value='both' selected>As or More Extreme Than</option>"+
-        "  						<option value='upper'>Greater Than or =</option>"+
-        "  					</select>"+
-        "  				</div>"+
-        "  				<div class='w3-cell' style='width: 20%'>"+
-        "  					&nbsp;&nbsp; p&#770; (from above)"+
-        "  				</div>"+
-        "  			</div>"+
-        "  		</div>";
-
-        infPlot =
-        "  		<div id='cat1Output' style='display: none'>"+
-        "  			<!--  Show Inference Plot -->"+
-        "  			<div class='w3-container w3-cell w3-mobile' id='cat1Inference' style='width:420px'>"+
-        "   					<!--  Inference plot goes here for CI or Test of 1 proportion -->"+
-        "  					<svg id='cat1InfSVG' height='300px' width='400px'></svg>"+
-        "  			</div>";
-
-        results =
-        "  			<!-- Show Results in Text-->"+
-        "  			<div id='cat1Results' class='w3-display-container' style='width:95%; display:none'></div>"+
-        "  			<!-- Input for more simulations -->"+
-        "  			<div id='cat1MoreSims' style='width:360px; display:none'>"+
-        "  				<div class='w3-cell-row'>"+
-        "  					<div class='w3-cell  w3-mobile' style='width: 20%'>			Add		</div>"+
-        "  					<div class='w3-cell  w3-mobile' style='width: 20%'>"+
-        "  						<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat1More'"+
-        "               placeholder='0' onchange='cat1MoreSimFn()'>"+
-        "  					</div>"  +
-        "  					<div class='w3-cell  w3-mobile' style='width: 40%'>"+
-        "  						&nbsp; simulated points"+
-        "  					</div>"+
-        "  				</div>"+
-        "  			</div>"+
-        "  		</div>  ";
+        divs = c1TestEstimate();
         break;   // End of c1Output
       }
       case 'quant1' :  {
         hdr = "Estimate a single mean or test its value.";
-        dataInput = "1 Quantitative Data Input";
-        infChoice = "Estimate or Test Mean";
-        infPlot = "";
-        results = "";
+        divs = q1TestEstimate();
          break;
        }
       case 'cat2' :  {
         hdr = "Estimate a difference in proportions or test that the difference is zero.";
-        dataInput = "Two Categorical Data Input";
-        infChoice = "Estimate or Test Diff in Proportions";
-        infPlot = "";
-        results = "";
+        divs = c2TestEstimate();
         break;
       }
       case 'c1q1':  {
         hdr = "Estimate a difference in means or test that the difference is zero.";
-        dataInput = "Two Means Data Input";
-        infChoice = "Estimate or Test Diff in Means";
-        infPlot = "";
-        results = "";
+        divs = c1q1TestEstimate();
         break;
       }
       case 'quant2' :  {
-        hdr = "Estimate a regression slope or test its value.";
-        dataInput = "Regression Data Input";
-        infChoice = "Estimate or Test Slope";
-        infPlot = "";
-        results = "";
+        hdr = "<b>Estimate</b> a regression slope or <b>Test</b>  slope is zero.";
+        divs = q2TestEstimate();
         break;
       }
-      default: { hdr = "Unknown Variable Type";}
+      default: { hdr = "Unknown Variable Type";
+        divs = genericTestDivs();      }
     };
    title.innerHTML = hdr;
-   block1.innerHTML = dataInput;
-   block2.innerHTML = infChoice;
-   block3.innerHTML = infPlot;
-   block4.innerHTML = results;
+   block1.innerHTML = divs[0];
+   block2.innerHTML = divs[1];
+   block3.innerHTML = divs[2];
+   block4.innerHTML = divs[3];
+   block5.innerHTML = divs[4];
+
+
+function c1TestEstimate(){
+  var dIn, intervalInpts, testInpts, plot, results;
+  dIn =
+  " 		<div class='w3-cell-row w3-mobile'>"+
+  " 			<div class='w3-cell' style='width:40%'>"+
+  " 				<h4> Enter Data</h4>"+
+  " 					<table class='w3-table w3-border'>"+
+  "   						<tr> <th>Label</th> <th>Count</th>		</tr>"+
+  "         			<tr> <td>	<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat1Label1'"+
+  "         								placeholder='Success' >			</td>"+
+  "         					<td><input class='w3-input  w3-mobile w3-pale-yellow' type='text' id='cat1N1'"+
+  "                         placeholder=' '   onchange= 'renew()'>  </td>  	</tr>"+
+  "         			<tr> 	<td>	<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat1Label2'"+
+  "         								placeholder='Failure' >		</td>	"+
+  "         							<td>		<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat1N2'"+
+  "        								placeholder=' '  onchange= 'renew()'> 	</td>		</tr> <tr></tr>"+
+  "          					</table>	&nbsp; &nbsp;"+
+  "        </div>        	&nbsp; &nbsp; 				&nbsp; &nbsp;"+
+  " 			<div class='w3-cell' style='width:2%'> </div>"+
+  "        <div class='w3-cell' style='width:45%; display:block'>"+
+  "        			<button onclick = 'summarizeP1()'>   &nbsp &nbsp  Summary</button>"+
+  "        			<div class='w3-container w3-cell w3-mobile' id='cat1SummaryText' style='display:none'>"+
+  "          						p&#770; ="+
+  "          						&nbsp; &nbsp;"+
+  "          						se(p&#770;) ="+
+  "      		</div>"+
+  "        	<div class='w3-container w3-cell w3-mobile' id='cat1SummarySVGgoesHere'></div>"+
+  "      	<br>"+
+  "    </div>";
+  //  		<!--  Inputs for each inference  (before plotting)  -->
+  intervalInpts =
+  "  					<h4>Estimate True Proportion with a Confidence Interval</h4>"+
+  "  			Choose a Confidence Level:"
+  "  		</div>";
+
+  testInpts=
+  "  			<div class='w3-cell  w3-mobile' style='width: 35%'>"+
+  "  				&nbsp; &nbsp; &nbsp; Test: Is the true proportion = &nbsp;"+
+  "  			</div>"+
+  "  			<div class='w3-cell  w3-mobile' style='width: 20%'>"+
+  "  				<input class='w3-input w3-card w3-mobile w3-pale-yellow' type='text' id='cat1trueP'"+
+  "           placeholder='0.625' 		onchange= 'changeC1Dots()' "+
+  "  			</div>"+
+  "  			<div class='w3-cell  w3-mobile' style='width: 30%'>"+
+  "  			</div>" +
+  "  			<div id='cat1TestInpt2' class='w3-cell-row w3-mobile' style=' display: none'>"+
+  "  				<div class='w3-cell' style='width: 30%'>"+
+  "  					Stronger evidence is a proportion"+
+  "  				</div>"+
+  "  				<div class='w3-cell' style='width: 40%'>"+
+  "  					<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='cat1Extreme'"+
+  "  					     onchange='cat1TestUpdate()'>"+
+  "  						<option value='lower'>Less Than or =</option>"+
+  "  						<option value='both' selected>As or More Extreme Than</option>"+
+  "  						<option value='upper'>Greater Than or =</option>"+
+  "  					</select>"+
+  "  				</div>"+
+  "  				<div class='w3-cell' style='width: 20%'>"+
+  "  					&nbsp;&nbsp; p&#770; (from above)"+
+  "  				</div>"+
+  "  		</div>";
+
+  plot =
+  "  		<div id='cat1Output' style='display: none'>"+
+  "  			<!--  Show Inference Plot -->"+
+  "  			<div class='w3-container w3-cell w3-mobile' id='cat1Inference' style='width:420px'>"+
+  "   					<!--  Inference plot goes here for CI or Test of 1 proportion -->"+
+  "  					<svg id='cat1InfSVG' height='300px' width='400px'></svg>"+
+  "  			</div>";
+
+  results =
+  "  			<div id='cat1MoreSims' style='width:360px; display:none'>"+
+  "  				<div class='w3-cell-row'>"+
+  "  					<div class='w3-cell  w3-mobile' style='width: 20%'>			Add		</div>"+
+  "  					<div class='w3-cell  w3-mobile' style='width: 20%'>"+
+  "  						<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat1More'"+
+  "               placeholder='0' onchange='cat1MoreSimFn()'>"+
+  "  					</div>"  +
+  "  					<div class='w3-cell  w3-mobile' style='width: 40%'>"+
+  "  						&nbsp; simulated points"+
+  "  					</div>"+
+  "  			</div>"+
+  "  		</div>  ";
+
+  return [dIn, intervalInpts, testInpts, plot, results];
 }
 
 
+   function q1TestEstimate(){
+    var dIn, intervalInpts, testInpts, plot, results;
+    dIn = "1 Quantitative Data Input";
+    choice = "Estimate or Test Mean";
+    plot = "";
+      results = "";
+      return [dIn, intervalInpts, testInpts, plot, results];
+  }
 
+function q2TestEstimate(){
+  var dIn, intervalInpts, testInpts, plot, results;
+  dIn =
+  	" 			<div class='w3-cell' style='width:50%'>" +
+  	" 				<h4> Choose Data</h4>" +
+  	" 				<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='quant2DataName'" +
+  	" 				   onchange='summarizeSlope()'>" +
+  	" 					<option value='shuttle' selected>Shuttle</option>" +
+  	" 					<option value='women'>Women rate men</option>" +
+  	" 					<option value='men'>Men rate women</option>" +
+  	" 					<option value='dental'>Dental distance</option>" +
+  	" 					<option value='other'>Other</option>" +
+  	" 				</select>" +
+  	" 			</div>" +
+  	" 			<div class='w3-cell' style='display:block' id='quant2Summry'>" +
+  	" 				<h4> &nbsp; &nbsp;Summary</h4>" +
+  	" 				<div class='w3-container w3-cell w3-mobile' id='quant2SummaryText' style='display:none'>" +
+  	" 				</div>" +
+  	" 				<div class='w3-container w3-cell w3-mobile' id='quant2SummarySVGgoesHere'>" +
+  	" 					</div>" +
+  	" 					<svg id='quant2SumSVG' height='400px' width='400px'></svg >" +
+  	" 			</div>" ;
+  intervalInpts= "Estimate Slope";
+  testInpts = "Test Slope";
+  plot =
+		" <div id='quant2Output' style='display:none'>" +
+		" </div>" +
+		" <div class='w3-container w3-cell w3-mobile' id='quant2Inference' style='width:420px; display:none'>" +
+		" 		<svg id='quant2InfSVG' height='400px' width='400px'></svg>" +
+		" </div>" ;
 
+    results =
+		  " <div id='quant2Results' class='w3-display-container' style='width:100%; display:none'></div>" +
+		  " <!--  Increase simulation size -->" +
+		  " <div id='quant2MoreSims' style='width:360px; display:none'>" +
+		  " 	<div class='w3-cell-row'>" +
+		  " 		<div class='w3-cell  w3-mobile' style='width: 20%'>" +
+		  " 			Add" +
+		  " 		</div>" +
+		  " 		<div class='w3-cell  w3-mobile' style='width: 20%'>" +
+	  		" 		<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='quant2More' placeholder='0'" +
+  			" 		onchange='quant2MoreSimFn()'>" +
+			  " 	</div>" +
+		  	" 	<div class='w3-cell  w3-mobile' style='width: 40%'>" +
+	  		" 		&nbsp;simulated slopes" +
+		  	" 	</div>" +
+	  	" 	</div>" +
+	  " 	</div>";
+    return [dIn, intervalInpts, testInpts, plot, results];
+  }
+
+  function c2TestEstimate(){
+    var dIn, intervalInpts, testInpts, plot, results;
+    dIn = "2 Categorical Data Input";
+    choice = "Estimate or Test Difference in Proportions";
+    plot = "";
+    results = "";
+    return [dIn, intervalInpts, testInpts, plot, results];
+  }
+
+  function c1q1TestEstimate(){
+    var dIn, intervalInpts, testInpts, plot, results;
+    dIn = "1 Categorical, 1 Quantitative Data Input";
+    choice = "Estimate or Test Difference in Means";
+    plot = "";
+    results = "";
+    return [dIn, intervalInpts, testInpts, plot, results];
+  }
+}
 function demoFn(demo){
   var hdr,
     demoDivs =[],
-    div1,
-    div2,
-    div3,
     title = document.getElementById("demoHeader"),
     block1 = document.getElementById("demoDiv1"),
     block2 = document.getElementById("demoDiv2"),
@@ -322,14 +391,12 @@ function demoFn(demo){
    case 'Mixer': {
      hdr = 'Random sampling by drawing balls from a box';
      demoDivs = mixerDivs();
-
      break;
    }
    case 'CIdemo': {
      hdr = "Demonstrate 'Confidence' in a Confidence Interval";
-     demoDivs = CIdemoDivs();
-
-        break;
+     demoDivs = CI_demo_Divs();
+    break;
    }
    case 'lurkingC1': {
      	hdr = 'Demo of the effects of a categorical lurking variable on proportion estimates.'
@@ -372,11 +439,7 @@ function demoFn(demo){
 }
 
 
-function tableFn(distn){
-
-}
-
-spinDivs = function(){
+function spinDivs() {
  div1 =  "Type labels in the first box separated by commas or tabs " +
 "<br> and the same number of percentages or probability weights in the second box. " +
 "<div class='w3-form w3-cell-row w3-mobile' id='spinInputs'> " +
@@ -441,7 +504,7 @@ div3 =    "<div class='w3-form w3-cell-row w3-mobile' style='display:block'> " +
 return [div1, div2, div3];
 };
 
-mixerDivs = function(){
+function mixerDivs(){
   var div1, div2, div3;
   div1 =
     " 	<p>	Setup: Type as many labels in the first box, separated by commas, " +
@@ -466,6 +529,7 @@ mixerDivs = function(){
     " 			</select> " +
     " 		</div> " +
     " 	</div> "
+
     div2 = " 	Stop after: " +
     " 	<div class='w3-form w3-cell-row w3-mobile' id='mixStops'> " +
     " 		<div class='w3-cell w3-mobile' style='width:30%'> " +
@@ -499,14 +563,14 @@ mixerDivs = function(){
       " 	<form class='w3-cell w3-card'> " +
       " 		<h4>Repeat Process:</h4> " +
       " 		<div class='w3-bar'> " +
-      " 			<input class='w3-radio' value=100 type='radio' name='mixReps' onClick='mixRepeat(100);" +
-      "       dotChart1(mixRepResults, mixSmrySVG);' /> " +
+      " 			<input class='w3-radio' value=100 type='radio' name='mixReps'  " +
+       "        onClick='mixRepeat(100);   dotChart1(mixRepResults, mixSmrySVG);' /> " +
       " 			<label>100</label> " +
-      "    <input class='w3-radio' value=1000 type='radio' name='mixReps' onClick='mixRepeat(1000); " +
-      "       dotChart1(mixRepResults, mixSmrySVG);' checked='checked' /> " +
+      "    <input class='w3-radio' value=1000 type='radio' name='mixReps' " +
+      "        onClick='mixRepeat(1000); dotChart1(mixRepResults, mixSmrySVG);' checked='checked' /> " +
       " 			<label>1000</label> " +
-      " 	<input class='w3-radio' value=5000 type='radio' name='mixReps' onClick='mixRepeat(5000); " +
-      "       dotChart1(mixRepResults, mixSmrySVG);' /> " +
+      " 	<input class='w3-radio' value=5000 type='radio' name='mixReps'  " +
+      "       onClick='mixRepeat(5000); dotChart1(mixRepResults, mixSmrySVG);' /> " +
       " 			<label>5000</label> " +
       " 		</div> " +
     " 		</form> " +
@@ -518,7 +582,7 @@ mixerDivs = function(){
 return [div1, div2, div3];
 };
 
-CIdemoDivs = function(){
+function CI_demo_Divs(){
   var div1, div2, div3;
   div1 = 	"<div class=w3-container> "+
      " 	<form class='w3-cell w3-card w3-padding-small'>" +
@@ -567,10 +631,183 @@ CIdemoDivs = function(){
      div2 = " ";
      div3 = " ";
 return [div1, div2, div3];
-};
+}
 
-genericDemoDivs = function(){
+function genericDemoDivs(){
   var div1, div2, div3;
+  return [div1, div2, div3];
+}
 
-return [div1, div2, div3];
+function moreSims(more) {
+  // function to add more points to an estimate or test plot
+  switch(variable){
+      case 'cat1' : {
+        cat1MoreSimFn(more);
+        break;   // End of c1Output
+      }
+      case 'quant1' :  {
+        quant1MoreSimFn(more);
+         break;
+       }
+      case 'cat2' :  {
+        cat2MoreSimFn(more);
+        break;
+      }
+      case 'c1q1':  {
+        c1q1MoreSimFn(more);
+        break;
+      }
+      case 'quant2' :  {
+        quant2MoreSimFn(more);
+        break;
+      }
+      default: {   }
+    };
+  }
+
+
+  var CIrangeslide = rangeslide("#confLvlInpt", {
+    data: confLevels,
+    showLabels: true,
+    startPosition: 0,
+    showTicks: false,
+    dataSource: "value",
+    labelsContent: "key",
+    valueIndicatorContent: "key",
+    thumbWidth: 24,
+    thumbHeight: 24,
+    handlers: {
+      valueChanged: [CLChange]
+    }
+  });
+
+
+function CLChange(arg) {
+  //update plot to illustrate confidence interval
+  var cnfLvl;
+  if (arg.value) {
+    cnfLvl =  +arg.value;
+  }
+  switch(variable){
+      case 'cat1' : {
+        cat1CLChange(arg);
+        break;   // End of c1Output
+      }
+      case 'quant1' :  {
+        quant1CLChange(arg);
+         break;
+       }
+      case 'cat2' :  {
+        cat2CLChange(arg);
+        break;
+      }
+      case 'c1q1':  {
+        c1q1CLChange(arg);
+        break;
+      }
+      case 'quant2' :  {
+        q2CLChange(arg);
+        break;
+      }
+      default: {   }
+    };
+  }
+function moreCI(nreps) {
+  //update plot to illustrate confidence interval
+  switch(variable){
+      case 'cat1' : {
+        cat1CLChange(arg);
+        break;   // End of c1Output
+      }
+      case 'quant1' :  {
+        quant1CLChange(arg);
+         break;
+       }
+      case 'cat2' :  {
+        cat2CLChange(arg);
+        break;
+      }
+      case 'c1q1':  {
+        c1q1CLChange(arg);
+        break;
+      }
+      case 'quant2' :  {
+        q2CLChange(arg);
+        break;
+      }
+      default: {   }
+    };
+  }
+
+function moreTests(nreps, concat) {
+  //generate or update test resmaple data
+  var newSample =[];
+  if (typeof(concat) == 'undefined'){
+    concat = false;
+  }
+  if( ! concat){
+    samples4Test = [];
+  }
+  switch(variable){
+      case 'cat1' : {
+        newSample = moreCat1Sims(nreps);
+        break;   // End of c1Output
+      }
+      case 'quant1' :  {
+        newSample = moreQuant1TSims(nreps);
+         break;
+       }
+      case 'cat2' :  {
+        newSample = moreCat2TSims(nreps);
+        break;
+      }
+      case 'c1q1':  {
+        newSample = moreC1Q1TSims(nreps);
+        break;
+      }
+      case 'quant2' :  {
+        newSample = moreQuant2TSims(q2Data, nreps);
+        break;
+      }
+      default: {   }
+    };
+  }
+
+
+function moreQuant2TSims(data, reps) {
+  var coVar,
+    correlations = [],
+    dataLength = data.length,
+    seq = [],
+    slopes = [],
+    sample = [],
+    xBar,
+    yBar,
+    xVar,
+    yVar,
+    ysample = [];
+  seq = sequence(0, dataLength - 1, 1);
+  xBar = d3.mean(data[x]);
+  xVar = d3.variance(data[x]);
+  for (i = 0; i < reps; i++) {
+    coVar = 0;
+    yBar = 0;
+    // could resample these as well as y's, but then we could get all x values equal
+    // instead, we'll assume it's a designed experiment with set (fixed) x levels
+    sample = sampleN(seq, dataLength);
+    for (j = 0; j < dataLength; j++) {
+      ysample[j] = y[sample[j]]; // set y values
+      coVar += x[j] * ysample[j]; // add up cross product
+    }
+    // console.log(ysample);
+    // console.log(coVar);
+    // xBar = d3.mean(xsample);
+    // xVar = d3.variance(xsample);
+    yBar = d3.mean(ysample);
+    yVar = d3.variance(ysample);
+    coVar = (coVar - dataLength * xBar * yBar) / (dataLength - 1);
+    slopes[i] = coVar / xVar;
+    correlations[i] = coVar / Math.sqrt(yVar * xVar);
+  }
+  return slopes;
 }

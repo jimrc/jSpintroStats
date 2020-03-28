@@ -27,23 +27,18 @@ var c1SummDiv = d3.select("#cat1Inference"),
   cat1Bars,
   cat1Color = [],
   confLevels = [
-    {
-      key: "80%",
-      value: "0.80"
+    {      key: "80%",
+        value: "0.80"
     },
-    {
-      key: "90%",
-      value: "0.90"
+    {      key: "90%",
+        value: "0.90"
     },
-    {
-      key: "95%",
-      value: "0.95"
+    {      key: "95%",
+        value: "0.95"
     },
-    {
-      key: "99%",
-      value: "0.99"
-    }
-  ],
+    {      key: "99%",
+        value: "0.99"
+    }  ],
   cat1Inference,
   cat1InfOutput,
   noChoice = "undefined",
@@ -105,7 +100,7 @@ function summarizeP1() {
     "p&#770; =  " +
     cat1Phat.toPrecision(4) +
     " <br> se(p&#770) = " +
-    (Math.sqrt(cat1Phat * (1 - cat1Phat)) / (cat1N1 + cat1N2)).toPrecision(3);
+    (Math.sqrt(cat1Phat * (1 - cat1Phat) / (cat1N1 + cat1N2))).toPrecision(3);
   cat1Summ.style = "display: block";
 
   c1Data = [
@@ -183,20 +178,7 @@ function cat1CLChange(arg) {
   document.getElementById("cat1MoreSims").style.display = "block";
 }
 
-var cat1CIrangeslide = rangeslide("#cat1ConfLvlInpt", {
-  data: confLevels,
-  showLabels: true,
-  startPosition: 0,
-  showTicks: false,
-  dataSource: "value",
-  labelsContent: "key",
-  valueIndicatorContent: "key",
-  thumbWidth: 24,
-  thumbHeight: 24,
-  handlers: {
-    valueChanged: [cat1CLChange]
-  }
-});
+
 
 function estimateP1() {
   //function to estimate the true proportion based on a sample of 'success/failure' data
@@ -412,17 +394,17 @@ function cat1TestInteract(d, i) {
 }
 
 
-function cat1MoreSimFn() {
+function cat1MoreSimFn(more) {
   // function to add more points to an estimate or test of one proportion
   var sC1Len,
-    more = +document.getElementById("cat1More").value,
+    more = +more;//document.getElementById("cat1More").value,
     newValues = [];
   //document.getElementById("cat1WhichDot").style.display = "none";
   if (more > 0) {
     total = cat1N1 + cat1N2;
     cat1Phat = cat1N1 / total;
 
-    if (cat1Inference === "test") {
+    if (inference === "test") {
       newValues = rbinom(total, cat1Pnull, more);
       for (i = 0; i < more; i++) {
         sampleC1.push(newValues[i] / total);

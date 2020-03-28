@@ -477,16 +477,16 @@ function c1q1TestInteract(d, i) {
 	//}
 }
 
-function c1q1MoreSimFn() {
+function c1q1MoreSimFn(more) {
 	// function to add more points to an estimate or test of diff in means
 	var indices = [],
-		more = +document.getElementById("C1Q1More").value,
+		more = +more; //document.getElementById("C1Q1More").value,
 		newMns,
 		sampleLength;
 	document.getElementById("C1Q1WhichDot").style.display = "none"; // close modals
 
 	if (more > 0) {
-		if (c1q1Inference === 'test') {
+		if (inference === 'test') {
 			// assume difference in means is c1q1Null, generate resamples of x1 and of x2
 			// and diff in means
 			newMns = resampleDiffMeans(x1, c1q1Shifted, more);

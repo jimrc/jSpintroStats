@@ -327,16 +327,16 @@ function cat2TestInteract(d, i) {
 	}
 } ;
 
-function cat2MoreSimFn() {
+function cat2MoreSimFn(more) {
 	// function to add more points to an estimate or test of one proportion
 	//  change from sampleC2 vector to a list containing A_counts, B_counts, and the difference in phats
 	var sC2Len,
-	    more = +document.getElementById("cat2More").value,
+	    more = +more; //document.getElementById("cat2More").value,
 	    newValues1 = [],
 	    newValues2 = [];
 	if (more > 0) {
 		document.getElementById("cat2WhichDot").style.display = "none";
-		if (c2Inference === 'test') {
+		if (inference === 'test') {
 			if(! hyperGeom[0]){
 				hyperGeom = hypergeomPMF(total1, total2, cat2N11 + cat2N12);
 			}

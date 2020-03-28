@@ -422,13 +422,13 @@ function q1TestInteract(d, i) {
   };
 }
 
-function q1MoreSimFn() {
+function quant1MoreSimFn(more) {
   // function to add more points to an estimate or test of one proportion
   var sq1Len,
-    more = +document.getElementById('q1More').value,
+    more = +more; //document.getElementById('q1More').value,
     newValues = [];
   if (more > 0) {
-    if (q1Inference === 'test') {
+    if (inference === 'test') {
       newValues = resample1Mean(q1Shifted, more);
       for (i = 0; i < more; i++) {
         sampleq1.push(newValues[i]);/*eslint quotes: [2, "single", "avoid-escape"]*/
