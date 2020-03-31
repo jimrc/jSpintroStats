@@ -1,6 +1,7 @@
 //  javascript to setup main index.html
 var circleColors = ["steelblue", "red"],
-    demo,
+    cnfLvl = 0.80, ciInftop,
+    demo, mean, proportion, difference, slope,
     vbleChoice,
     confLevels = [
       { key: "80%", value: "0.80" },
@@ -9,9 +10,13 @@ var circleColors = ["steelblue", "red"],
       { key: "99%", value: "0.99" }
     ],
     inference,
+    nullValue,
+    lowerBd,
+    upperBd,
     sample4Test = [],
-    sample4CI = [],
-    testData;
+    resample4CI = [],
+    CIData,
+    testData = [];
 
   //  Functions to activate Header Choices ///
 function w3Open() {
@@ -40,21 +45,6 @@ function actionsFunc(actns) {
 		x.previousElementSibling.className = x.previousElementSibling.className.replace(" w3-blue", "");
 	}
 }
-
-//function openVble(vbleName) {
-  // perhaps this is no longer needed?
-	//var i,
-	//		y = document.getElementsByClassName("Page"),
-	//		x = document.getElementsByClassName("vType");
-	//for (i = 0; i < x.length; i++) {
-	//			x[i].style.display = "none";
-	//}
-	//for (i = 0; i < y.length; i++) {
-	//		y[i].style.display = "none";
-	//}
-	//document.getElementById(vbleName).style.display = "block";
-	//w3Close();
-//}
 
 function choosePage(page, vble) {
 	var i,
@@ -97,48 +87,35 @@ var CIrangeslide = rangeslide("#confLvlInpt", {
 
 function CLChange(arg) {
   // set colors for dots to illustrate confidence interval
-  // needs to adjust for type of inference, but inference shouldnt be a global variables
   // new dots come from an inference specific functions
   // Get new dots, color them, and plot them.
-  var cnfLvl = cat1CnfLvl,
-    sC1Len,
-    tempColors;
   if (arg.value) {
     cnfLvl = +arg.value;
+  } else {
+    cnfLvl = 0.80
   }
-  if (CIdata) {
-    CILen = CIdata[0].length;
-    tempColors = ciColor(CIdata[0], cnfLvl);
-    if (tempColors[1]) {
-      lowerBd = tempColors[1].toPrecision(4);
-      upperBd = tempColors[2].toPrecision(4);
-      cnfLvl = tempColors[3];
-      CIdata = [c1CIdata[0], tempColors[0]];
-    } else {
-      CIdata = [CIdata[0], tempColors];
-    }
-    cat1InfOutput = discreteChart(c1CIdata, cat1InfSVG, cat1CIinteract);
-    sC1Len = CIdata[0].length;
-  } //else {
-  //  console.log('No resampled data for CI');
-  //}
-  ftr = document.getElementById("cat1Results");
-  ftr.innerHTML = //'<div style = 'height = 10'> </div>' +
-    '<div style = "width:360px"> Proportion ' +
-    cat1Label1 +
-    " in  " +
-    sC1Len +
-    " Re-samples" +
-    "<br> <br>" +
-    Math.round(cnfLvl * 100) +
-    "% Confidence Interval: (" +
-    cat1lowerBd +
-    ", " +
-    cat1upperBd +
-    " )</div> ";
-  ftr.style.display = "block";
-  document.getElementById("moreSims").style.display = "block";
+  var sLen = resample4CI.length,
+    tempColors =[];
+  if (typeof(sLen) === 'undefined' || sLen < 1) {
+    return ;
+  }
+  resample4CI = resample4CI.sort(function(a, b) {
+        return a - b;
+    });
+  tempColors = ciColor(resample4CI);
+  xLabel = "Default";
+  CIData = stackDots(resample4CI);
+  for(i =0; i < sLen; i++){
+    CIData[i].color = circleColors[tempColors[i]]
+  }
+  console.log("CLchange", CIData[0], lowerBd, upperBd);
+  makeScatterPlot(CIData, "infSVG", xLabel, " ");
+  document.getElementById("inferenceText").innerHTML =
+         ciInftop +  sLen + " Re-samples <br>" +  Math.round(cnfLvl * 100) +
+    "% Confidence Interval: (" + lowerBd.toPrecision(4) + ", " + upperBd.toPrecision(4) +  ") </div>";
+    document.getElementById("inferenceText").style.display = 'block';
 }
+
 
 function renew (){
       //function to remove outdated info and PlotGoesHere
@@ -204,10 +181,9 @@ function testEstFn(vble){
     };
    title.innerHTML = hdr;
    block1.innerHTML = divs[0];
-   block2.innerHTML = divs[1];
    block3.innerHTML = divs[2];
    //block4.innerHTML = divs[3];
-   block5.innerHTML = divs[4];
+   //block5.innerHTML = divs[4];
 
 
 function c1TestEstimate(){
@@ -313,7 +289,7 @@ function q2TestEstimate(){
   	" 			<div class='w3-cell' style='width:50%'>" +
   	" 				<h4> Choose Data: </h4>" +
   	" 				<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='quant2DataName'" +
-  	" 				   onchange='summarizeSlope(this.value)'>" +
+  	" 				   onchange='sample4Test = []; summarizeSlope(this.value)'>" +
   	" 					<option value='none' selected>Choose Data</option>" +
   	" 					<option value='shuttle' selected>Shuttle</option>" +
   	" 					<option value='women'>Women rate men</option>" +
@@ -332,17 +308,17 @@ function q2TestEstimate(){
   	" 			</div>" ;
   intervalInpts= "Estimate Slope";
   testInpts = 	"<div class='w3-cell' >	Stronger evidence is a slope 	</div>" +
-				"	<div class='w3-cell' style='width: 30%'>" +
-				"		<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='q2testDirection' " +
-        	"  onchange='testDirection = this.value; moreTests(100, false)'>" +
-					"		<option value='lower'>Less Than or =</option>" +
-				"			<option value='both' selected>As or More Extreme Than</option>" +
-				"			<option value='upper'>Greater Than or =</option>" +
-				"		</select>" +
-				"	</div>" +
-				"	<div class='w3-cell' style='width: 30%' id='q2ObsdSlope'>" +
-				"		&nbsp;&nbsp; the &beta;&#770;<sub>1</sub> observed above." +
-				"	</div>" ;
+		"	<div class='w3-cell' style='width: 30%'>" +
+		"		<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='q2testDirection' " +
+   	"  onchange='testDirection = this.value; if(sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>" +
+			"		<option value='lower'>Less Than or =</option>" +
+		"			<option value='both' selected>As or More Extreme Than</option>" +
+		"			<option value='upper'>Greater Than or =</option>" +
+		"		</select>" +
+		"	</div>" +
+		"	<div class='w3-cell' style='width: 30%' id='q2ObsdSlope'>" +
+    "		&nbsp;&nbsp; observed &beta;&#770;<sub>1</sub> = " + slope +
+		"	</div>" ;
 
   plot =
 		" <div id='quant2Output' style='display:none'>" +
@@ -351,24 +327,7 @@ function q2TestEstimate(){
 		" 		<svg id='quant2InfSVG' height='400px' width='400px'></svg>" +
 		" </div>" ;
 
-    results =
-		  " <div id='quant2Results' class='w3-display-container' style='width:100%; display:none'></div>" +
-		  " <!--  Increase simulation size -->" +
-		  " <div id='quant2MoreSims' style='width:360px; display:none'>" +
-		  " 	<div class='w3-cell-row'>" +
-		  " 		<div class='w3-cell  w3-mobile' style='width: 20%'>" +
-		  " 			Add" +
-		  " 		</div>" +
-		  " 		<div class='w3-cell  w3-mobile' style='width: 20%'>" +
-	  		" 		<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='quant2More' placeholder='0'" +
-  			" 		onchange='quant2MoreSimFn()'>" +
-			  " 	</div>" +
-		  	" 	<div class='w3-cell  w3-mobile' style='width: 40%'>" +
-	  		" 		&nbsp;simulated slopes" +
-		  	" 	</div>" +
-	  	" 	</div>" +
-	  " 	</div>";
-    return [dIn, intervalInpts, testInpts, plot, results];
+    return [dIn, intervalInpts, testInpts, plot];
   }
 
   function c2TestEstimate(){
@@ -389,6 +348,9 @@ function q2TestEstimate(){
     return [dIn, intervalInpts, testInpts, plot, results];
   }
 }
+
+
+
 function demoFn(demo){
   var hdr,
     demoDivs =[],
@@ -652,199 +614,226 @@ function genericDemoDivs(){
   return [div1, div2, div3];
 }
 
-function moreSims(more) {
-  // function to add more points to an estimate or test plot
-  switch(variable){
+
+function moreCI(nreps, concat) {
+  //update plot to illustrate confidence interval
+    //generate or update CI resample data
+  var newSample =[], tempColors = [],
+       lowCt, check = 0 ;
+  if (typeof(concat) == 'undefined'){
+    concat = false;
+  }
+  if( ! concat){
+    resample4CI = [];
+  }
+  if(nreps>0){
+    switch(variable){
       case 'cat1' : {
-        cat1MoreSimFn(more);
+        newSample = cat1CI(nreps)
+          ciInftop = "Confidence Interval for proportion based on ";
         break;   // End of c1Output
       }
       case 'quant1' :  {
-        quant1MoreSimFn(more);
+        quant1CLChange(arg);
+          ciInftop = "Confidence Interval for mean based on ";
          break;
        }
       case 'cat2' :  {
-        cat2MoreSimFn(more);
+        cat2CLChange(arg);
+          ciInftop = "Confidence Interval for difference in proportions based on ";
         break;
       }
       case 'c1q1':  {
-        c1q1MoreSimFn(more);
+        c1q1CLChange(arg);
+          ciInftop = "Confidence Interval for difference in means based on ";
         break;
       }
       case 'quant2' :  {
-        quant2MoreSimFn(more);
+          newSample = resampleSlope4CI(q2Values, nreps);
+          ciInftop = "Confidence Interval for slope based on ";
+          xLabel = "Slopes from resampled datasets";
         break;
       }
       default: {   }
     };
-  }
-
-
-  var CIrangeslide = rangeslide("#confLvlInpt", {
-    data: confLevels,
-    showLabels: true,
-    startPosition: 0,
-    showTicks: false,
-    dataSource: "value",
-    labelsContent: "key",
-    valueIndicatorContent: "key",
-    thumbWidth: 24,
-    thumbHeight: 24,
-    handlers: {
-      valueChanged: [CLChange]
+      //combine with old sims
+    for (i = 0; i < nreps; i++) {
+          resample4CI.push(newSample[i]);
+      }
     }
-  });
-
-
-function CLChange(arg) {
-  //update plot to illustrate confidence interval
-  var cnfLvl;
-  if (arg.value) {
-    cnfLvl =  +arg.value;
-  }
-  switch(variable){
-      case 'cat1' : {
-        cat1CLChange(arg);
-        break;   // End of c1Output
+    // sort
+    resample4CI = resample4CI.sort(function(a, b) {
+        return a - b;
+      });
+      // get colors for inside/outside of observed
+      sLen = resample4CI.length;
+      console.log("moreCIS", resample4CI[0], resample4CI[50], resample4CI[90]);
+     tempColors = ciColor(resample4CI);
+     CIData = stackDots(resample4CI);
+      for (i = 0; i < sLen; i++) {
+        CIData[i].color = circleColors[tempColors[i]];
       }
-      case 'quant1' :  {
-        quant1CLChange(arg);
-         break;
-       }
-      case 'cat2' :  {
-        cat2CLChange(arg);
-        break;
-      }
-      case 'c1q1':  {
-        c1q1CLChange(arg);
-        break;
-      }
-      case 'quant2' :  {
-        q2CLChange(arg);
-        break;
-      }
-      default: {   }
-    };
-  }
-function moreCI(nreps) {
-  //update plot to illustrate confidence interval
-  switch(variable){
-      case 'cat1' : {
-        cat1CLChange(arg);
-        break;   // End of c1Output
-      }
-      case 'quant1' :  {
-        quant1CLChange(arg);
-         break;
-       }
-      case 'cat2' :  {
-        cat2CLChange(arg);
-        break;
-      }
-      case 'c1q1':  {
-        c1q1CLChange(arg);
-        break;
-      }
-      case 'quant2' :  {
-        q2CLChange(arg);
-        break;
-      }
-      default: {   }
-    };
+      console.log("moreCIS", CIData[0], lowerBd, upperBd);
+      makeScatterPlot(CIData, "infSVG", xLabel, " ");
+      document.getElementById("inferenceText").innerHTML =
+            ciInftop +  sLen + " Re-samples <br>" +  Math.round(cnfLvl * 100) +
+        "% Confidence Interval: (" + lowerBd.toPrecision(4) + ", " + upperBd.toPrecision(4) +  ") </div>";
+        document.getElementById("inferenceText").style.display = 'block';
   }
 
 function moreTests(nreps, concat) {
   //generate or update test resmaple data
   var newSample =[], testColor = [],
-       lowV, hiV, check, extCount,
-       xLabel;
+       lowV, lowCt, hiV, check = 0, extCount =0;
   if (typeof(concat) == 'undefined'){
     concat = false;
   }
   if( ! concat){
     sample4Test = [];
   }
-  switch(variable){
-      case 'cat1' : {
-        newSample = moreCat1Sims(nreps);
-        break;   // End of c1Output
+  if(nreps>0){
+    switch(variable){
+        case 'cat1' : {
+          newSample = moreCat1Sims(nreps);
+          break;   // End of c1Output
+        }
+        case 'quant1' :  {
+          newSample = moreQuant1TSims(nreps);
+          break;
+        }
+        case 'cat2' :  {
+          newSample = moreCat2TSims(nreps);
+          break;
+        }
+        case 'c1q1':  {
+          newSample = moreC1Q1TSims(nreps);
+          break;
+        }
+        case 'quant2' :  {
+          newSample = moreQuant2TSims(q2Values, nreps);
+          xLabel = "Slopes from resampled datasets under the null hypothesis ";
+          nullValue = 0.0;
+          observed = slope;
+          break;
+        }
+        default: {   }
+      };
+      //combine with old sims
+      for (i = 0; i < nreps; i++) {
+          sample4Test.push(newSample[i]);
       }
-      case 'quant1' :  {
-        newSample = moreQuant1TSims(nreps);
-         break;
-       }
-      case 'cat2' :  {
-        newSample = moreCat2TSims(nreps);
-        break;
-      }
-      case 'c1q1':  {
-        newSample = moreC1Q1TSims(nreps);
-        break;
-      }
-      case 'quant2' :  {
-        newSample = moreQuant2TSims(q2Values, nreps);
-        xLabel = "Slopes from resampled datasets under the null hypothesis ";
-        nullValue = 0.0;
-        observed = slope;
-        break;
-      }
-      default: {   }
-    };
-   //combine with old sims
-   for (i = 0; i < nreps; i++) {
-        sample4Test.push(newSample[i]);
-      }
-  // sort
-      sample4Test = sample4Test.sort(function(a, b) {
+    }
+    // sort
+    sample4Test = sample4Test.sort(function(a, b) {
         return a - b;
       });
-  // get color
-  sLen = sample4Test.length;
-  switch (testDirection) {
-    case "lower": {
-      for (i = 0; i < sLen; i++) {
-        check = 0 + (sample4Test[i] <= observed);
-        extCount += check;
-        testColor[i] = check;
-      } break;
-    }
-    case "upper": {
-      for (i = 0; i < sLen; i++) {
-        check = 0 + (sample4Test[i] >= observed);
-        extCount += check;
-        testColor[i] = check;
-      }
-    }
-    case "both": {
-      lowV =  observed * (observed <= nullValue) +
-        (2 * nullValue - observed) * (observed > nullValue) +
-        1 / 1000000;
-        hiV =   observed * (observed >= nullValue) +
-        (2 * nullValue - observed) * (observed < nullValue) -
-        1 / 1000000;
-        for (i = 0; i < sLen; i++) {
-          check = 0 + ((sample4Test[i] <= lowV) | (sample4Test[i] >= hiV));
-          extCount += check;
-          testColor[i] = check;
+      // get colors for inside/outside of observed
+      sLen = sample4Test.length;
+      testColor = sameVector(0, sLen);  // set all to zero
+      switch (testDirection) {
+        case "lower": {
+          for (i = 0; i < sLen; i++) {
+            check = 0 + (sample4Test[i] <= observed);
+            extCount += check;
+            testColor[i] = check;
+            if(check == 0) {
+              break;
+            }
+          }
+          break;
         }
+        case "upper": {
+          for (i = sLen-1; i >-1; i--) {
+            check = 0 + (sample4Test[i] >= observed);
+            extCount += check;
+            testColor[i] = check;
+            if(check ==0){
+              break;
+            }
+          }
+          break;
+        }
+        case "both": {
+          lowV =  observed * (observed <= nullValue) +
+              (2 * nullValue - observed) * (observed > nullValue) +
+              1 / 1000000;
+          hiV =   observed * (observed >= nullValue) +
+              (2 * nullValue - observed) * (observed < nullValue) -
+              1 / 1000000;
+          for (i = 0; i < sLen; i++) {
+            check = 0 + (sample4Test[i] <= lowV);
+            extCount += check;
+            testColor[i] = check;
+            if(check == 0) {
+              break;
+            }
+          }
+          for (i = sLen-1; i > lowCt; i--) {
+            check = 0 + (sample4Test[i] >= observed);
+            extCount += check;
+            testColor[i] = check;
+            if(check ==0){
+              break;
+            }
+          }
+          break;
+        }
+        default: {  }
       }
-      default: {  }
-    }
-  // plotX
-  testData = stackDots(sample4Test);
-    for (i = 0; i < sLen; i++) {
-      testData[i].color = circleColors[testColor[i]];
-    }
-    console.log(testData);
-    makeScatterPlot(testData, "infSVG", xLabel, " ");
-  //find p-value
-    document.getElementById("inferenceText").innerHTML =
-    "P-value goes here";
-
-  }
+      //console.log(testColor);
+      // plot
+      testData = stackDots(sample4Test);
+      for (i = 0; i < sLen; i++) {
+        testData[i].color = circleColors[testColor[i]];
+      }
+      //ToDo:  Colors do not change when we change direction of test, but P-value does.
+      makeScatterPlot(testData, "infSVG", xLabel, " ");
+      //find p-value
+      //  console.log(testData);
+      document.getElementById("inferenceText").innerHTML =
+        "P-value: " + formatPvalue(extCount, sLen);
+}
 
 
 function moreQuant2TSims(data, reps) {
+  var coVar,
+    correlations = [],
+    dataLength = data.length,
+    seq = [],
+    slopes = [],
+    sample = [],
+    xBar,
+    yBar,
+    xVar,
+    yVar,
+    ysample = [];
+  seq = sequence(0, dataLength - 1, 1);
+  xBar = d3.mean(data, function(d) {return d.x;} );
+  xVar = d3.variance(data,function(d) {return d.x;} );
+  for (i = 0; i < reps; i++) {
+    coVar = 0;
+    yBar = 0;
+    // could resample these as well as y's, but then we could get all x values equal
+    // instead, we'll assume it's a designed experiment with set (fixed) x levels
+    sample = sampleN(seq, dataLength);
+    for (j = 0; j < dataLength; j++) {
+      ysample[j] = y[sample[j]]; // set y values
+      coVar += x[j] * ysample[j]; // add up cross product
+    }
+    // console.log(ysample);
+    // console.log(coVar);
+    // xBar = d3.mean(xsample);
+    // xVar = d3.variance(xsample);
+    yBar = d3.mean(ysample);
+    yVar = d3.variance(ysample);
+    coVar = (coVar - dataLength * xBar * yBar) / (dataLength - 1);
+    slopes[i] = coVar / xVar;
+    correlations[i] = coVar / Math.sqrt(yVar * xVar);
+  }
+  return slopes;
+}
+
+function moreQuant2CISims(data, reps) {
   var coVar,
     correlations = [],
     dataLength = data.length,

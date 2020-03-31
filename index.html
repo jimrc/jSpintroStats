@@ -212,21 +212,40 @@
   			<button id='Estimate' class='w3-button w3-pale-blue w3-medium w3-round-xlarge'
 				onclick='inference = "estimate";
 					document.getElementById("confLvlInpt").style.display = "block";
-					document.getElementById("testInpt").style.display = "none" '>
+					document.getElementById("testInpt").style.display = "none"
+					moreCI(100, false)'>
   				&nbsp; Estimate the true value.
   			</button>
   			&nbsp; OR &nbsp;
   			<button id='Test' class='w3-button w3-pale-blue w3-medium w3-round-xlarge'
 				 onclick='inference = "test" ;
-				 		document.getElementById("testInpt").style.display = "block"
-				 		document.getElementById("confLvlInpt").style.display = "none" '>
+				 		document.getElementById("testInpt").style.display = "block";
+				 		document.getElementById("confLvlInpt").style.display = "none" ;
+						moreTests(100, false)'>
   				&nbsp; Test for a particular value.
   			</button>
   		</div>
   <div  id = "inferenceInputs" class="w3-container" style="display:none">
-      <div id = "confLvlInpt"class="w3-container" style="display:none" >
+      <div id = "confLvlInpt"class="w3-container" style="display:none width: 60%" >
 				Choose confidence level:
 			</div>
+			<script>
+			var CIrangeslide = rangeslide("#confLvlInpt", {
+  			data: confLevels,
+			  showLabels: true,
+  			startPosition: 0,
+  			showTicks: false,
+			  dataSource: "value",
+			  labelsContent: "key",
+			  valueIndicatorContent: "key",
+			  thumbWidth: 24,
+  			thumbHeight: 24,
+			  handlers: {
+			    valueChanged: [CLChange]
+  }
+});
+
+			</script>
 			<div id = "testInpt"class="w3-container" style="display:none" >
 				Test:
 			</div>
@@ -235,7 +254,7 @@
 		<svg id = "infSVG" height='400px' width='400px' ></svg>
 	</div>
 	<div id = "inferenceText" class="w3-container"   style="display:none">
-		 	 <svg id = "infSVG" height=360 width=400></svg>
+
 
 	</div>
 	<div id = "moreTEsims" class="w3-container"   style="display:none">
@@ -245,7 +264,8 @@
 			 </div>
 			 <div class='w3-cell  w3-mobile' style='width: 20%'>
 				 <input class='w3-input w3-mobile w3-pale-yellow' type='text' id='morePoints' placeholder='0'
-				 onchange='moreSims(this.value)'>
+				 onclick='if(inference === "test"){moreTests(this.value, true)} else {moreCI(this.value, true)}'
+				 onchange='if(inference === "test"){moreTests(this.value, true)} else {moreCI(this.value, true)}'>
 			 </div>
 			 <div class='w3-cell  w3-mobile' style='width: 80%'>
 				 simulated samples

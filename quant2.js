@@ -33,7 +33,6 @@ var correlation,
   q2Inference,
   q2InfOutput,
   q2SmryPlot,
-  slope,
   resampleq2 = [],
   sampleq2 = [],
   sq2Len,
@@ -57,7 +56,10 @@ function summarizeSlope(q2DataName) {
     x = [];
     y = [];
   sampleq2 = resampleq2 = [];
-
+   d3.select("#infSVG").selectAll('g').remove();
+   d3.select("#sumSVG").selectAll('g').remove();
+   document.getElementById("confLvlInpt").style.display = 'none';
+   document.getElementById("testInpt").style.display = 'none';
   //q2DataName = document.getElementById("quant2DataName").value;
   q2RawData =
     q2DataName === "shuttle"
@@ -436,7 +438,7 @@ function q2TestUpdate() {
   }
   //q2ftr.style.display = 'block';
   q2ftr.innerHTML =
-    "<div  style = 'width:320px'> Slopes in " +
+    "<div  style = 'width: 320px'> Slopes in " +
     sq2Len +
     " Resamples from H<sub>0</sub> <br>" +
     "p-value (strength of evidence): " +
@@ -453,7 +455,7 @@ function quant2MoreSimFn(more) {
     newValues = [];
   if (more > 0) {
     if (inference === "test") {
-      // assume slope is zero, generate samples of x and of y independently
+      // assume slope is zero, generate samples of y independent of x
       // fit new line to each
       newValues = resampleSlope4Test(q2Values, more);
       for (i = 0; i < more; i++) {

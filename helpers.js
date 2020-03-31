@@ -101,6 +101,15 @@ function sequence(start, stop, inc) {
   return out;
 }
 
+function sameVector(init, length) {
+  var i,
+    out = [];
+  for (i = 0; i < length; i ++) {
+    out.push(init);
+  }
+  return out;
+}
+
 function resample1Mean(values, nreps) {
   //take resamples of values with replacement (nreps times), return the mean of each
   var cumProb = [],
@@ -732,13 +741,11 @@ function discreteChart(sample, svgObject, interactFunction) {
   return [Dots, sample];
 } // end of discreteChart
 
-function ciColor(resample, cnfLvl) {
+function ciColor(resample) {
   // input vector must be already sorted numerically
   // sets colors for CI illustration: 1 for outside, 0 for inside the interval
   // returns a vector of colors (0 or 1), lower bd, upper bd, confidence level
   var color = [],
-    lowerBd,
-    upperBd,
     quantile,
     twoTail,
     sLen = resample.length;
@@ -770,7 +777,7 @@ function ciColor(resample, cnfLvl) {
   } else {
     console.log("No Data for CI");
   }
-  return [color, lowerBd, upperBd, cnfLvl];
+  return color;
 }
 
 function propBarChart() {

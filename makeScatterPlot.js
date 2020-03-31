@@ -176,7 +176,6 @@ function makeScatterPlot(data, plot, xlabel, ylabel) {
     canvas,
     margins,
     max_draw_space,
-    colors = [],
     xydata = [];
     //console.log(data[0]);
   if (document.getElementById(plot).style.display === "none") {
