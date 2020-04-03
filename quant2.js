@@ -55,11 +55,16 @@ function summarizeSlope(q2DataName) {
     xbar,    xVar,    ybar,    yVar,    coVar = 0;
     x = [];
     y = [];
+    CIData = [];
+    testData = [];
   sampleq2 = resampleq2 = [];
-   d3.select("#infSVG").selectAll('g').remove();
-   d3.select("#sumSVG").selectAll('g').remove();
-   document.getElementById("confLvlInpt").style.display = 'none';
+   //d3.select("#infSVGPlot_svg").selectAll('g').remove();
+   //d3.select("#dataSummary_svg").selectAll('g').remove();
+   document.getElementById("inferenceInputs").style.display = 'block';
+   document.getElementById("inferenceText").innerHTML = ' ';
+   document.getElementById("moreTEsims").style.display = 'none';
    document.getElementById("testInpt").style.display = 'none';
+   document.getElementById("confLvlInpt").style.display = 'none';
   //q2DataName = document.getElementById("quant2DataName").value;
   q2RawData =
     q2DataName === "shuttle"
@@ -91,7 +96,7 @@ function summarizeSlope(q2DataName) {
     intercept = ybar - slope * xbar;
     correlation = coVar / Math.sqrt(yVar * xVar);
 
-    q2Summ = document.getElementById("quant2SummaryText");
+    q2Summ = document.getElementById("dataSummary");
     q2SumData = [
       { label: "Xbar", xx: xbar },
       { label: "Ybar", xx: ybar },
@@ -115,20 +120,12 @@ function summarizeSlope(q2DataName) {
     q2Summ.style = "display: block";
 
     //check for any old output plots. If present, erase them due to change in data
-    if (q2InfOutput) {
-      q2CIdata = q2Tstdata = [];
-      document.getElementById("quant2Results").style.display = "none";
-      document.getElementById("quant2Output").style.display = "none";
-      document.getElementById("quant2MoreSims").style.display = "none";
-      document.getElementById("quant2ConfLvl").style.display = "none";
-      document.getElementById("quant2Test").style.display = "none";
-      document.getElementById("quant2Inference").style.display = "none";
-      document.getElementById("quant2WhichSlope").style.display = "none";
-    }
+
     if (q2Values) {
-      document.getElementById("quant2Summry").style.display = "block";
-      document.getElementById("quant2SumSVG").style.display = "block";
-      makeRegressionPlot(q2Values, "quant2SumSVG", q2Keys[0], q2Keys[1]);
+      document.getElementById("dataIn").style.display = "block";
+      document.getElementById("dataSummary").style.display = "block";
+
+      makeScatterPlot(q2Values, "dataSummary", q2Keys[0], q2Keys[1], true);
     }
 
     document.getElementById("quant2SelectInf").style.display = "block";
@@ -185,9 +182,9 @@ function q2CLChange(arg) {
   for (i = 0; i < sq2Len; i++) {
     q2CIdata[i].color = circleColors[tempColors[0][i]];
   }
-  if (drawq2Inf & (q2Inference === "estimate")) {
-    document.getElementById("quant2Inference").style.display = "block";
-    document.getElementById("quant2InfSVG").style.display = "block";
+  if (drawq2Inf & (inference === "estimate")) {
+    document.getElementById("testInpt").style.display = "block";
+    //document.getElementById("infSVG").style.display = "block";
 
 
     //var scatter_group = d3.select("#quant2InfSVG")
@@ -195,7 +192,7 @@ function q2CLChange(arg) {
       //.transition()
     //  .attr("fill", function(d){ return d.color;});
 
-    xydata = makeScatterPlot(q2CIdata, "quant2InfSVG", "Slope", "Count");
+    makeScatterPlot(CIData, "infSVG", "Slope", "Count", false);
   }
   //q2ftr.style.display = 'block';
   q2ftr.innerHTML = //"<div style = 'height = 10'> </div>" +
@@ -243,7 +240,7 @@ function estimateSlope(nReps) {
 
   if (drawq2Inf) {
     document.getElementById("quant2InfSVG").style.display = "block";
-    makeScatterPlot(q2CIdata, "quant2InfSVG", "Slope", " ");
+    //makeScatterPlot(q2CIdata, "quant2InfSVG", "Slope", " ");
   }
 
   q2ftr.style.display = "block";
@@ -376,7 +373,7 @@ function resampleSlope4CI(data, reps) {
     yBar = d3.mean(ysample);
     yVar = d3.variance(ysample);
     coVar = (coVar - dataLength * xBar * yBar) / (dataLength - 1);
-    slopes[i] = { x: coVar / xVar };
+    slopes[i] =  coVar / xVar ;
     correlations[i] = coVar / Math.sqrt(yVar * xVar);
   }
   return slopes;
@@ -434,7 +431,7 @@ function q2TestUpdate() {
       q2Tstdata[i].color = circleColors[q2Color[i]];
     }
     document.getElementById("quant2InfSVG").style.display = "block";
-    makeScatterPlot(q2Tstdata, "quant2InfSVG", "Slope", " ");
+    makeScatterPlot(q2Tstdata, "quant2InfSVG", "Slope", " ", false);
   }
   //q2ftr.style.display = 'block';
   q2ftr.innerHTML =

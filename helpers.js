@@ -449,7 +449,7 @@ function dbl_histodot(sample, colors, labels, svgObject, interactFunction) {
 function stackDots(sample) {
   // stacks dots up creating integer y values (1, 2, 3,...)
   // for x value within a "bin" of similar values
-  // input is an array containing x values sorted in order.
+  // input is an array containing values sorted in order.
   // output is an array of  x, y pairs
   var j = 0,
     leftX,
@@ -463,15 +463,14 @@ function stackDots(sample) {
   if(nN < 1) {
     return;
   }
-  // just in case, we'll sort the x values
   if(sample[0].x){
     for( i = 0; i < nN; i++){
       sample[i] = sample[i].x
     }
   }
-   sample = sample.sort(function(a, b) {
-      return a - b;
-    });
+   //sample = sample.sort(function(a, b) {
+  //    return a - b;
+  //  });
   xmin = +sample[0];
   xmin *= xmin <= 0 ? 1.01 : 0.99;
   xmax = +sample[nN - 1];

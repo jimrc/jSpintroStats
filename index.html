@@ -9,7 +9,7 @@
 
 	<!-- Load javascript and data -->
 	<script  src="./mainSpintroStat.js"></script>
-	<script  src="./HelperPkgs/d3.v5.js"></script>
+	<script  src="./HelperPkgs/d3.js"></script>
 	<script  src="./HelperPkgs/alertify.min.js"></script>
 	<script  src="./costs.js"></script>
 	<script  src="./norms.js"></script>
@@ -204,15 +204,20 @@
 	-->
 <div id="TestEst" class="w3-container Page" style="display:none">
   <h4 id = "testEstHeader"> Test/Estimate </h4>
-  <div id = "dataInSummary" class="w3-container"  style="display:none">
-  	 Data Input
+  <div id = "dataIn" class="w3-container"  style="display:none">
   </div>
+	<div id = "dataSummary" class = "w3-container" style="display:none width: 425px">
+	</div>
 	<div class='w3-container w3-mobile' id='inferenceChoices'>
   			Either
   			<button id='Estimate' class='w3-button w3-pale-blue w3-medium w3-round-xlarge'
 				onclick='inference = "estimate";
+					document.getElementById("inferenceInputs").style.display = "block";
+					document.getElementById("testInpt").style.display = "none";
 					document.getElementById("confLvlInpt").style.display = "block";
-					document.getElementById("testInpt").style.display = "none"
+						if(!d3.select("#infSVGplot_svg").empty()){
+							d3.select("#infSVGplot_svg").remove();
+						}
 					moreCI(100, false)'>
   				&nbsp; Estimate the true value.
   			</button>
@@ -221,6 +226,9 @@
 				 onclick='inference = "test" ;
 				 		document.getElementById("testInpt").style.display = "block";
 				 		document.getElementById("confLvlInpt").style.display = "none" ;
+						if(!d3.select("#infSVGplot_svg").empty()){
+							d3.select("#infSVGplot_svg").remove();
+						}
 						moreTests(100, false)'>
   				&nbsp; Test for a particular value.
   			</button>
@@ -238,8 +246,8 @@
 			  dataSource: "value",
 			  labelsContent: "key",
 			  valueIndicatorContent: "key",
-			  thumbWidth: 24,
-  			thumbHeight: 24,
+			  thumbWidth: 20,
+  			thumbHeight: 20,
 			  handlers: {
 			    valueChanged: [CLChange]
   }
@@ -250,8 +258,7 @@
 				Test:
 			</div>
   </div>
-	<div id = "inferencePlot" class="w3-container"   style="display:none">
-		<svg id = "infSVG" height='400px' width='400px' ></svg>
+	<div id = "infSVGplot" class="w3-container"   style="display: block">
 	</div>
 	<div id = "inferenceText" class="w3-container"   style="display:none">
 
@@ -891,8 +898,7 @@
 			<button id='TestSlope' onclick='q2Inference = 'test';
 				drawq2Inf = true;
 				q2Tstdata = testSlope( noChoice);
-				'
-				class='w3-button w3-pale-blue w3-medium w3-round-xlarge'>
+				'class='w3-button w3-pale-blue w3-medium w3-round-xlarge'>
 				&nbsp; Test: Is true slope equal 0?
 			</button>
 		</div>

@@ -108,8 +108,11 @@ function CLChange(arg) {
   for(i =0; i < sLen; i++){
     CIData[i].color = circleColors[tempColors[i]]
   }
+  if(!d3.select("#infSVGplot_svg").empty()){
+    d3.select("#infSVGplot_svg").remove();
+  }
   console.log("CLchange", CIData[0], lowerBd, upperBd);
-  makeScatterPlot(CIData, "infSVG", xLabel, " ");
+  makeScatterPlot(CIData, "infSVG", xLabel, " ", false);
   document.getElementById("inferenceText").innerHTML =
          ciInftop +  sLen + " Re-samples <br>" +  Math.round(cnfLvl * 100) +
     "% Confidence Interval: (" + lowerBd.toPrecision(4) + ", " + upperBd.toPrecision(4) +  ") </div>";
@@ -141,11 +144,12 @@ function testEstFn(vble){
     clvlInpt = document.getElementById("confLvlInpt"),
     testInpt = document.getElementById("testInpt"),
     title = document.getElementById("testEstHeader"),
-    block1 = document.getElementById("dataInSummary"),
-    block2 = document.getElementById("confLvlInpt"),
-    block3 = document.getElementById("testInpt"),
-    block4 = document.getElementById("inferencePlot"),
-    block5 = document.getElementById("inferenceText");
+    block1 = document.getElementById("dataIn"),
+    block2 = document.getElementById("dataSummary"),
+    block3 = document.getElementById("confLvlInpt"),
+    block4 = document.getElementById("testInpt"),
+    block5 = document.getElementById("inferencePlot"),
+    block6 = document.getElementById("inferenceText");
 
     var svgInf = d3.select("#infSVG"),
         svgSum = d3.select("#sumSVG");
@@ -180,9 +184,10 @@ function testEstFn(vble){
         divs = genericTestDivs();      }
     };
    title.innerHTML = hdr;
-   block1.innerHTML = divs[0];
-   block3.innerHTML = divs[2];
-   //block4.innerHTML = divs[3];
+   block1.innerHTML = divs[0];  // dataIn
+   block2.innerHTML = divs[1];  //dataSummary
+   //block3.innerHTML = divs[2];
+   block4.innerHTML = divs[3];   // Test Input
    //block5.innerHTML = divs[4];
 
 
@@ -204,9 +209,11 @@ function c1TestEstimate(){
   "        								placeholder=' '  onchange= 'renew()'> 	</td>		</tr> <tr></tr>"+
   "          					</table>	&nbsp; &nbsp;"+
   "        </div>        	&nbsp; &nbsp; 				&nbsp; &nbsp;"+
-  " 			<div class='w3-cell' style='width:2%'> </div>"+
-  "        <div class='w3-cell' style='width:45%; display:block'>"+
-  "        			<button onclick = 'summarizeP1()'>   &nbsp &nbsp  Summary</button>"+
+  " 			<div class='w3-cell' style='width:2%'> </div>";
+  "        <div class='w3-cell' style='width:45%; display:block'>"
+  dSumm =
+  "        <div class='w3-cell' style='width:45%; display:block'>" +
+  "	         <button onclick = 'summarizeP1()'>   &nbsp &nbsp  Summary</button>"+
   "        			<div class='w3-container w3-cell w3-mobile' id='cat1SummaryText' style='display:none'>"+
   "          						p&#770; ="+
   "          						&nbsp; &nbsp;"+
@@ -270,17 +277,18 @@ function c1TestEstimate(){
   "  			</div>"+
   "  		</div>  ";
 
-  return [dIn, intervalInpts, testInpts, plot, results];
+  return [dIn, dSumm, intervalInpts, testInpts, plot, results];
 }
 
 
    function q1TestEstimate(){
     var dIn, intervalInpts, testInpts, plot, results;
     dIn = "1 Quantitative Data Input";
+    dSumm = "1 Quantitative Data Summary";
     choice = "Estimate or Test Mean";
     plot = "";
       results = "";
-      return [dIn, intervalInpts, testInpts, plot, results];
+      return [dIn, dSumm,intervalInpts, testInpts, plot, results];
   }
 
 function q2TestEstimate(){
@@ -297,15 +305,14 @@ function q2TestEstimate(){
   	" 					<option value='dental'>Dental distance</option>" +
   	" 					<option value='other'>Other</option>" +
   	" 				</select>" +
-  	" 			</div>" +
-  	" 			<div class='w3-cell' style='display:block' id='quant2Summry'>" +
-  	" 				<h4> &nbsp; &nbsp;Summary</h4>" +
-  	" 				<div class='w3-container w3-cell w3-mobile' id='quant2SummaryText' style='display:none'>" +
-  	" 				</div>" +
-  	" 				<div class='w3-container w3-cell w3-mobile' id='quant2SummarySVGgoesHere'>" +
-  	" 					</div>" +
-  	" 					<svg id='quant2SumSVG' height='400px' width='400px'></svg >" +
-  	" 			</div>" ;
+  	" 			</div>"
+    dSumm =
+  	" 				<div class='w3-container w3-cell w3-mobile' id='q2Summary' style='display:none'>" +
+  	" 				</div>"
+//  	" 				<div class='w3-container w3-cell w3-mobile' id='quant2SummarySVGgoesHere'>" +
+//  	" 					</div>" +
+//  	" 					<svg id='quant2SumSVG' height='400px' width='400px'></svg >" +
+//  	" 			</div>" ;
   intervalInpts= "Estimate Slope";
   testInpts = 	"<div class='w3-cell' >	Stronger evidence is a slope 	</div>" +
 		"	<div class='w3-cell' style='width: 30%'>" +
@@ -327,25 +334,27 @@ function q2TestEstimate(){
 		" 		<svg id='quant2InfSVG' height='400px' width='400px'></svg>" +
 		" </div>" ;
 
-    return [dIn, intervalInpts, testInpts, plot];
+    return [dIn,dSumm, intervalInpts, testInpts, plot];
   }
 
   function c2TestEstimate(){
     var dIn, intervalInpts, testInpts, plot, results;
     dIn = "2 Categorical Data Input";
+    dSumm = "2 Categorical Summary";
     choice = "Estimate or Test Difference in Proportions";
     plot = "";
     results = "";
-    return [dIn, intervalInpts, testInpts, plot, results];
+    return [dIn, dSumm, intervalInpts, testInpts, plot, results];
   }
 
   function c1q1TestEstimate(){
     var dIn, intervalInpts, testInpts, plot, results;
     dIn = "1 Categorical, 1 Quantitative Data Input";
+    dSumm = "1 Categorical, 1 Quantitative Summary";
     choice = "Estimate or Test Difference in Means";
     plot = "";
     results = "";
-    return [dIn, intervalInpts, testInpts, plot, results];
+    return [dIn, dSumm, intervalInpts, testInpts, plot, results];
   }
 }
 
@@ -673,8 +682,13 @@ function moreCI(nreps, concat) {
       for (i = 0; i < sLen; i++) {
         CIData[i].color = circleColors[tempColors[i]];
       }
-      console.log("moreCIS", CIData[0], lowerBd, upperBd);
-      makeScatterPlot(CIData, "infSVG", xLabel, " ");
+      if(!d3.select("#infSVGplot_svg").empty()){
+        d3.select("#infSVGplot_svg").remove();
+      }
+      //console.log("moreCIS", CIData[0], lowerBd, upperBd);
+      document.getElementById("infSVGplot").style.display = 'block';
+
+      makeScatterPlot(CIData, "infSVGplot", xLabel, " ", false);
       document.getElementById("inferenceText").innerHTML =
             ciInftop +  sLen + " Re-samples <br>" +  Math.round(cnfLvl * 100) +
         "% Confidence Interval: (" + lowerBd.toPrecision(4) + ", " + upperBd.toPrecision(4) +  ") </div>";
@@ -787,11 +801,14 @@ function moreTests(nreps, concat) {
         testData[i].color = circleColors[testColor[i]];
       }
       //ToDo:  Colors do not change when we change direction of test, but P-value does.
-      makeScatterPlot(testData, "infSVG", xLabel, " ");
+      document.getElementById("infSVGplot").style.display = 'block';
+
+      makeScatterPlot(testData, "infSVGplot", xLabel, " ", false);
       //find p-value
       //  console.log(testData);
       document.getElementById("inferenceText").innerHTML =
         "P-value: " + formatPvalue(extCount, sLen);
+      document.getElementById("inferenceText").style.display = 'block';
 }
 
 
