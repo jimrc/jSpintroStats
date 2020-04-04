@@ -89,6 +89,8 @@ function CLChange(arg) {
   // set colors for dots to illustrate confidence interval
   // new dots come from an inference specific functions
   // Get new dots, color them, and plot them.
+  const inferenceSVG = d3.select("#infSVGplot_svg");
+
   if (arg.value) {
     cnfLvl = +arg.value;
   } else {
@@ -108,11 +110,15 @@ function CLChange(arg) {
   for(i =0; i < sLen; i++){
     CIData[i].color = circleColors[tempColors[i]]
   }
-  if(!d3.select("#infSVGplot_svg").empty()){
-    d3.select("#infSVGplot_svg").remove();
+  if(inferenceSVG.empty()){
+    makeScatterPlot(CIData, "infSVG", xLabel, " ", false);
+  } else{
+    // update Colors
+     inferenceSVG.selectAll("circle")
+      .data(CIData).attr("fill", d => d.color)
   }
-  console.log("CLchange", CIData[0], lowerBd, upperBd);
-  makeScatterPlot(CIData, "infSVG", xLabel, " ", false);
+  //console.log("CLchange", CIData[0], lowerBd, upperBd);
+  //makeScatterPlot(CIData, "infSVG", xLabel, " ", false);
   document.getElementById("inferenceText").innerHTML =
          ciInftop +  sLen + " Re-samples <br>" +  Math.round(cnfLvl * 100) +
     "% Confidence Interval: (" + lowerBd.toPrecision(4) + ", " + upperBd.toPrecision(4) +  ") </div>";

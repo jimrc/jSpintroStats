@@ -110,7 +110,7 @@ function makeScatterPlot(data, plot, xlabel, ylabel, addLine) {
     .attr("class", plot + "_scatter_group")
     .append("circle")
     .attr("r", charts_config.point.radius)
-    .style("fill", function(d){ return (d.color);})
+    .attr("fill", d => d.color )
     .style("opacity", charts_config.point.opacity);
 
   scatter_group = d3.selectAll("g." + plot + "_scatter_group");
