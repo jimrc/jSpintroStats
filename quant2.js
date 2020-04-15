@@ -1,54 +1,20 @@
 // subroutine to estimate a slope or correlation or test for slope of zero
 // Inputs:   choose a prebuilt data set
 //  TODO:  allow input of csv file and parse it.
-//   clicking a point shows resampled slope (and correlation?)
-// TODO:  Test plot is making error -- doesn't show
-//         CI 's are cutoff
-//         CI plot has no colors -- am I passing them wrong?
+// TODO:  Test plot shows at first, then disappears if updated
 
 var correlation,
   drawq2Inf = false,
-  intercept,
-  i,
-  j,
+  intercept, slope,
+  i,  j,
   noChoice = "undefined",
-  q2SummDiv = d3.select("#q2Inference"),
-  q2Tstdata = [],
-  q2CIdata = [],
   q2Label,
   q2Values = [],
-  q2ftr = document.getElementById("quant2Results"),
-  q2hdr = document.getElementById("quant2Output"),
-  q2CnfLvl = 0.8,
-  q2CLvl,
-  q2lowerBd,
-  q2upperBd,
-  q2Null = 0,
-  q2N,
-  q2Pval,
-  q2TestDirection,
   q2SumData = [],
   q2RawData = [],
-  q2Color = [],
-  q2Inference,
-  q2InfOutput,
-  q2SmryPlot,
-  resampleq2 = [],
-  sampleq2 = [],
   sq2Len,
-  targetQuantile,
-  upperBd,
-  upperCI,
   x = [],
   y = [];
-
-//var svgq2 = d3.select("#quant2InfSVG"),
-  //svgSumq2 = d3.select("#quant2SumSVG");
-//document.getElementById("quant2MoreSims").style.display = "none";
-//document.getElementById("quant2Results").style.display = "none";
-//document.getElementById("quant2Output").style.display = "none";
-//document.getElementById("quant2Inference").style.display = "none";
-
 
 function q2TestEstimate(){
   // function to modify the generic test-estimate page to suit 2 quantitative variables

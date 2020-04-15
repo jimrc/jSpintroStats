@@ -1,7 +1,7 @@
 //  javascript to setup main index.html
 var circleColors = ["steelblue", "red"],
     cnfLvl = 0.80, ciInftop,
-    demo, mean, proportion, difference, slope,
+    demo, mean = 0, proportion = 0.5, difference = 0, slope = 0,
     vbleChoice,
     confLevels = [
       { key: "80%", value: "0.80" },
@@ -127,13 +127,6 @@ function CLChange(arg) {
 }
 
 
-function renew (){
-      //function to remove outdated info and PlotGoesHere
-       document.getElementById('cat1SummaryText').style.display = 'none';
- 			 document.getElementById('cat1SummarySVGgoesHere').style.display =  'none';
-    };
-
-
 function testEstFn(vble){
   // function to customize the testEst page for a particular type of variable.
   var hdr,
@@ -142,7 +135,6 @@ function testEstFn(vble){
     summaryText,
     summaryPlot,
     test = "test",
-    testInpt = document.getElementById("testInpt"),
     title = document.getElementById("testEstHeader"),
     block1 = document.getElementById("dataIn"),
     block2 = document.getElementById("dataSummary"),
@@ -279,23 +271,27 @@ function moreCI(nreps, concat) {
   if(nreps>0){
     switch(variable){
       case 'cat1' : {
-        newSample = cat1CI(nreps)
+        newSample = resample1P4CI( nreps);
           ciInftop = "Confidence Interval for proportion based on ";
+          xLabel = "Proportions from resampled datasets";
         break;   // End of c1Output
       }
       case 'quant1' :  {
-        quant1CLChange(arg);
+        newSample = resample1Q4CI( nreps);
           ciInftop = "Confidence Interval for mean based on ";
+          xLabel = "Means from resampled datasets";
          break;
        }
       case 'cat2' :  {
-        cat2CLChange(arg);
+        newSample = resample2P4CI( nreps);
           ciInftop = "Confidence Interval for difference in proportions based on ";
+          xLabel = "Differences in proportion from resampled datasets";
         break;
       }
       case 'c1q1':  {
-        c1q1CLChange(arg);
-          ciInftop = "Confidence Interval for difference in means based on ";
+         newSample = resample1C1Q4CI( nreps);
+         ciInftop = "Confidence Interval for difference in means based on ";
+         xLabel = "Differences in mean from resampled datasets";
         break;
       }
       case 'quant2' :  {
@@ -317,7 +313,7 @@ function moreCI(nreps, concat) {
       });
       // get colors for inside/outside of observed
       sLen = resample4CI.length;
-      //console.log("moreCIS", resample4CI[0], resample4CI[50], resample4CI[90]);
+      console.log("moreCIS", resample4CI[0], resample4CI[50], resample4CI[90]);
      tempColors = ciColor(resample4CI);
      CIData = stackDots(resample4CI);
       for (i = 0; i < sLen; i++) {
@@ -349,19 +345,31 @@ function moreTests(nreps, concat) {
   if(nreps>0){
     switch(variable){
         case 'cat1' : {
-          newSample = moreCat1Sims(nreps);
-          break;   // End of c1Output
+          if( nullValue > 0.00 & nullValue < 1.00){
+            newSample = resample1P4Test(nreps);
+          } else {
+            console.log("null probability not in (0,1)")
+          }
+          observed = proportion;
+          xLabel = "Proportions " + cat1Label1 +" from resampled datasets under the null hypothesis ";
+          break;
         }
         case 'quant1' :  {
-          newSample = moreQuant1TSims(nreps);
+          newSample = resample1Q4Test(nreps);
+          observed = mean;
+          xLabel = "Means from resampled datasets under the null hypothesis ";
           break;
         }
         case 'cat2' :  {
-          newSample = moreCat2TSims(nreps);
+          newSample = resampleDiffP4Test(nreps);
+          observed = difference;
+          xLabel = "Differences in proportions from resampled datasets under the null hypothesis ";
           break;
         }
         case 'c1q1':  {
-          newSample = moreC1Q1TSims(nreps);
+          newSample = resampleDiffMn4Test(nreps);
+          observed = difference;
+          xLabel = "Differences in means from resampled datasets under the null hypothesis ";
           break;
         }
         case 'quant2' :  {

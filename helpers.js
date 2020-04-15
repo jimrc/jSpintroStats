@@ -463,7 +463,7 @@ function stackDots(sample) {
   if(nN < 1) {
     return;
   }
-  if(sample[0].x){
+  if(typeof(sample[0].x) !== 'undefined'){
     for( i = 0; i < nN; i++){
       sample[i] = sample[i].x
     }
