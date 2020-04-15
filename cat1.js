@@ -5,6 +5,96 @@
 //    TODO: align true proportion better with cue: 'Test: Is the true proportion ='
 //    TODO: Using modal div for info is too jumpy. Switch to tooltip
 
+function c1TestEstimate(){
+  var dIn, intervalInpts, testInpts, plot, results;
+  dIn =
+  " 		<div class='w3-cell-row w3-mobile'>"+
+  " 			<div class='w3-cell' style='width:40%'>"+
+  " 				<h4> Enter Data</h4>"+
+  " 					<table class='w3-table w3-border'>"+
+  "   						<tr> <th>Label</th> <th>Count</th>		</tr>"+
+  "         			<tr> <td>	<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat1Label1'"+
+  "         								placeholder='Success' >			</td>"+
+  "         					<td><input class='w3-input  w3-mobile w3-pale-yellow' type='text' id='cat1N1'"+
+  "                         placeholder=' '   onchange= 'renew()'>  </td>  	</tr>"+
+  "         			<tr> 	<td>	<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat1Label2'"+
+  "         								placeholder='Failure' >		</td>	"+
+  "         							<td>		<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat1N2'"+
+  "        								placeholder=' '  onchange= 'renew()'> 	</td>		</tr> <tr></tr>"+
+  "          					</table>	&nbsp; &nbsp;"+
+  "        </div>        	&nbsp; &nbsp; 				&nbsp; &nbsp;"+
+  " 			<div class='w3-cell' style='width:2%'> </div>";
+  "        <div class='w3-cell' style='width:45%; display:block'>"
+  dSumm =
+  "        <div class='w3-cell' style='width:45%; display:block'>" +
+  "	         <button onclick = 'summarizeP1()'>   &nbsp &nbsp  Summary</button>"+
+  "        			<div class='w3-container w3-cell w3-mobile' id='cat1SummaryText' style='display:none'>"+
+  "          						p&#770; ="+
+  "          						&nbsp; &nbsp;"+
+  "          						se(p&#770;) ="+
+  "      		</div>"+
+  "        	<div class='w3-container w3-cell w3-mobile' id='cat1SummarySVGgoesHere'></div>"+
+  "      	<br>"+
+  "    </div>";
+  //  		<!--  Inputs for each inference  (before plotting)  -->
+  intervalInpts =
+  "  					<h4>Estimate True Proportion with a Confidence Interval</h4>"+
+  "  			Choose a Confidence Level:"
+  "  		</div>";
+
+  testInpts=
+  "  			<div class='w3-cell  w3-mobile' style='width: 35%'>"+
+  "  				&nbsp; &nbsp; &nbsp; Test: Is the true proportion = &nbsp;"+
+  "  			</div>"+
+  "  			<div class='w3-cell  w3-mobile' style='width: 20%'>"+
+  "  				<input class='w3-input w3-card w3-mobile w3-pale-yellow' type='text' id='cat1trueP'"+
+  "           placeholder='0.625' 		onchange= 'changeC1Dots()' "+
+  "  			</div>"+
+  "  			<div class='w3-cell  w3-mobile' style='width: 30%'>"+
+  "  			</div>" +
+  "  			<div id='cat1TestInpt2' class='w3-cell-row w3-mobile' style=' display: none'>"+
+  "  				<div class='w3-cell' style='width: 30%'>"+
+  "  					Stronger evidence is a proportion"+
+  "  				</div>"+
+  "  				<div class='w3-cell' style='width: 40%'>"+
+  "  					<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='cat1Extreme'"+
+  "  					     onchange='cat1TestUpdate()'>"+
+  "  						<option value='lower'>Less Than or =</option>"+
+  "  						<option value='both' selected>As or More Extreme Than</option>"+
+  "  						<option value='upper'>Greater Than or =</option>"+
+  "  					</select>"+
+  "  				</div>"+
+  "  				<div class='w3-cell' style='width: 20%'>"+
+  "  					&nbsp;&nbsp; p&#770; (from above)"+
+  "  				</div>"+
+  "  		</div>";
+
+  plot =
+  "  		<div id='cat1Output' style='display: none'>"+
+  "  			<!--  Show Inference Plot -->"+
+  "  			<div class='w3-container w3-cell w3-mobile' id='cat1Inference' style='width:420px'>"+
+  "   					<!--  Inference plot goes here for CI or Test of 1 proportion -->"+
+  "  					<svg id='cat1InfSVG' height='300px' width='400px'></svg>"+
+  "  			</div>";
+
+  results =
+  "  			<div id='cat1MoreSims' style='width:360px; display:none'>"+
+  "  				<div class='w3-cell-row'>"+
+  "  					<div class='w3-cell  w3-mobile' style='width: 20%'>			Add		</div>"+
+  "  					<div class='w3-cell  w3-mobile' style='width: 20%'>"+
+  "  						<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat1More'"+
+  "               placeholder='0' onchange='cat1MoreSimFn()'>"+
+  "  					</div>"  +
+  "  					<div class='w3-cell  w3-mobile' style='width: 40%'>"+
+  "  						&nbsp; simulated points"+
+  "  					</div>"+
+  "  			</div>"+
+  "  		</div>  ";
+
+  return [dIn, dSumm, intervalInpts, testInpts, plot, results];
+}
+
+
 var c1SummDiv = d3.select("#cat1Inference"),
   c1Tstdata,
   c1CIdata,

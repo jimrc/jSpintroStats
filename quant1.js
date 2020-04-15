@@ -1,4 +1,16 @@
 // subroutine to estimate a mean or test for a special value
+
+   function q1TestEstimate(){
+    var dIn, intervalInpts, testInpts, plot, results;
+    dIn = "1 Quantitative Data Input";
+    dSumm = "1 Quantitative Data Summary";
+    choice = "Estimate or Test Mean";
+    plot = "";
+      results = "";
+      return [dIn, dSumm,intervalInpts, testInpts, plot, results];
+  }
+
+
 // Inputs:
 //     a string of numbers separated by commas
 //  TODO: allow user to choose a csv data file

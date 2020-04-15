@@ -38,6 +38,71 @@ var margin = [{ top: 50 }, { right: 20 }, { bottom: 50 }, { left: 20 }],
   spinStopRule;
 
 
+  function spinDivs() {
+   div1 =  "Type labels in the first box separated by commas or tabs " +
+  "<br> and the same number of percentages or probability weights in the second box. " +
+  "<div class='w3-form w3-cell-row w3-mobile' id='spinInputs'> " +
+  "  <div class='w3-cell w3-mobile' style='width:40%'> " +
+  "    Labels: " +
+  "    <input class='w3-input w3-border w3-mobile w3-pale-yellow' type='text' id='spinCats'  " +
+  "    style='display:block'> " +
+  "  </div> " +
+  "  <div class='w3-cell w3-mobile'></div> " +
+  "  <div class='w3-cell w3-mobile' style='width:40%'> " +
+  "    Probability weights: " +
+  "    <input class='w3-input w3-border w3-mobile w3-pale-yellow' type='text' id='spinProbs'  " +
+  "    style='display:block'> " +
+  "  </div> " +
+  "</div> ";
+   div2 =  "Stop after: " +
+  "<div class='w3-form w3-cell-row w3-mobile' id='spinStops'> " +
+  "  <div class='w3-cell w3-mobile' style='width:30%'> " +
+  "    <input class='w3-input w3-border w3-mobile w3-pale-blue ' type='text' id='nSpins'  " +
+  "    placeholder='This many spins: ' onchange='spinNSpins();' style='display:block'> " +
+  "  </div>  &nbsp; or &nbsp; " +
+  "  <div class='w3-cell w3-mobile' style='width:30%'> " +
+  "    <input class='w3-input w3-border w3-mobile w3-pale-blue ' type='text' id='spin1'  " +
+  "    placeholder='Getting one of this type: ' onchange='spinsTill1();' style='display:block'> " +
+  "  </div> &nbsp; or &nbsp;" +
+  "  <div class='w3-cell w3-mobile' style='width:30%'> " +
+  "<button id='spinAllButton' onclick='spinsTillAll()' class='w3-button w3-pale-blue w3-medium  " +
+      "       w3-round-xlarge'> Getting one of EACH type:  </button> " +
+  "  </div> " +
+  "</div> " +
+  "<br> ";
+  div3 =    "<div class='w3-form w3-cell-row w3-mobile' style='display:block'> " +
+      "<div class='w3-container w3-cell w3-mobile' id='spinSVGgoesHere'> " +
+      "<svg  id='spinSVG' height=300 width=440></svg> " +
+      "</div> " +
+      "<div class='w3-cell w3-mobile'> " +
+      "  <button onclick='hideShowSpins()' class='w3-button w3-pale-green w3-medium w3-round-xlarge'> " +
+      "    &nbsp; Hide / Show " +
+      "  </button> " +
+      "</div> " +
+    "<div class='w3-form w3-cell-row w3-mobile' style='display:none' id='repeatSpins'> " +
+      "<div class='w3-btn w3-cell'></div> " +
+      "<form class='w3-cell w3-card'> " +
+        "<h4>Repeat Process:</h4> " +
+        "<div class='w3-bar'> " +
+          "<input class='w3-radio' value=100 type='radio' name='spinReps'  " +
+          "onClick='spinRepeat(100);  dotChart1(spinRepResults );' /> " +
+          "<label>100</label> " +
+          "<input class='w3-radio' value=1000 type='radio' name='spinReps'  " +
+          "onClick='spinRepeat(1000); dotChart1(spinRepResults);' checked='checked' /> " +
+          "<label>1000</label> " +
+        "  <input class='w3-radio' value=5000 type='radio' name='spinReps'  " +
+          "onClick='spinRepeat(5000); dotChart1(spinRepResults);' /> " +
+        "  <label>5000</label> " +
+        "</div> " +
+      "</form> " +
+    "</div> " +
+    "<div class='w3-container w3-cell w3-mobile' id='spinSmrySVGdiv'> " +
+    "  <svg id='spinSmrySVG'></svg> " +
+    "</div> " +
+  "</div> ";
+  return [div1, div2, div3];
+  };
+
 var svgSpin = d3.select('#spinSVG')
   .append('g')
   .attr('transform', 'translate(' + (+r + 10) + ',' + (+r + 10) + ')');

@@ -4,6 +4,7 @@
 //     Function to plot dots without regression line                          //
 //                                                                //
 //  **************************************************************//
+var x_scale, y_scale, margins = [];
 
 function makeScatterPlot(data, plot, xlabel, ylabel, addLine) {
   // draw scatterplot of 2 quantitative variables of given color
@@ -12,7 +13,6 @@ function makeScatterPlot(data, plot, xlabel, ylabel, addLine) {
     chart_group,
     data_extent,
     canvas,
-    margins,
     max_draw_space,
     xydata = [];
     //console.log(data[0]);
@@ -77,11 +77,11 @@ function makeScatterPlot(data, plot, xlabel, ylabel, addLine) {
 
   //  max_draw_space = calculate_maximum_drawing_space(canvas, margins)
   //make_title(chart_group, ["Scatterplot"], margins, canvas, max_draw_space)
-  var x_scale = d3
+  x_scale = d3
     .scaleLinear()
     .domain([data_extent.min.x, data_extent.max.x])
     .range([0, max_draw_space.x]);
-  var y_scale = d3
+  y_scale = d3
     .scaleLinear()
     .domain([data_extent.max.y, data_extent.min.y])
     .range([0, max_draw_space.y]);
@@ -215,11 +215,11 @@ function calculate_space_needed_by_axes(chart_group, data_extent, margins) {
   var temp = chart_group.append("g").attr("class", "temp");
 
   // Dummy scales. Use max and min to get accurate measurement for length of ticks
-  var x_scale = d3
+  x_scale = d3
     .scaleLinear()
     .domain([data_extent.min.x, data_extent.max.x])
     .range([0, 1]);
-  var y_scale = d3
+  y_scale = d3
     .scaleLinear()
     .domain([data_extent.min.y, data_extent.max.y])
     .range([0, 1]);

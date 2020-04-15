@@ -6,9 +6,85 @@
 // TODO:  use discrete summary plot (as in spinner) instead of dotplot.
 // TODO:  fix duration of transitions
 // TODO:  zap old summary plot when anything above changes.
+function mixerDivs(){
+  var div1, div2, div3;
+  div1 =
+    " 	<p>	Setup: Type as many labels in the first box, separated by commas, " +
+    " 		and numbers of balls for each label in the second box.	</p> " +
+    " 	<div class='w3-form w3-cell-row w3-mobile' id='mixInputs'> " +
+    " 		<div class='w3-cell w3-mobile' style='width:30%'> " +
+    " 			Labels: " +
+    " 			<input class='w3-input w3-border w3-mobile w3-pale-yellow' type='text' id='mixCats'  " +
+    "       style='display:block'> " +
+    " 		</div> " +
+    " 		<div class='w3-cell w3-mobile'></div> " +
+    " 		<div class='w3-cell w3-mobile' style='width:30%'> " +
+    " 			Numbers of balls: " +
+    " 			<input class='w3-input w3-border w3-mobile w3-pale-yellow' type='text' id='mixNs'  " +
+    "       style='display:block'> " +
+    " 		</div> " +
+    " 		<div class='w3-cell w3-mobile' style='width:40%'> " +
+    " 			Replace drawn balls? " +
+    " 			<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='mix_Replace'> " +
+    " 				<option value='yes'>Yes</option> " +
+    " 				<option value='no'>No</option> " +
+    " 			</select> " +
+    " 		</div> " +
+    " 	</div> "
 
-    var margin = [{top: 50}, {right: 20}, {bottom: 50}, {left: 20}],
-        w =  Number(400), // - margin.right - margin.left,
+    div2 = " 	Stop after: " +
+    " 	<div class='w3-form w3-cell-row w3-mobile' id='mixStops'> " +
+    " 		<div class='w3-cell w3-mobile' style='width:30%'> " +
+    " 			<input class='w3-input w3-border w3-mobile w3-pale-blue ' type='text' id='nDraws'  " +
+    "       placeholder='This many draws:' onchange='mixNtimes()' style='display:block'> " +
+    " 		</div> " +
+    " 		&nbsp; or&nbsp; " +
+    " 		<div class='w3-cell w3-mobile' style='width:30%'> " +
+    "  			<input class='w3-input w3-border w3-mobile w3-pale-blue ' type='text' id='mixTil'  " +
+    "       placeholder='getting one of this type:' onchange='mixTill1()' style='display:block'> " +
+    " 		</div> " +
+    " 		<div class='w3-cell w3-mobile' style='width:30%'> " +
+    " 			<button id='mixAllButton' onclick='mixTillAll()' class='w3-button w3-pale-blue w3-medium  " +
+    "       w3-round-xlarge'> " +
+    " 				&nbsp; OR getting one of each type. " +
+    " 			</button> " +
+    " 		</div> " +
+    " 	</div> " +
+    " 	<br> " +
+    " 	<div class='w3-form w3-cell-row w3-mobile' style='display:block'> " +
+    " 		<div class='w3-container w3-cell w3-mobile' id='mixSVGgoesHere'></div> " +
+    "       <svg  id='mixSVG' height=300 width=440></svg> " +
+    " 		<div class='w3-cell w3-mobile'> " +
+    " 			<button onclick='hideShowMix()' class='w3-button w3-pale-green w3-medium w3-round-xlarge'> " +
+    " 				&nbsp; Hide / Show " +
+    " 			</button> " +
+    " 		</div> " +
+    " 	</div> " +
+    " 	<div class='w3-form w3-cell-row w3-mobile' style='display:none' id='repeatMix'> " +
+      " 	<div class='w3-btn w3-cell'></div> " +
+      " 	<form class='w3-cell w3-card'> " +
+      " 		<h4>Repeat Process:</h4> " +
+      " 		<div class='w3-bar'> " +
+      " 			<input class='w3-radio' value=100 type='radio' name='mixReps'  " +
+       "        onClick='mixRepeat(100);   dotChart1(mixRepResults, mixSmrySVG);' /> " +
+      " 			<label>100</label> " +
+      "    <input class='w3-radio' value=1000 type='radio' name='mixReps' " +
+      "        onClick='mixRepeat(1000); dotChart1(mixRepResults, mixSmrySVG);' checked='checked' /> " +
+      " 			<label>1000</label> " +
+      " 	<input class='w3-radio' value=5000 type='radio' name='mixReps'  " +
+      "       onClick='mixRepeat(5000); dotChart1(mixRepResults, mixSmrySVG);' /> " +
+      " 			<label>5000</label> " +
+      " 		</div> " +
+    " 		</form> " +
+    " 	</div> "
+    div3 = " 	<div class='w3-container w3-cell w3-mobile' id='mixSmrySVGdiv'> " +
+    " 		<svg id='mixSmrySVG' height=300 width=400></svg> " +
+    " 	</div> " +
+  " 	</div>";
+return [div1, div2, div3];
+};
+
+    var w =  Number(400), // - margin.right - margin.left,
         h = Number(300), // - margin.top - margin.bottom
         balls = [],
         boxData = [ { "x": w/2 -40,   "y": h/2-2 },  { "x": -w/2 +22,  "y": h/2-2},

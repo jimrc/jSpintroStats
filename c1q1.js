@@ -1,4 +1,15 @@
 // subroutine to estimate a difference in means or test for no difference
+
+  function c1q1TestEstimate(){
+    var dIn, intervalInpts, testInpts, plot, results;
+    dIn = "1 Categorical, 1 Quantitative Data Input";
+    dSumm = "1 Categorical, 1 Quantitative Summary";
+    choice = "Estimate or Test Difference in Means";
+    plot = "";
+    results = "";
+    return [dIn, dSumm, intervalInpts, testInpts, plot, results];
+  }
+
 // Inputs:
 //     Select an appropriate dataset from those available (working nicely)
 //       OR:  Load one from csv

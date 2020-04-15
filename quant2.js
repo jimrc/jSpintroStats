@@ -49,32 +49,76 @@ var correlation,
 //document.getElementById("quant2Output").style.display = "none";
 //document.getElementById("quant2Inference").style.display = "none";
 
+
+function q2TestEstimate(){
+  // function to modify the generic test-estimate page to suit 2 quantitative variables
+  var dIn, intervalInpts, testInpts, plot, results;
+  dIn =
+  	" 			<div class='w3-cell' style='width:50%'>" +
+  	" 				<h4> Choose Data: </h4>" +
+  	" 				<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='quant2DataName'" +
+  	" 				   onchange='sample4Test = []; summarizeSlope(this.value)'>" +
+  	" 					<option value='none' selected>Choose Data</option>" +
+  	" 					<option value='shuttle' selected>Shuttle</option>" +
+  	" 					<option value='women'>Women rate men</option>" +
+  	" 					<option value='men'>Men rate women</option>" +
+  	" 					<option value='dental'>Dental distance</option>" +
+  	" 					<option value='other'>Other</option>" +
+  	" 				</select>" +
+  	" 			</div>"
+    dSumm =
+  	" 				<div class='w3-container w3-cell w3-mobile' id='q2Summary' style='display:none'>" +
+  	" 				</div>"
+  intervalInpts= "Estimate Slope";
+  testInpts = 	"<div class='w3-cell' >	Stronger evidence is a slope 	</div>" +
+		"	<div class='w3-cell' style='width: 30%'>" +
+		"		<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='q2testDirection' " +
+   	"  onchange='testDirection = this.value; if(sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>" +
+	  "  onClick='testDirection = this.value; if(sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>" +
+			"		<option value='lower'>Less Than or =</option>" +
+		"			<option value='both' selected>As or More Extreme Than</option>" +
+		"			<option value='upper'>Greater Than or =</option>" +
+		"		</select>" +
+		"	</div>" +
+		"	<div class='w3-cell' style='width: 30%' id='q2ObsdSlope'>" +
+    "		&nbsp;&nbsp; observed &beta;&#770;<sub>1</sub> = " + slope +
+		"	</div>" ;
+
+  plot =
+		" <div id='quant2Output' style='display:none'>" +
+		" </div>" +
+		" <div class='w3-container w3-cell w3-mobile' id='quant2Inference' style='width:420px; display:none'>" +
+		" 		<svg id='quant2InfSVG' height='400px' width='400px'></svg>" +
+		" </div>" ;
+
+    return [dIn, dSumm, intervalInpts, testInpts, plot];
+  }
+
+
 function summarizeSlope(q2DataName) {
   // builds summary table and dot plot for 2 quantitative variables
   var margin = 20,  dataLength,  q2Keys,
     xbar,    xVar,    ybar,    yVar,    coVar = 0;
+
+    // clear out old copies of data
     x = [];
     y = [];
     CIData = [];
     testData = [];
-  sampleq2 = resampleq2 = [];
-   //d3.select("#infSVGPlot_svg").selectAll('g').remove();
-   //d3.select("#dataSummary_svg").selectAll('g').remove();
+    sampleq2 = resampleq2 = [];
+
    document.getElementById("inferenceInputs").style.display = 'block';
    document.getElementById("inferenceText").innerHTML = ' ';
    document.getElementById("moreTEsims").style.display = 'none';
    document.getElementById("testInpt").style.display = 'none';
    document.getElementById("confLvlInpt").style.display = 'none';
+   d3.select("#infSVGplot_svg").remove();
   //q2DataName = document.getElementById("quant2DataName").value;
   q2RawData =
-    q2DataName === "shuttle"
-      ? shuttle
-      : q2DataName === "women"
-      ? womenJudgingMen
-      : q2DataName === "men"
-      ? menJudgeWomen
-      : q2DataName === "dental"
-      ? dental
+    q2DataName === "shuttle"    ? shuttle
+      : q2DataName === "women"  ? womenJudgingMen
+      : q2DataName === "men"    ? menJudgeWomen
+      : q2DataName === "dental" ? dental
       : undefined; //(q2DataName === "other")
   if (q2RawData != undefined) {
     dataLength = q2RawData.length;
@@ -116,7 +160,8 @@ function summarizeSlope(q2DataName) {
       "<br> Correlation = " +
       correlation.toPrecision(4) +
       "<br> Least Squares Line: <br>   &nbsp; &nbsp; &nbsp; &nbsp; " +
-      q2Keys[1] +" = " + intercept.toPrecision(4) + " + " + slope.toPrecision(4) + " * " + q2Keys[0];
+      q2Keys[1] +" = " + intercept.toPrecision(4) + " + " + slope.toPrecision(4) + " * " + q2Keys[0] +
+      "<br>";
     q2Summ.style = "display: block";
 
     //check for any old output plots. If present, erase them due to change in data
@@ -128,213 +173,35 @@ function summarizeSlope(q2DataName) {
       makeScatterPlot(q2Values, "dataSummary", q2Keys[0], q2Keys[1], true);
     }
 
-    document.getElementById("quant2SelectInf").style.display = "block";
-    document.getElementById("quant2ObsdSlope").innerHTML =
+    document.getElementById("moreTEsims").style.display = "none";
+    //document.getElementById("inferenceChoices").style.display = "block";
+    document.getElementById("q2ObsdSlope").innerHTML =
       "&nbsp;&nbsp;" + slope.toPrecision(4) + " from above.";
   }
 }
 
 
-var q2CIrangeslide = rangeslide("#quant2ConfLvl", {
-  data: confLevels,
-  showLabels: true,
-  startPosition: 0,
-  showTicks: false,
-  dataSource: "value",
-  labelsContent: "key",
-  valueIndicatorContent: "key",
-  thumbWidth: 24,
-  thumbHeight: 24,
-  handlers: {
-    valueChanged: [q2CLChange]
-  }
-});
 
-function q2CLChange(arg) {
-  //update plot to illustrate confidence interval
-  // Note: if only colors are changing, we just transition to the new colors.
-
-  var sq2Len,
-    cnfLvl = q2CnfLvl,
-    tempColors = [],
-    twoTail,
-    xydata;
-  if(q2Values.length < 1){
-    return;
-  }
-  if (arg.value) {
-    cnfLvl = q2CnfLvl = +arg.value;
-  }
-  if (resampleq2.length < 1.0) {
-    resampleq2 = resampleSlope4CI(q2Values, 100);
-  }
-  //sort the resmaples
-  resampleq2 = resampleq2.sort(function(a, b) {
-    return a - b;
-  });
-  sq2Len = resampleq2.length;
-  q2CIdata = stackDots(resampleq2);
-  tempColors = ciColor(resampleq2, cnfLvl);
-    //console.log(tempColors);
-  q2lowerBd = tempColors[1].toPrecision(4);
-  q2upperBd = tempColors[2].toPrecision(4);
-  cnfLvl = tempColors[3];
-  for (i = 0; i < sq2Len; i++) {
-    q2CIdata[i].color = circleColors[tempColors[0][i]];
-  }
-  if (drawq2Inf & (inference === "estimate")) {
-    document.getElementById("testInpt").style.display = "block";
-    //document.getElementById("infSVG").style.display = "block";
-
-
-    //var scatter_group = d3.select("#quant2InfSVG")
-    //  .selectAll("g.quant2InfSVG_svg_scatter_group")
-      //.transition()
-    //  .attr("fill", function(d){ return d.color;});
-
-    makeScatterPlot(CIData, "infSVG", "Slope", "Count", false);
-  }
-  //q2ftr.style.display = 'block';
-  q2ftr.innerHTML = //"<div style = 'height = 10'> </div>" +
-    "<div style = 'width:500px'> Plot shows slopes of Best Fit Lines in  " +
-    sq2Len +
-    " Re-samples" +
-    "<br> <br>" +
-    Math.round(cnfLvl * 100) +
-    "% Confidence Interval: (" +
-    q2lowerBd +
-    ", " +
-    q2upperBd +
-    " )</div>";
-  //document.getElementById("quant2MoreSims").style.display = 'block';
-}
-
-function estimateSlope(nReps) {
-  //function to estimate the true slope based on resamples of original (x, y) data
-  var cnfLvl = q2CnfLvl,
-    tempColors = [];
-  // combine new and old slope estimates
-  // sort them, run thru ciColor to get CI and colors,
-  // run through stackDots and plot using makeScatterPlot.
-
-  // Gather Inputs for CI, turn off test inputs:
-  q2hdr.innerHTML = "<h4>Estimate True Slope with a Confidence Interval</h4>";
-  document.getElementById("quant2ConfLvl").style.display = "block";
-  document.getElementById("quant2Test").style.display = "none";
-  // grab nReps more samples
-  resampleq2 = resampleSlope4CI(q2Values, nReps).sort(function(a, b) {
-    return a - b;
-  });
-  //convert to (x,y) data, stacking up similar x values.
-  q2CIdata = stackDots(resampleq2);
-  // set colors based on ciColor function
-  sq2Len = resampleq2.length;
-  tempColors = ciColor(resampleq2, cnfLvl);
-    //console.log(tempColors);
-  q2lowerBd = tempColors[1].toPrecision(4);
-  q2upperBd = tempColors[2].toPrecision(4);
-  cnfLvl = tempColors[3]; // might have changed for large conf level with few points in tail
-  for (i = 0; i < sq2Len; i++) {
-    q2CIdata[i].color = circleColors[tempColors[0][i]];
-  }
-
-  if (drawq2Inf) {
-    document.getElementById("quant2InfSVG").style.display = "block";
-    //makeScatterPlot(q2CIdata, "quant2InfSVG", "Slope", " ");
-  }
-
-  q2ftr.style.display = "block";
-  q2ftr.innerHTML =
-    "<div style='width=50px'></div>" +
-    "<div style = 'width:500px'> Plot shows slopes of Best Fit Lines in  " +
-    sq2Len +
-    " Re-samples" +
-    "<br> <br>" +
-    Math.round(cnfLvl * 100) +
-    "% Confidence Interval: (" +
-    q2lowerBd +
-    ", " +
-    q2upperBd +
-    " )</div>";
-  document.getElementById("quant2MoreSims").style.display = "block";
-
-  //console.log(q2lowerBd, q2upperBd);
-
-  return q2InfOutput;
-}
-
-function testSlope(tailChoice) {
-  //function to test 'Is the true slope  = 0?' for 2 quantitative variables
-  // to force the null hypothesis to be true, we resample from y independent of x
-  // Gather Inputs:
-
-  q2CLvl = document.getElementById("quant2ConfLvl");
-  q2CLvl.style.display = "none";
-
-  q2Tst = document.getElementById("quant2Test");
-  q2Tst.style.display = "block";
-  //q2Pval = undefined;
-
-  if (tailChoice === "undefined") {
-    q2hdr.innerHTML =
-      "<div class = 'w3-cell-row'> <div class = 'w3-cell' style = 'width:50%'> " +
-      " Stronger evidence is sample slope </div>" +
-      "<div class = 'w3-cell' style='width:40%'>" +
-      "<select class = 'w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='q2Extreme'" +
-      " onchange = 'q2TestUpdate()' >" +
-      "<option value='lower'>Less Than or =</option>" +
-      "<option value='both' selected >As or More Extreme Than</option>" +
-      "<option value='upper'>Greater Than or =</option>" +
-      "</select> </div>  <div class ='w3-cell' style = 'width:30%'> &nbsp;&nbsp;" +
-      slope.toPrecision(4) +
-      "</div> </div> ";
-    q2ftr.innerHTML =
-      "<div  style = 'width:500px'> Plot shows slopes of Best Fit lines in  " +
-      sq2Len +
-      " Resamples from H<sub>0</sub>";
-    sampleq2 = resampleSlope4Test(q2Values, 100);
-    sq2Len = sampleq2.length;
-    //console.log(d3.mean(sampleq2), sq2Len);
-  } else {
-  }
-
-  return sampleq2;
-}
 
 function resampleSlope4Test(data, reps) {
-  var coVar,
-    correlations = [],
+  var coVar,    correlations = [],
     dataLength = data.length,
-    seq = [],
-    slopes = [],
-    sample = [],
-    xBar,
-    yBar,
-    xVar,
-    yVar,
-    ysample = [];
-  seq = sequence(0, dataLength - 1, 1);
+    seq = [],    slopes = [],    sample = [],
+    xBar,    yBar,    xVar,    yVar,    ysample = [];
 
+  seq = sequence(0, dataLength - 1, 1);
   xBar = d3.mean(x);
   xVar = d3.variance(x);
-  //console.log(xVar);
 
   for (i = 0; i < reps; i++) {
     coVar = 0;
-    yBar = 0;
-    //xsample = sampleN(x, dataLength));
     // could resample these as well as y's, but then we could get all x values equal
     // instead, we'll assume it's a designed experiment with set (fixed) x levels
-
     sample = sampleN(seq, dataLength);
     for (j = 0; j < dataLength; j++) {
       ysample[j] = y[sample[j]]; // set y values
       coVar += x[j] * ysample[j]; // add up cross product
     }
-    // console.log(ysample);
-    // console.log(coVar);
-    // xBar = d3.mean(xsample);
-    // xVar = d3.variance(xsample);
     yBar = d3.mean(ysample);
     yVar = d3.variance(ysample);
     coVar = (coVar - dataLength * xBar * yBar) / (dataLength - 1);
@@ -345,18 +212,12 @@ function resampleSlope4Test(data, reps) {
 }
 
 function resampleSlope4CI(data, reps) {
-  var coVar,
-    correlations = [],
+  var coVar,    correlations = [],
     dataLength = data.length,
-    sample = [],
-    seq = [],
-    slopes = [],
-    xsample = [],
-    ysample = [],
-    xBar,
-    yBar,
-    xVar,
-    yVar;
+    sample = [],    seq = [],    slopes = [],
+    xsample = [],    ysample = [],
+    xBar,    yBar,    xVar,    yVar;
+
   seq = sequence(0, dataLength - 1, 1);
 
   for (i = 0; i < reps; i++) {
@@ -377,107 +238,4 @@ function resampleSlope4CI(data, reps) {
     correlations[i] = coVar / Math.sqrt(yVar * xVar);
   }
   return slopes;
-}
-
-function q2TestUpdate() {
-  var check,
-    extCount = 0,
-    lowP,
-    hiP,
-    sq2Len;
-  q2Inference = "test";
-  // get direction of evidence:
-  q2TestDirection = document.getElementById("quant2Extreme").value;
-
-  if (!sampleq2) {
-    sampleq2 = testSlope();
-  }
-  sample2 = sample2.sort(function(a, b) {
-    return a - b;
-  });
-  sq2Len = sampleq2.length;
-  if (q2TestDirection === "lower") {
-    for (i = 0; i < sq2Len; i++) {
-      check = 0 + (sampleq2[i] <= slope);
-      extCount += check;
-      q2Color[i] = check;
-    }
-  } else if (q2TestDirection === "upper") {
-    for (i = 0; i < sq2Len; i++) {
-      check = 0 + (sampleq2[i] >= slope);
-      extCount += check;
-      q2Color[i] = check;
-    }
-  } else {
-    lowP =
-      slope * (slope <= q2Null) +
-      (2 * q2Null - slope) * (slope > q2Null) +
-      1 / 1000000;
-    hiP =
-      slope * (slope >= q2Null) +
-      (2 * q2Null - slope) * (slope < q2Null) -
-      1 / 1000000;
-    for (i = 0; i < sq2Len; i++) {
-      check = 0 + ((sampleq2[i] <= lowP) | (sampleq2[i] >= hiP));
-      extCount += check;
-      q2Color[i] = check;
-    }
-  }
-  //console.log(d3.sum(q2Color));
-  q2Pval = extCount / sq2Len;
-  if (sampleq2) {
-    q2Tstdata = stackDots(sampleq2);
-    for (i = 0; i < sq2Len; i++) {
-      q2Tstdata[i].color = circleColors[q2Color[i]];
-    }
-    document.getElementById("quant2InfSVG").style.display = "block";
-    makeScatterPlot(q2Tstdata, "quant2InfSVG", "Slope", " ", false);
-  }
-  //q2ftr.style.display = 'block';
-  q2ftr.innerHTML =
-    "<div  style = 'width: 320px'> Slopes in " +
-    sq2Len +
-    " Resamples from H<sub>0</sub> <br>" +
-    "p-value (strength of evidence): " +
-    formatPvalue(extCount, sq2Len) +
-    "</div>";
-  //document.getElementById("quant2MoreSims").style.display = 'block';
-}
-
-function quant2MoreSimFn(more) {
-  // function to add more points to an estimate or test of slope
-  // estimates are stored in  resampleq2,  tests slopes in sampleq2
-  var sq2Len,
-    //more = +document.getElementById("quant2More").value,
-    newValues = [];
-  if (more > 0) {
-    if (inference === "test") {
-      // assume slope is zero, generate samples of y independent of x
-      // fit new line to each
-      newValues = resampleSlope4Test(q2Values, more);
-      for (i = 0; i < more; i++) {
-        sampleq2.push(newValues[i]);
-      }
-      sampleq2 = sampleq2.sort(function(a, b) {
-        return a - b;
-      });
-      //console.log(d3.mean(sampleq2), sampleq2.length);
-      q2TestUpdate();
-      return sampleq2;
-    } else {
-      // Estimating slope, so generate data using same (x,y) pairs
-      newValues = resampleSlope4CI(q2Values, more);
-
-      for (i = 0; i < more; i++) {
-        resampleq2.push(newValues[i]);
-      }
-      resampleq2 = resampleq2.sort(function(a, b) {
-        return a - b;
-      });
-
-      //  Need to add more (x, y) points and transition in the colors.
-      q2CLChange({ value: q2CnfLvl });
-      return resampleq2;
-    }
-  }
 }

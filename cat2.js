@@ -1,4 +1,16 @@
 // subroutine to estimate a proportion or test for a special value
+
+  function c2TestEstimate(){
+    var dIn, intervalInpts, testInpts, plot, results;
+    dIn = "2 Categorical Data Input";
+    dSumm = "2 Categorical Summary";
+    choice = "Estimate or Test Difference in Proportions";
+    plot = "";
+    results = "";
+    return [dIn, dSumm, intervalInpts, testInpts, plot, results];
+  }
+
+
 // Inputs:
 //     2 sets of category labels (default = Success/Failure) and a count for each of 4 outcomes
 // TODO: need to clear out 'estimate' header & plot if data change
