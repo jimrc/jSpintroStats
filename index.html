@@ -447,60 +447,23 @@
 
 	<div id="TestEstQ1" class="w3-container Page" style="display:none">
 		<h4> Estimate/Test Mean for One Quantitative Variable</h4>
-		<div class="w3-container" id="quant1DataIn-Summary">
-			<div class="w3-cell-row w3-mobile">
-				<div class="w3-cell" style="width:60%">
-					<h4> Enter Data</h4>
 
-					<table class="w3-table w3-border">
-						<tr>
-							<th>Label</th>
-							<th>Separate values with commas</th>
-						</tr>
-						<tr>
-							<td>
-								<input class="w3-input w3-mobile w3-pale-yellow" type="text" id="q1Label" placeholder="y">
-							</td>
-							<td>
-								<input class="w3-input  w3-mobile w3-pale-yellow" type="text" id="q1Values"
-								  onchange = 'document.getElementById("q1Summary").style.display = "none";
-															document.getElementById("allQ1Inference").style.display = "none";'>
-							</td>
-						</tr>
-					</table>
-				</div>
-				<div class="w3-cell"> &nbsp;
-					<button onclick = 'summarizeMu1()'>  &nbsp; &nbsp; Summary</button>
-				  <div class="w3-cell" style=" display:block" id="q1Summary">
-					  <div class="w3-container w3-cell w3-mobile" id="q1SummaryText" style="width:70%">
-					  </div>
-	  				<div class="w3-container w3-cell w3-mobile" id="q1SummarySVGgoesHere">
-		  				<svg id="q1SmrySVG" height=160 width=300></svg>
-			  		</div>
-				  	<div class="w3-container w3-modal w3-mobile">
-					  	<div class="w3-modal-content w3-card-4" id="q1SelectedSampleA" style=" display:none">
-						  </div>
-					  </div>
-				  </div>
-				</div>
-			</div>
-		</div>
 		<br>
 
 		<!--                             Select Your Inference                        -->
-		<div class="w3-container w3-mobile">
+		<div class='w3-container w3-mobile'>
 			Either
-			<button id="EstimateMu1" onclick="q1Inference = 'estimate';
+			<button id='EstimateMu1' onclick='q1Inference = 'estimate';
 			q1CIdata = estimateMu1();
 			q1InfOutput = discreteChart(q1CIdata, q1InfSVG, q1CIinteract);
-			" class="w3-button w3-pale-blue w3-medium w3-round-xlarge">
+			' class='w3-button w3-pale-blue w3-medium w3-round-xlarge'>
 				&nbsp; Estimate a true mean.
 			</button>
 			&nbsp; OR &nbsp;
-			<button id="TestMu1" onclick="q1Inference = 'test';
+			<button id='TestMu1' onclick='q1Inference = 'test';
 			q1Tstdata = testMu1('undefined');
 			q1InfOutput = discreteChart(q1Tstdata, q1InfSVG, q1TestInteract );
-			" class="w3-button w3-pale-blue w3-medium w3-round-xlarge">
+			' class='w3-button w3-pale-blue w3-medium w3-round-xlarge'>
 				&nbsp; Test for a particular value.
 			</button>
 			<!-- TODO
@@ -508,38 +471,38 @@
 			-->
 		</div>
 		<br>
-
+	</div>
 		<!--  Inputs for each inference  (before plotting)  -->
 <div id = 'allQ1Inference' >
-		<div id="q1ConfLvl" style="width: 60%; display: none">
+		<div id='q1ConfLvl' style='width: 60%; display: none'>
 			Choose a Confidence Level:
 		</div>
 
-		<div id="q1Test1" class="w3-cell-row w3-mobile" style="display: none">
-			<div class="w3-cell  w3-mobile" style="width: 35%">
+		<div id='q1Test1' class='w3-cell-row w3-mobile' style='display: none'>
+			<div class='w3-cell  w3-mobile' style='width: 35%'>
 				&nbsp; &nbsp; &nbsp; Test: Is the true mean = &nbsp;
 			</div>
-			<div class="w3-cell  w3-mobile" style="width: 20%">
-				<input class="w3-input w3-card w3-mobile w3-pale-yellow" type="text" id="q1trueMu" placeholder="0.0" onchange="
+			<div class='w3-cell  w3-mobile' style='width: 20%'>
+				<input class='w3-input w3-card w3-mobile w3-pale-yellow' type='text' id='q1trueMu' placeholder='0.0' onchange='
 				svgQ1.selectAll('g').remove();
 				document.getElementById('q1Output').style.display = 'none';
-				testMu1(noChoice)">
+				testMu1(noChoice)'>
 			</div>
-			<div class="w3-cell  w3-mobile" style="width: 45%">
+			<div class='w3-cell  w3-mobile' style='width: 45%'>
 			</div>
 
-			<div id="q1TestInpt2" class="w3-cell-row w3-mobile">
-				<div class='w3-cell' style="width: 30%">
+			<div id='q1TestInpt2' class='w3-cell-row w3-mobile'>
+				<div class='w3-cell' style='width: 30%'>
 					Stronger evidence is a mean
 				</div>
-				<div class='w3-cell' style="width: 40%">
-					<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='q1Extreme' onchange="q1TestUpdate()">
+				<div class='w3-cell' style='width: 40%'>
+					<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='q1Extreme' onchange='q1TestUpdate()'>
 						<option value='lower'>Less Than or =</option>
 						<option value='both' selected>As or More Extreme Than</option>
 						<option value='upper'>Greater Than or =</option>
 					</select>
 				</div>
-				<div class='w3-cell' style="width: 20%" id="q1ObsrvedMean">
+				<div class='w3-cell' style='width: 20%' id='q1ObsrvedMean'>
 					&nbsp;&nbsp; x&#773; (from above)
 				</div>
 
@@ -547,32 +510,32 @@
 		</div>
 
 		<!--  Show Inference Plot -->
-		<div class="w3-cell-row w3-mobile">
+		<div class='w3-cell-row w3-mobile'>
 
 			<!-- Box to Tooltip info on a single data point -->
-			<div class="w3-container w3-cell w3-mobile" id="q1WhichDot" style="width: 200px; height:10%; display:none;" onclick="this.style.display='none'">
+			<div class='w3-container w3-cell w3-mobile' id='q1WhichDot' style='width: 200px; height:10%; display:none;' onclick='this.style.display='none''>
 				<br>
 				<br>
 				<br>
-				<div class="w3-card-4 w3-pale-green" id="q1SelectedSample">
+				<div class='w3-card-4 w3-pale-green' id='q1SelectedSample'>
 					&nbsp;
 				</div>
 			</div>
-			<div class="w3-container w3-cell w3-mobile" id="q1Inference">
+			<div class='w3-container w3-cell w3-mobile' id='q1Inference'>
 				<!--  Inference plot goes here for CI or Test of 1 mean -->
-				<svg id="q1InfSVG" height="300px" width="400px"></svg>
+				<svg id='q1InfSVG' height='300px' width='400px'></svg>
 			</div>
 		</div>
 
 		<!--  Post-plot  Output CI or inputs for p-value and output the p-value -->
-		<div id="q1Output" class="w3-display-container" style="display: none">
+		<div id='q1Output' class='w3-display-container' style='display: none'>
 
 		</div>
 
-		<div id="q1Results"></div>
+		<div id='q1Results'></div>
 		<!--  Increase simulation size -->
-		<div id="q1MoreSims" style="width: 360px; display:none">
-			<div class="w3-cell-row">
+		<div id='q1MoreSims' style='width: 360px; display:none'>
+			<div class='w3-cell-row'>
 				<div class='w3-cell  w3-mobile' style='width: 20%'>
 					Add
 				</div>
@@ -586,7 +549,7 @@
      </div>
 		</div>
 	</div>
-
+</div>
 	<!-- ######-  One Quantitative Actions
 	2) Bootstrap Demo
 	Works, but I'd like to reduce the code for the many resamples buttons using a button builder function.
@@ -677,187 +640,6 @@
 	-->
 
 
-	<!-- ######-************************************************************
-	######-  Two Categorical Actions  #################################-
-	*******************************************************************
-
-	1) Test or Estimate Difference between two Proportions
-
-	ToDo: more info in modal box
-	-->
-
-	<div id="TestEstC2" class="w3-container Page" style="display:none">
-		<div class=w3-container>
-			<h3>Estimate a difference in proportions or Test for equal proportions</h3>
-
-			<div class='w3-container' id='cat2DataIn-Summary'>
-				<div class='w3-cell-row w3-mobile'>
-					<div class='w3-cell' style='width:50%'>
-						<h4> Enter Data as counts, then click [Summary]. </h4>
-						<table class='w3-table w3-border'>
-							<tr>
-								<th>Labels:</th>
-								<th>
-									<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat2LabelPop1' placeholder='Group A'>
-								</th>
-								<th>
-									<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat2LabelPop2' placeholder='Group B'>
-								</th>
-							</tr>
-							<tr>
-								<td>
-									<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat2LabelOut1' placeholder='Success'>
-								</td>
-								<td>
-									<input class='w3-input  w3-mobile w3-pale-yellow' type='text' id='cat2N11' placeholder='1' onchange='clearOutput()'>
-								</td>
-								<td>
-									<input class='w3-input  w3-mobile w3-pale-yellow' type='text' id='cat2N12' placeholder='1' onchange='clearOutput()'>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat2LabelOut2' placeholder='Failure'>
-								</td>
-								<td>
-									<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat2N21' placeholder='1' onchange='clearOutput()'>
-								</td>
-								<td>
-									<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat2N22' placeholder='1' onchange='clearOutput()'>
-								</td>
-							</tr>
-						</table>
-					</div>
-					&nbsp;&nbsp;
-					<div class='w3-cell' style='display:block'>
-					<!--  TODO: Change Summary to a button which will wipeout all other output
-					      TODO: change in data invokes reversion to original page -->
-							<button id='cat2RawSumm' class='w3-button w3-pale-blue w3-medium w3-round-xlarge'
-								onclick =	'c2CIdata = null;
-								 c2TestData = null;
-								 document.getElementById('cat2Output').style.display = 'none';
-								 document.getElementById('cat2MoreSims').style.display = 'none';
-								 summarizeP2();
-								 ' >
-								 &nbsp; &nbsp;Summary
-								 </button>
-						<div class='w3-container w3-cell w3-mobile' id='cat2SummarySVGgoesHere' style = 'display:none'></div>
-						<div class='w3-container w3-cell w3-mobile' id='cat2SummaryText' style='width:310px; display:none'></div>
-					</div>
-				</div>
-				<br>
-			</div>
-			<!--                             Select Your Inference                        -->
-			<div class="w3-container w3-mobile" id="c2SelectInf">
-				Either
-				<button id="EstimateP2" onclick="c2Inference = 'estimate';
-				c2CIdata = estimateP2();
-				c2InfOutput = discreteChart(c2CIdata, cat2InfSVG, cat2CIinteract);
-				" class="w3-button w3-pale-blue w3-medium w3-round-xlarge">
-					&nbsp; Estimate a difference in true proportions.
-				</button>
-				&nbsp; OR &nbsp;
-				<button id="TestP2" onclick="c2Inference = 'test';
-				c2Tstdata = testP2();
-				c2InfOutput = discreteChart(c2Tstdata, cat2InfSVG, cat2TestInteract );
-				" class="w3-button w3-pale-blue w3-medium w3-round-xlarge">
-					&nbsp; Test: Are the true proportions equal?
-				</button>
-			</div>
-			<br>
-			<!--  Inputs for each inference  (before plotting)  -->
-
-			<div id="cat2ConfLvlInpt" style="width: 60%; display: none">
-				Choose a Confidence Level:
-			</div>
-			<div id="cat2TestInpt" class="w3-cell-row w3-mobile" style="display: none">
-				<div class='w3-cell' style='width:50%'>
-					Stronger evidence is a difference
-				</div>
-				<div class='w3-cell' style='width:40%'>
-					<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='cat2Extreme' onchange="cat2TestUpdate()">
-						<option value='lower'>Less Than or =</option>
-						<option value='both' selected>As or More Extreme Than</option>
-						<option value='upper'>Greater Than or =</option>
-					</select>
-				</div>
-				<div class='w3-cell' id="cat2ObsdDiff">
-					&nbsp;&nbsp;
-					the p&#770;<sub>1</sub> - p&#770;<sub>2</sub> observed above.
-				</div>
-
-			</div>
-
-			<div id="cat2Output" style="display: none">
-
-			</div>
-			<!-- End of c2Output -->
-			<!--  Show Inference Plot -->
-			<div class="w3-cell-row w3-mobile">
-				<div class="w3-container w3-cell w3-mobile" id="cat2Inference" style="width:420px">
-					<!--  Inference plot goes here for CI or Test of difference in 2 proportion -->
-					<svg id="cat2InfSVG" height="300px" width="400px"></svg>
-				</div>
-
-				<!-- Box to Tooltip info on a single data point -->
-				<div class="w3-container w3-cell w3-mobile" id="cat2WhichDot" style="width: 200px; height:10%; display:none;" onclick="this.style.display='none'">
-					<br>
-					<br>
-					<br>
-					<div class="w3-card-4 w3-pale-green" id="cat2SelectedSample">
-						&nbsp;
-					</div>
-				</div>
-			</div>
-
-			<!-- Show Results -->
-
-			<div id="cat2Results" class="w3-display-container" style="display:none"></div>
-			<!--  Increase simulation size -->
-			<div id="cat2MoreSims" style="width:360px; display:none">
-				<div class="w3-cell-row">
-					<div class='w3-cell  w3-mobile' style='width: 20%'>
-						Add
-					</div>
-					<div class='w3-cell  w3-mobile' style='width: 20%'>
-						<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat2More' placeholder='0' onchange='cat2MoreSimFn()'>
-					</div>
-					<div class='w3-cell  w3-mobile' style='width: 40%'>
-						&nbsp;simulated points
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<!-- End of cat2 Test- Estimate -->
-
-
-	</div>
-
-
-	<!-- ######-  Two Categorical Actions
-	2) Z Table
-
-	TODO: 	mostly works, but output doesn't show nicely in the svg
-	TODO:  if a later input is of a different type, earlier input should disappear
-	-->
-
-
-
-	<!-- ************************************************************
-	######-  Two Quantitative Actions ########################
-	************************************************************
-
-	1) Test or Estimate correlation or slope
-	ToDo:
-	summary
-	display
-	test rho=0 slope = 0
-	estimate rho, slope
-	-->
-
-
-	</div>
 
 	<!-- ######-  Two Quantitative Actions
 	2) Demo of least squares regression
@@ -873,12 +655,6 @@
 		<span onclick='openVble('RegressionDemo')' class='w3-button w3-large w3-display-bottomright'>Back</span>
 
 	</div>
-
-	<!-- ######-  Two Quantitative Actions
-	3) T table
-	ToDo:
-	mostly works, but output doesn't show nicely in the svg
-	-->
 
 
 	<!-- ************************************************************
@@ -1014,7 +790,7 @@
 			</div>
 		</div>
 	</div>
-
+</div>
 
 </body>
 

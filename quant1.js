@@ -2,13 +2,82 @@
 
    function q1TestEstimate(){
     var dIn, intervalInpts, testInpts, plot, results;
-    dIn = "1 Quantitative Data Input";
-    dSumm = "1 Quantitative Data Summary";
+    dIn =
+    " <div class='w3-container' id='quant1DataIn-Summary'>"+
+		" 	  <div class='w3-cell-row w3-mobile'>"+
+		" 		  <div class='w3-cell' style='width:60%'>"+
+		" 			  <h4> Enter Data</h4>"+
+   	" 				<table class='w3-table w3-border'>"+
+		" 				<tr>"+
+		" 					<th>Label</th>"+
+		" 					<th>Separate values with commas</th>"+
+		" 				</tr>"+
+		" 				<tr>"+
+		" 					<td>"+
+		" 						<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='q1Label' "+
+    "      placeholder='y'>"+
+		" 					</td>"+
+		" 					<td>"+
+		" 						<input class='w3-input  w3-mobile w3-pale-yellow' type='text' id='q1Values'"+
+		" 						  onchange = 'document.getElementById('q1Summary').style.display = 'none';"+
+		" 													document.getElementById('allQ1Inference').style.display = 'none';'>"+
+		" 					</td>"+
+		" 				</tr>"+
+		" 			</table>"+
+		" 		</div>"+
+		" 		<div class='w3-cell'> &nbsp;"+
+		" 			<button onclick = 'summarizeMu1()'>  &nbsp; &nbsp; Summary</button>"+
+		" 		  <div class='w3-cell' style=' display:block' id='q1Summary'>"+
+		" 			  <div class='w3-container w3-cell w3-mobile' id='q1SummaryText' style='width:70%'>"+
+		" 			  </div>"+
+	  " 				<div class='w3-container w3-cell w3-mobile' id='q1SummarySVGgoesHere'>"+
+		"   				<svg id='q1SmrySVG' height=160 width=300></svg>"+
+		" 	  		</div>"+
+		" 		  	<div class='w3-container w3-modal w3-mobile'>"+
+		" 			  	<div class='w3-modal-content w3-card-4' id='q1SelectedSampleA' style=' display:none'>"+
+		" 				  </div>"+
+		" 			  </div>"+
+		" 		  </div>"+
+		" 		</div>"+
+		" 	</div> "+
+		" </div>";
+    dSumm = " ";
     choice = "Estimate or Test Mean";
     plot = "";
       results = "";
       return [dIn, dSumm,intervalInpts, testInpts, plot, results];
   }
+
+
+
+    function resample1Q4Test(nreps) {
+      //function to test 'Is the true mean  = some value?'
+      // Inputs were created by summarizeMu1
+      nullValue = +document.getElementById('q1trueMu').value;
+      q1N = q1Values.length;
+      document.getElementById('q1ConfLvl').style.display = 'none';
+      document.getElementById('q1Test1').style.display = 'block';
+      document.getElementById("moreTEsims").style.display = 'block';
+     var shift = q1Xbar - nullValue, resampleq1 = [];
+      for (i = 0; i < q1N; i++) {
+        q1Shifted[i] = q1Values[i] - shift;
+      }
+      resampleq1 = resample1Mean(q1Shifted, nreps).sort(function(a, b) {
+          return a - b;
+        });
+      return resampleq1;
+    }
+
+    function resample1Q4CI(nreps) {
+      //function to generate random resamples and compute means
+      //
+      resampleq1 = resample1Mean(q1Values, nreps).sort(function(a, b) {
+          return a - b;
+        });
+
+      document.getElementById("moreTEsims").style.display = 'block';
+      return resampleq1;
+    }
 
 
 // Inputs:
@@ -76,7 +145,7 @@ function summarizeMu1() {
     q1Values[i] = +q1Values[i];  // convert to numeric
   }
 
-  q1Xbar = d3.mean(q1Values);
+  observed = q1Xbar = d3.mean(q1Values);
   q1SD = d3.deviation(q1Values);
   q1SEXbar = q1SD / Math.sqrt(q1N);
   q1Summ = document.getElementById('q1SummaryText');
@@ -123,63 +192,6 @@ function q1SumInteract(d, i) {
   };
 };
 
-function q1CLChange(arg) {
-  //update plot to illustrate confidence interval
-  var sq1Len,
-    cnfLvl = q1CnfLvl,
-    tempColors = [],
-    twoTail;
-  q1Label = document.getElementById('q1Label').value;
-  q1Values = document.getElementById('q1Values').value.split(',');
-  q1N = q1Values.length;
-  if (arg.value) {
-    q1CnfLvl = cnfLvl = +arg.value;
-  }
-
-  if (q1CIdata) {
-    sq1Len = q1CIdata[0].length;
-    tempColors = ciColor(q1CIdata[0], cnfLvl);
-    q1lowerBd = tempColors[1].toPrecision(4);
-    q1upperBd = tempColors[2].toPrecision(4);
-    cnfLvl = tempColors[3];
-    q1CIdata = [q1CIdata[0], tempColors[0]];
-    q1InfOutput = discreteChart(q1CIdata, q1InfSVG, q1CIinteract);
-  }
-
-
-  document.getElementById('allQ1Inference').style.display = 'block';
-  document.getElementById('q1MoreSims').style.display = 'block';
-  q1ftr = document.getElementById('q1Results');
-  q1ftr.style.display = 'block';
-  q1ftr.innerHTML = //"<div style = 'height = 10'> </div>" +
-    "<div style = 'width:360px'> Plot shows Mean " +
-    q1Label +
-    ' in  ' +
-    sq1Len +
-    ' Re-samples' +
-    '<br> <br>' +
-    Math.round(cnfLvl * 100) +
-    '% Confidence Interval: (' +
-    q1lowerBd +
-    ', ' +
-    q1upperBd +
-    ' )</div>';
-}
-
-var q1CIrangeslide = rangeslide('#q1ConfLvl', {
-  data: confLevels,
-  showLabels: true,
-  startPosition: 0,
-  showTicks: false,
-  dataSource: 'value',
-  labelsContent: 'key',
-  valueIndicatorContent: 'key',
-  thumbWidth: 24,
-  thumbHeight: 24,
-  handlers: {
-    valueChanged: [q1CLChange],
-  },
-});
 
 function colorMu1(resample) {
   // changes colors for CI illustration
