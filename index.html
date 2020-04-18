@@ -690,59 +690,59 @@
 		<div class=w3-container>
 			<h3>Estimate a difference in proportions or Test for equal proportions</h3>
 
-			<div class="w3-container" id="cat2DataIn-Summary">
-				<div class="w3-cell-row w3-mobile">
-					<div class="w3-cell" style="width:50%">
+			<div class='w3-container' id='cat2DataIn-Summary'>
+				<div class='w3-cell-row w3-mobile'>
+					<div class='w3-cell' style='width:50%'>
 						<h4> Enter Data as counts, then click [Summary]. </h4>
-						<table class="w3-table w3-border">
+						<table class='w3-table w3-border'>
 							<tr>
 								<th>Labels:</th>
 								<th>
-									<input class="w3-input w3-mobile w3-pale-yellow" type="text" id="cat2LabelPop1" placeholder="Group A">
+									<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat2LabelPop1' placeholder='Group A'>
 								</th>
 								<th>
-									<input class="w3-input w3-mobile w3-pale-yellow" type="text" id="cat2LabelPop2" placeholder="Group B">
+									<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat2LabelPop2' placeholder='Group B'>
 								</th>
 							</tr>
 							<tr>
 								<td>
-									<input class="w3-input w3-mobile w3-pale-yellow" type="text" id="cat2LabelOut1" placeholder="Success">
+									<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat2LabelOut1' placeholder='Success'>
 								</td>
 								<td>
-									<input class="w3-input  w3-mobile w3-pale-yellow" type="text" id="cat2N11" placeholder="1" onchange="clearOutput()">
+									<input class='w3-input  w3-mobile w3-pale-yellow' type='text' id='cat2N11' placeholder='1' onchange='clearOutput()'>
 								</td>
 								<td>
-									<input class="w3-input  w3-mobile w3-pale-yellow" type="text" id="cat2N12" placeholder="1" onchange="clearOutput()">
+									<input class='w3-input  w3-mobile w3-pale-yellow' type='text' id='cat2N12' placeholder='1' onchange='clearOutput()'>
 								</td>
 							</tr>
 							<tr>
 								<td>
-									<input class="w3-input w3-mobile w3-pale-yellow" type="text" id="cat2LabelOut2" placeholder="Failure">
+									<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat2LabelOut2' placeholder='Failure'>
 								</td>
 								<td>
-									<input class="w3-input w3-mobile w3-pale-yellow" type="text" id="cat2N21" placeholder="1" onchange="clearOutput()">
+									<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat2N21' placeholder='1' onchange='clearOutput()'>
 								</td>
 								<td>
-									<input class="w3-input w3-mobile w3-pale-yellow" type="text" id="cat2N22" placeholder="1" onchange="clearOutput()">
+									<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat2N22' placeholder='1' onchange='clearOutput()'>
 								</td>
 							</tr>
 						</table>
 					</div>
 					&nbsp;&nbsp;
-					<div class="w3-cell" style="display:block">
+					<div class='w3-cell' style='display:block'>
 					<!--  TODO: Change Summary to a button which will wipeout all other output
 					      TODO: change in data invokes reversion to original page -->
-							<button id="cat2RawSumm" class="w3-button w3-pale-blue w3-medium w3-round-xlarge"
-								onclick =	"c2CIdata = null;
+							<button id='cat2RawSumm' class='w3-button w3-pale-blue w3-medium w3-round-xlarge'
+								onclick =	'c2CIdata = null;
 								 c2TestData = null;
-								 document.getElementById("cat2Output").style.display = 'none';
-								 document.getElementById("cat2MoreSims").style.display = 'none';
+								 document.getElementById('cat2Output').style.display = 'none';
+								 document.getElementById('cat2MoreSims').style.display = 'none';
 								 summarizeP2();
-								 " >
+								 ' >
 								 &nbsp; &nbsp;Summary
 								 </button>
-						<div class="w3-container w3-cell w3-mobile" id="cat2SummarySVGgoesHere" style = "display:none"></div>
-						<div class="w3-container w3-cell w3-mobile" id="cat2SummaryText" style="width:310px; display:none"></div>
+						<div class='w3-container w3-cell w3-mobile' id='cat2SummarySVGgoesHere' style = 'display:none'></div>
+						<div class='w3-container w3-cell w3-mobile' id='cat2SummaryText' style='width:310px; display:none'></div>
 					</div>
 				</div>
 				<br>

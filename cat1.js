@@ -74,11 +74,11 @@ function c1TestEstimate(){
   "         			<tr> <td>	<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat1Label1'"+
   "         								placeholder='Success' >			</td>"+
   "         					<td><input class='w3-input  w3-mobile w3-pale-yellow' type='text' id='cat1N1'"+
-  "                         placeholder=' '   onchange= 'renew()'>  </td>  	</tr>"+
+  "                         placeholder=' '   onchange= 'renewC1()'>  </td>  	</tr>"+
   "         			<tr> 	<td>	<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat1Label2'"+
   "         								placeholder='Failure' >		</td>	"+
   "         							<td>		<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat1N2'"+
-  "        								placeholder=' '  onchange= 'renew()'> 	</td>		</tr> <tr></tr>"+
+  "        								placeholder=' '  onchange= 'renewC1()'> 	</td>		</tr> <tr></tr>"+
   "          	</table>	&nbsp; &nbsp;"+
   "        </div>        	&nbsp; &nbsp; 				&nbsp; &nbsp;"+
   " 			 <div class='w3-cell' style='width:2%'> </div>"+
@@ -127,34 +127,17 @@ function c1TestEstimate(){
   " 			</div>"+
   " </div>";
 
-  plot =
-  "  		<div id='cat1Output' style='display: none'>"+
-  "  			<!--  Show Inference Plot -->"+
-  "  			<div class='w3-container w3-cell w3-mobile' id='cat1Inference' style='width:420px'>"+
-  "   					<!--  Inference plot goes here for CI or Test of 1 proportion -->"+
-  "  					<svg id='cat1InfSVG' height='300px' width='400px'></svg>"+
-  "  			</div>";
+  plot = " ";
 
   results =
-  "  			<div id='cat1MoreSims' style='width:360px; display:none'>"+
-  "  				<div class='w3-cell-row'>"+
-  "  					<div class='w3-cell  w3-mobile' style='width: 20%'>			Add		</div>"+
-  "  					<div class='w3-cell  w3-mobile' style='width: 20%'>"+
-  "  						<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat1More'"+
-  "               placeholder='0' onchange='cat1MoreSimFn()'>"+
-  "  					</div>"  +
-  "  					<div class='w3-cell  w3-mobile' style='width: 40%'>"+
-  "  						&nbsp; simulated points"+
-  "  					</div>"+
-  "  			</div>"+
-  "  		</div>  ";
+  "  	 ";
 
   return [dIn, dSumm, intervalInpts, testInpts, plot, results];
 }
 
 
 
-function renew (){
+function renewC1 (){
       //function to remove outdated info and PlotGoesHere
        document.getElementById('cat1SummaryText').style.display = 'none';
  			 document.getElementById('cat1SummarySVGgoesHere').style.display =  'none';

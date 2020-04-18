@@ -283,7 +283,7 @@ function moreCI(nreps, concat) {
          break;
        }
       case 'cat2' :  {
-        newSample = resample2P4CI( nreps);
+        newSample = resample2C4CI( nreps);
           ciInftop = "Confidence Interval for difference in proportions based on ";
           xLabel = "Differences in proportion from resampled datasets";
         break;
@@ -313,7 +313,7 @@ function moreCI(nreps, concat) {
       });
       // get colors for inside/outside of observed
       sLen = resample4CI.length;
-      console.log("moreCIS", resample4CI[0], resample4CI[50], resample4CI[90]);
+      // console.log("moreCIS", resample4CI[0], resample4CI[50], resample4CI[90]);
      tempColors = ciColor(resample4CI);
      CIData = stackDots(resample4CI);
       for (i = 0; i < sLen; i++) {
@@ -361,13 +361,13 @@ function moreTests(nreps, concat) {
           break;
         }
         case 'cat2' :  {
-          newSample = resampleDiffP4Test(nreps);
+          newSample = resample2C4Test(nreps);
           observed = difference;
           xLabel = "Differences in proportions from resampled datasets under the null hypothesis ";
           break;
         }
         case 'c1q1':  {
-          newSample = resampleDiffMn4Test(nreps);
+          newSample = resample1C1Q4Test(nreps);
           observed = difference;
           xLabel = "Differences in means from resampled datasets under the null hypothesis ";
           break;

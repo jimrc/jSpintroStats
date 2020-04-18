@@ -779,12 +779,11 @@ function ciColor(resample) {
   return color;
 }
 
-function propBarChart() {
+function propBarChart(data) {
   // updatable chart to show proportion bars
   //TODO:  add text labels (y axis?) for multiple bars
   // thanks to Rob Moore https://www.toptal.com/d3-js/towards-reusable-d3-js-charts
   // All options that should be accessible to caller
-  var data = [];
   var width = 400;
   var height = 100;
   var fillColor = "steelblue";
@@ -825,8 +824,21 @@ function propBarChart() {
         //.attr("transform", "translate(" +margin +",0)")
         .attr("x", margin)
         .attr("width", function(d) {
-          return xScale(d);
+          return xScale(d.prop);
         });
+       bars.selectAll("text")
+           .data(data)
+           .enter()
+           .append("text")
+           .text(d => d.label)
+           .attr("x", d => xScale(d.prop/2))
+           .attr("y",function(d, i) {
+                return i * barSpacing;
+              })
+           .attr("font-family" , "sans-serif")
+           .attr("font-size" , "11px")
+           .attr("fill" , "white")
+          .attr("text-anchor", "middle");
 
       var xAxis = d3.axisBottom(xScale).ticks(5);
 
@@ -839,6 +851,7 @@ function propBarChart() {
         )
         .call(xAxis);
 
+       bars.select("text").raise();
       // update functions
       updateWidth = function() {
         //xScale.range([0, width-margin]);
