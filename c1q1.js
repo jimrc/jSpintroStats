@@ -2,8 +2,34 @@
 
   function c1q1TestEstimate(){
     var dIn, intervalInpts, testInpts, plot, results;
-    dIn = "1 Categorical, 1 Quantitative Data Input";
-    dSumm = "1 Categorical, 1 Quantitative Summary";
+    dIn =
+    "	<div class='w3-container' id='C1Q1DataIn-Summary'>"	+
+		"	<div class='w3-cell-row w3-mobile' id='C1Q1Data'>"	+
+		"			<div class='w3-cell' style='width:20%'>"	+
+		"				<h4> Choose Data</h4>"	+
+		"			</div>"	+
+		"				<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='C1Q1DataName'"	+
+    "	          onchange='summarizeDiff()'>"	+
+		"			<div class='w3-cell'>"	+
+		"					<option value='SATprep' selected>SAT prep</option>"	+
+		"					<option value='smoker'>Smoking - Birthweight</option>"	+
+		"					<option value='music1'>Music vs Silence</option>"	+
+		"					<option value='REDAvsCntrl'>REDA vs Control</option>"	+
+		"					<option value='REDvsREDA'>RED vs REDA</option>"	+
+		"					<option value='other'>Other</option>"	+
+		"				</select>"	+
+		"			</div>"	+
+		"		</div> "	;
+
+
+    dSumm =
+    "	<div class='flex-container' style='display:flex; wrap:nowrap;' >"+
+		"		  <div  id='C1Q1SummaryText' style='width:300px; display: none'>"	+
+		"		  </div>"	+
+    //" 	  <div  style='width:310px' id='C1Q1SummarySVGgoesHere'>"	+
+		"				<svg id='C1Q1SumSVG' height='200px' width='200px'></svg>"	+
+		//"		  </div>"	+
+		"	</div>"	;
     choice = "Estimate or Test Difference in Means";
     plot = "";
     results = "";
@@ -15,10 +41,8 @@
 //       OR:  Load one from csv
 // TODO:  parse a csv file
 // TODO:  Label  categories in summary
-//       Summary  Plot only shows when inference is clicked
 // TODO: when clicking a point in the inference plot, show the resample in 2 colors
 //   -- need to save the sampled indices
-// TODO:  inference plot moves when looking at individual points inside it.
 
 var c1q1SummDiv = d3.select("#C1Q1Inference"),
 	c1q1Tstdata,
@@ -76,50 +100,26 @@ var c1q1SummDiv = d3.select("#C1Q1Inference"),
 	sampleTstc1q1,
 	shift;
 
-var svgc1q1 = d3.select("#C1Q1InfSVG");
-
-
-
-
-var C1Q1CIrangeslide = rangeslide("#C1Q1ConfLvl", {
-	data: confLevels,
-	showLabels: true,
-	startPosition: 0,
-	showTicks: false,
-	dataSource: "value",
-	labelsContent: "key",
-	valueIndicatorContent: "key",
-	thumbWidth: 24,
-	thumbHeight: 24,
-	handlers: {
-		"valueChanged": [c1q1CLChange]
-	}
-});
-
 function summarizeDiff() {
 	// builds summary table and dot plot for a quantitative variable split by a categorical variable
-	var margin = 20,
-		w = 200,
-		h = 200,
-		c1q1Response;
+	var	c1q1Response;
 
-	if (c1q1SumPlot) {
-		c1q1CIdata = [];
-		c1q1TstData = [];
+    c1q1SumPlot= document.getElementById("C1Q1SumSVG")
 		x1 = [];
 		x2 = [];
 		document.getElementById("C1Q1Results").style.display = "none";
 		document.getElementById("C1Q1Output").style.display = "none";
-		document.getElementById("C1Q1MoreSims").style.display = "none";
-		document.getElementById("C1Q1ConfLvl").style.display = "none";
-		document.getElementById("C1Q1Test").style.display = "none";
-		document.getElementById("C1Q1Inference").style.display = "none";
-		document.getElementById("C1Q1WhichDot").style.display = "none";
-		document.getElementById("c1q1WhichDotA").style.display = "none";
-	}
+	//} else{
+    //c1q1SumPlot= document.getElementById("C1Q1SumSVG")
+  //}
 
 	c1q1DataName = document.getElementById("C1Q1DataName").value;
-	c1q1RawData = (c1q1DataName === "SATprep") ? SATprep : (c1q1DataName === "smoker") ? smoker : (c1q1DataName === "music1") ? musicVSsilence1 : (c1q1DataName === "REDvsREDA") ? REDvsREDA : (c1q1DataName === "REDAvsCntrl") ? REDAvsCntrl : "undefined";
+	c1q1RawData = (c1q1DataName === "SATprep") ? SATprep :
+                (c1q1DataName === "smoker") ? smoker :
+                (c1q1DataName === "music1") ? musicVSsilence1 :
+                (c1q1DataName === "REDvsREDA") ? REDvsREDA :
+                (c1q1DataName === "REDAvsCntrl") ? REDAvsCntrl :
+                "undefined";
 
 	dataLength = c1q1RawData.length;
 	c1q1Response = Object.keys(c1q1RawData[0])[1];
@@ -139,19 +139,20 @@ function summarizeDiff() {
 	x1Var = d3.variance(x1);
 	c1q1N1 = x1.length;
 	xbar2 = d3.mean(x2);
-	diff = xbar1 - xbar2;
 	x2Var = d3.variance(x2);
 	c1q1N2 = x2.length;
+	observed = diff = xbar1 - xbar2;
+  nullValue = 0.0;
+
 	x1 = x1.sort(function (a, b) {
 		return (a - b);
 	});
 	x2 = x2.sort(function (a, b) {
 		return (a - b);
 	});
+
 	c1q1Groups = repeat(0, c1q1N2).concat(repeat(1, c1q1N1));
 	x = x2.concat(x1);
-
-	c1q1SumPlot = dbl_histodot(x, c1q1Groups, c1q1Keys, C1Q1SumSVG, c1q1InteractFnA);
 
 	c1q1Summ = document.getElementById("C1Q1SummaryText");
 	c1q1Data = [{
@@ -164,10 +165,10 @@ function summarizeDiff() {
 		"label": "Diff",
 		"xx": diff
   }];
-	c1q1Summ.innerHTML = " Summary &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br><br>" +
+	c1q1Summ.innerHTML = "<br> <b> Summary</b> <br>  <br> <br>" +
 		c1q1Keys[0] + "   Mean: " + xbar1.toPrecision(4) +
 		"<br> SD: " + Math.sqrt(x1Var).toPrecision(4) +
-		"&nbsp;&nbsp; n: " + c1q1N1 +
+		"&nbsp;&nbsp; n: " + c1q1N1 + "<br>" +
 		"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br> <br> <br>" +
 		c1q1Keys[1] + "   Mean: " + xbar2.toPrecision(4) +
 		"<br> SD: " + Math.sqrt(x2Var).toPrecision(4) +
@@ -176,30 +177,70 @@ function summarizeDiff() {
 		"<br><br> Difference in Means: " + diff.toPrecision(4);
 	c1q1Summ.style = "display: block";
 	// display next step: select inference
-	document.getElementById("C1Q1SelectInf").style.display = 'block';
-	c1q1ObsdDiff = document.getElementById("C1Q1ObsdDiff")
-	if (c1q1ObsdDiff) {
-		c1q1ObsdDiff.innerHTML = "&nbsp;&nbsp;" + diff.toPrecision(4) + " from above.";
-	}
-}
 
-function c1q1InteractFnA(d, i) {
-	//console.log(d.x);
-	// open modal box to show x value and group of selected dot;
-	var c1q1Modal = document.getElementById("c1q1WhichDotA"),
-		c1q1ModalContent = document.getElementById("c1q1SelectedSampleA");
-	c1q1Modal.style.display = "block";
-	c1q1ModalContent.innerHTML = "Value: " + c1q1SumPlot[1][i].x.toPrecision(4) + ", Group: " + c1q1Keys[1 - c1q1SumPlot[1][i].color] +
-		" <br> Click to Close";
-	// open modal box to show slope of the selected resample;
-	//window.onclick = function(event) {
-	//	if (event.target == c1q1Modal) {
-	//		c1q1Modal.style.display = "none";
-	//	}
-	//}
+    c1q1SumPlot.style.display = "block";
+    c1q1SumPlot = dbl_histodot(x, c1q1Groups, c1q1Keys, c1q1SumPlot, c1q1CIinteract);
+
 }
 
 
+    function resample1C1Q4CI(nreps) {
+      //function to generate random resamples, compute means, and return differences in means
+      //
+      var indices = sequence(0, nreps, 1);
+      sampleCIc1q1 = resampleDiffMeans(x1, x2, nreps);
+      	// Now sort the indices by order of the first element which is diff
+      	//console.log(sampleCIc1q1);
+      	indices.sort(function (a, b) {
+      		return sampleCIc1q1.diff[a] - sampleCIc1q1.diff[b];
+      	});
+      	//sampleCIc1q1.diff  = indices.map( function (ndx) {return sampleCIc1q1.diff[ndx];});
+      	sampleCIc1q1.mean1 = indices.map(function (ndx) {
+      		return sampleCIc1q1.mean1[ndx];
+      	});
+      	sampleCIc1q1.mean2 = indices.map(function (ndx) {
+      		return sampleCIc1q1.mean2[ndx];
+      	});
+      	for (i = 0; i < nreps; i++) {
+      		sampleCIc1q1.diff[i] = sampleCIc1q1.mean1[i] - sampleCIc1q1.mean2[i];
+      	}
+
+      document.getElementById("moreTEsims").style.display = 'block';
+      return sampleCIc1q1.diff;
+    }
+
+
+
+    function resample1C1Q4Test(nreps) {
+      //function to generate random resamples and compute means
+      //
+      var c1q1N2 = x2.length,
+          shift = observed - nullValue,
+          c1q1Shifted = [];
+
+	    for (i = 0; i < c1q1N2; i++) {
+		    c1q1Shifted.push(x2[i] + shift);
+      }
+      sampleTstc1q1 = resampleDiffMeans(x1, c1q1Shifted, nreps);
+  		indices = sequence(0, nreps, 1);
+  		// Now sort the indices by order of the first element which is diff
+  		//console.log(sampleTstc1q1);
+  		indices.sort(function (a, b) {
+  			return sampleTstc1q1.diff[a] - sampleTstc1q1.diff[b];
+  		});
+  		sampleTstc1q1.diff = indices.map(function (ndx) {
+  			return sampleTstc1q1.diff[ndx];
+  		});
+  		sampleTstc1q1.mean1 = indices.map(function (ndx) {
+  			return sampleTstc1q1.mean1[ndx];
+  		});
+  		sampleTstc1q1.mean2 = indices.map(function (ndx) {
+  			return sampleTstc1q1.mean2[ndx];
+  		});
+
+      document.getElementById("moreTEsims").style.display = 'block';
+      return sampleTstc1q1.diff;
+    }
 
 function estimateDiff(nreps) {
 	//function to estimate the differences in mean based on resamples of original numeric data
@@ -267,12 +308,8 @@ function testDiff(tailChoice) {
 	//+document.getElementById("c1q1trueDiff").value;
 	//c1q1N = c1q1Values.length;
 	document.getElementById("C1Q1WhichDot").style.display = "none"; // close modals
-
-	c1q1CLvl = document.getElementById("C1Q1ConfLvl");
-	c1q1CLvl.style.display = "none";
-
-	c1q1Tst = document.getElementById("C1Q1Test");
-	c1q1Tst.style.display = "block";
+	document.getElementById("C1Q1ConfLvl").style.display = "none";
+ document.getElementById("C1Q1Test").style.display = "block";
 
 	var sc1q1Len, indices = [];
 	shift = diff - c1q1Null;
@@ -366,12 +403,6 @@ function c1q1CLChange(arg) {
 	//c1q1InfOutput =
 	if (d3.variance(sampleCIc1q1.diff) > 0.001) {
 		histodot(sampleCIc1q1.diff, c1q1Colors, C1Q1InfSVG, c1q1CIinteract);
-
-		document.getElementById("C1Q1MoreSims").style.display = 'block';
-		c1q1ftr = document.getElementById("C1Q1Results");
-		c1q1ftr.innerHTML = //"<div style = 'height = 10'> </div>" +
-			"<div style = 'width:400px'> Plot shows difference in means in " + sc1q1Len + " resamples" + "<br> <br>" + Math.round(cnfLvl * 100) + "% Confidence Interval: (" + c1q1lowerBd + ", " + c1q1upperBd + " )</div>";
-		c1q1ftr.style.display = 'block';
 	}
 }
 

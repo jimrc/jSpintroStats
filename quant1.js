@@ -1,6 +1,9 @@
 // subroutine to estimate a mean or test for a special value
+// TODO: cleanup plot, remove unused variables
+// Fix testing inputs to take null value
 
-   function q1TestEstimate(){
+
+ function q1TestEstimate(){
     var dIn, intervalInpts, testInpts, plot, results;
     dIn =
     " <div class='w3-container' id='quant1DataIn-Summary'>"+
@@ -42,7 +45,6 @@
 		" 	</div> "+
 		" </div>";
     dSumm = " ";
-    choice = "Estimate or Test Mean";
     plot = "";
       results = "";
       return [dIn, dSumm,intervalInpts, testInpts, plot, results];

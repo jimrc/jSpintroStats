@@ -1,4 +1,7 @@
 //  javascript to setup main index.html
+
+//ToDo:  if data changes, or variable changes, erase inference plot and CI bars
+
 var circleColors = ["steelblue", "red"],
     cnfLvl = 0.80, ciInftop,
     demo, mean = 0, proportion = 0.5, difference = 0, slope = 0,
@@ -271,7 +274,7 @@ function moreCI(nreps, concat) {
   if(nreps>0){
     switch(variable){
       case 'cat1' : {
-        newSample = resample1P4CI( nreps);
+        newSample = resample1C4CI( nreps);
           ciInftop = "Confidence Interval for proportion based on ";
           xLabel = "Proportions from resampled datasets";
         break;   // End of c1Output
@@ -346,7 +349,7 @@ function moreTests(nreps, concat) {
     switch(variable){
         case 'cat1' : {
           if( nullValue > 0.00 & nullValue < 1.00){
-            newSample = resample1P4Test(nreps);
+            newSample = resample1C4Test(nreps);
           } else {
             console.log("null probability not in (0,1)")
           }

@@ -15,7 +15,7 @@ function makeScatterPlot(data, plot, xlabel, ylabel, addLine) {
     canvas,
     max_draw_space,
     xydata = [];
-    //console.log(data[0]);
+    //console.log(data);
   //if (document.getElementById(plot).style.display === "none") {
   //    document.getElementById(plot).style.display = "block";
   //}

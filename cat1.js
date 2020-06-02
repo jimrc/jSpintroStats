@@ -146,7 +146,7 @@ function renewC1 (){
 
 
 
-function resample1P4Test(nreps) {
+function resample1C4Test(nreps) {
   //function to test 'Is the true proportion  = some value?' for 'success/failure' data
   // Gather Inputs:
   cat1Label1 = document.getElementById("cat1Label1").value;
@@ -166,7 +166,7 @@ function resample1P4Test(nreps) {
   return sampleC1;
 }
 
-function resample1P4CI(nreps) {
+function resample1C4CI(nreps) {
   //function to generate random draws from observed proportions
   // Gather Inputs:
   cat1N1 = +document.getElementById("cat1N1").value;

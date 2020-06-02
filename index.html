@@ -217,7 +217,8 @@
 					document.getElementById("confLvlInpt").style.display = "block";
 				 	document.getElementById("inferenceText").style.display = "none" ;
 						if(!d3.select("#infSVGplot_svg").empty()){
-							d3.select("#infSVGplot_svg").selectAll(".infSVGplot_scatter_group").remove();
+						d3.select("#infSVGplot_svg").selectAll(".infSVGplot_scatter_group").remove();
+
 						}
 					moreCI(100, false)'>
   				&nbsp; Estimate the true value.
@@ -431,125 +432,9 @@
 </div>
 
  <!--  End of 5 new page formats --
+   Below are the old-style pages   Keep them until they are incorporated
+ -->
 
-
-   --  Below are the old-style pages   Keep them until they are incorporated  -->
-
-	<div id="TestEstC1" class="w3-container Page" style="display:none">
-
-	</div>
-
-	<!-- ************************************************************
-	######-  One Quantitative Actions  ########################
-	************************************************************
-	1) Test or Estimate a single Mean
-	-->
-
-	<div id="TestEstQ1" class="w3-container Page" style="display:none">
-		<h4> Estimate/Test Mean for One Quantitative Variable</h4>
-
-		<br>
-
-		<!--                             Select Your Inference                        -->
-		<div class='w3-container w3-mobile'>
-			Either
-			<button id='EstimateMu1' onclick='q1Inference = 'estimate';
-			q1CIdata = estimateMu1();
-			q1InfOutput = discreteChart(q1CIdata, q1InfSVG, q1CIinteract);
-			' class='w3-button w3-pale-blue w3-medium w3-round-xlarge'>
-				&nbsp; Estimate a true mean.
-			</button>
-			&nbsp; OR &nbsp;
-			<button id='TestMu1' onclick='q1Inference = 'test';
-			q1Tstdata = testMu1('undefined');
-			q1InfOutput = discreteChart(q1Tstdata, q1InfSVG, q1TestInteract );
-			' class='w3-button w3-pale-blue w3-medium w3-round-xlarge'>
-				&nbsp; Test for a particular value.
-			</button>
-			<!-- TODO
-			need to print summary stats of the dots in the chart: mean, SD, and number of resamples
-			-->
-		</div>
-		<br>
-	</div>
-		<!--  Inputs for each inference  (before plotting)  -->
-<div id = 'allQ1Inference' >
-		<div id='q1ConfLvl' style='width: 60%; display: none'>
-			Choose a Confidence Level:
-		</div>
-
-		<div id='q1Test1' class='w3-cell-row w3-mobile' style='display: none'>
-			<div class='w3-cell  w3-mobile' style='width: 35%'>
-				&nbsp; &nbsp; &nbsp; Test: Is the true mean = &nbsp;
-			</div>
-			<div class='w3-cell  w3-mobile' style='width: 20%'>
-				<input class='w3-input w3-card w3-mobile w3-pale-yellow' type='text' id='q1trueMu' placeholder='0.0' onchange='
-				svgQ1.selectAll('g').remove();
-				document.getElementById('q1Output').style.display = 'none';
-				testMu1(noChoice)'>
-			</div>
-			<div class='w3-cell  w3-mobile' style='width: 45%'>
-			</div>
-
-			<div id='q1TestInpt2' class='w3-cell-row w3-mobile'>
-				<div class='w3-cell' style='width: 30%'>
-					Stronger evidence is a mean
-				</div>
-				<div class='w3-cell' style='width: 40%'>
-					<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='q1Extreme' onchange='q1TestUpdate()'>
-						<option value='lower'>Less Than or =</option>
-						<option value='both' selected>As or More Extreme Than</option>
-						<option value='upper'>Greater Than or =</option>
-					</select>
-				</div>
-				<div class='w3-cell' style='width: 20%' id='q1ObsrvedMean'>
-					&nbsp;&nbsp; x&#773; (from above)
-				</div>
-
-			</div>
-		</div>
-
-		<!--  Show Inference Plot -->
-		<div class='w3-cell-row w3-mobile'>
-
-			<!-- Box to Tooltip info on a single data point -->
-			<div class='w3-container w3-cell w3-mobile' id='q1WhichDot' style='width: 200px; height:10%; display:none;' onclick='this.style.display='none''>
-				<br>
-				<br>
-				<br>
-				<div class='w3-card-4 w3-pale-green' id='q1SelectedSample'>
-					&nbsp;
-				</div>
-			</div>
-			<div class='w3-container w3-cell w3-mobile' id='q1Inference'>
-				<!--  Inference plot goes here for CI or Test of 1 mean -->
-				<svg id='q1InfSVG' height='300px' width='400px'></svg>
-			</div>
-		</div>
-
-		<!--  Post-plot  Output CI or inputs for p-value and output the p-value -->
-		<div id='q1Output' class='w3-display-container' style='display: none'>
-
-		</div>
-
-		<div id='q1Results'></div>
-		<!--  Increase simulation size -->
-		<div id='q1MoreSims' style='width: 360px; display:none'>
-			<div class='w3-cell-row'>
-				<div class='w3-cell  w3-mobile' style='width: 20%'>
-					Add
-				</div>
-				<div class='w3-cell  w3-mobile' style='width: 20%'>
-					<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='q1More' placeholder='0' onchange='q1MoreSimFn()'>
-				</div>
-				<div class='w3-cell  w3-mobile' style='width: 80%'>
-					simulated sample means
-				</div>
-			</div>
-     </div>
-		</div>
-	</div>
-</div>
 	<!-- ######-  One Quantitative Actions
 	2) Bootstrap Demo
 	Works, but I'd like to reduce the code for the many resamples buttons using a button builder function.
@@ -632,15 +517,7 @@
 			<span onclick="openVble('Power')" class="w3-button w3-large w3-display-bottomright">Back</span>
 		</div>
 	</div>
-
-	<!-- ######-  One Quantitative Actions
-	6) T probabilities
-	ToDo:
-	mostly works, but output doesn't show nicely in the svg
-	-->
-
-
-
+</div>
 	<!-- ######-  Two Quantitative Actions
 	2) Demo of least squares regression
 	choose or input data
