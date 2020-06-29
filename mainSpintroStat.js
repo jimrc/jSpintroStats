@@ -1,6 +1,6 @@
 //  javascript to setup main index.html
 
-//ToDo:  if data changes, or variable changes, erase inference plot and CI bars
+//ToDo:  if data, type of inference, or variable changes, erase inference plot and CI bars
 
 var circleColors = ["steelblue", "red"],
     cnfLvl = 0.80, ciInftop,
@@ -14,6 +14,7 @@ var circleColors = ["steelblue", "red"],
     ],
     inference,
     nullValue,
+    observed,
     lowerBd,
     upperBd,
     sample4Test = [],
@@ -26,15 +27,12 @@ function w3Open() {
   document.getElementById("main").style.marginLeft = "25%";
 	document.getElementById("mySidebar").style.width = "25%";
 	document.getElementById("mySidebar").style.display = "block";
-	//document.getElementById("openNav").style.display = 'none';
 }
 
 function w3Close() {
   // close up the menu options
 	document.getElementById("main").style.marginLeft = "0%";
 	document.getElementById("mySidebar").style.display = "none";
-
-	//document.getElementById("openNav").style.display = "inline-block";
 }
 
 function actionsFunc(actns) {
@@ -88,9 +86,65 @@ var CIrangeslide = rangeslide("#confLvlInpt", {
 });
 
 
+
+
+function testEstFn(vble){
+  // function to customize the testEst page for a particular type of variable.
+  var hdr,
+    divs = [],
+    estimate = "estimate", g = "g",
+    summaryText,
+    summaryPlot,
+    test = "test",
+    title = document.getElementById("testEstHeader"),
+    block1 = document.getElementById("dataIn"),
+    block2 = document.getElementById("dataSummary"),
+    block3 = document.getElementById("testInpt"),
+    block4 = document.getElementById("inferenceText");
+
+    var svgInf = d3.select("#infSVG"),
+        svgSum = d3.select("#sumSVG");
+
+  switch(vble){
+      case 'cat1' : {
+        hdr = "<b>Estimate</b> a single proportion or <b>Test</b> its value.";
+        divs = c1TestEstimate();
+        break;   // End of c1Output
+      }
+      case 'quant1' :  {
+        hdr = "<b>Estimate</b>  a single mean or <b>Test</b>  its value.";
+        divs = q1TestEstimate();
+         break;
+       }
+      case 'cat2' :  {
+        hdr = "Estimate a difference in proportions or test that the difference is zero.";
+        divs = c2TestEstimate();
+        break;
+      }
+      case 'c1q1':  {
+        hdr = "Estimate a difference in means or test that the difference is zero.";
+        divs = c1q1TestEstimate();
+        break;
+      }
+      case 'quant2' :  {
+        hdr = "<b>Estimate</b> a regression slope or <b>Test</b>  slope is zero.";
+        divs = q2TestEstimate();
+        break;
+      }
+      default: { hdr = "Unknown Variable Type";
+        divs = genericTestDivs();      }
+    };
+   title.innerHTML = hdr;
+   block1.innerHTML = divs[0];  // dataIn
+   block2.innerHTML = divs[1];  //dataSummary
+   block3.innerHTML = divs[2];   // Test Input
+   //block4.innerHTML = divs[4]; // Inf Text
+   document.getElementById("moreTEsims").style.display = "block";
+}
+
 function CLChange(arg) {
   // set colors for dots to illustrate confidence interval
-  // new dots come from an inference specific functions
+  // new dots come from an inference-specific function
   // Get new dots, color them, and plot them.
   const inferenceSVG = d3.select("#infSVGplot_svg");
 
@@ -129,135 +183,6 @@ function CLChange(arg) {
     document.getElementById("moreTEsims").style.display = "block";
 }
 
-
-function testEstFn(vble){
-  // function to customize the testEst page for a particular type of variable.
-  var hdr,
-    divs = [],
-    estimate = "estimate", g = "g",
-    summaryText,
-    summaryPlot,
-    test = "test",
-    title = document.getElementById("testEstHeader"),
-    block1 = document.getElementById("dataIn"),
-    block2 = document.getElementById("dataSummary"),
-    block3 = document.getElementById("confLvlInpt"),
-    block4 = document.getElementById("testInpt"),
-    block5 = document.getElementById("inferencePlot"),
-    block6 = document.getElementById("inferenceText");
-
-    var svgInf = d3.select("#infSVG"),
-        svgSum = d3.select("#sumSVG");
-
-  switch(vble){
-      case 'cat1' : {
-        hdr = "<b>Estimate</b> a single proportion or <b>Test</b> its value.";
-        divs = c1TestEstimate();
-        break;   // End of c1Output
-      }
-      case 'quant1' :  {
-        hdr = "Estimate a single mean or test its value.";
-        divs = q1TestEstimate();
-         break;
-       }
-      case 'cat2' :  {
-        hdr = "Estimate a difference in proportions or test that the difference is zero.";
-        divs = c2TestEstimate();
-        break;
-      }
-      case 'c1q1':  {
-        hdr = "Estimate a difference in means or test that the difference is zero.";
-        divs = c1q1TestEstimate();
-        break;
-      }
-      case 'quant2' :  {
-        hdr = "<b>Estimate</b> a regression slope or <b>Test</b>  slope is zero.";
-        divs = q2TestEstimate();
-        break;
-      }
-      default: { hdr = "Unknown Variable Type";
-        divs = genericTestDivs();      }
-    };
-   title.innerHTML = hdr;
-   block1.innerHTML = divs[0];  // dataIn
-   block2.innerHTML = divs[1];  //dataSummary
-   //block3.innerHTML = divs[2];
-   block4.innerHTML = divs[3];   // Test Input
-   //block5.innerHTML = divs[4];
-   document.getElementById("moreTEsims").style.display = "block";
-}
-
-
-function demoFn(demo){
-  var hdr,
-    demoDivs =[],
-    title = document.getElementById("demoHeader"),
-    block1 = document.getElementById("demoDiv1"),
-    block2 = document.getElementById("demoDiv2"),
-    block3 = document.getElementById("demoDiv3");
- switch(demo){
-   case 'Spinner': {
-     hdr = 'Random sampling via a spinner';
-     demoDivs = spinDivs();
-     break;
-   }
-   case 'Mixer': {
-     hdr = 'Random sampling by drawing balls from a box';
-     demoDivs = mixerDivs();
-     break;
-   }
-   case 'CIdemo': {
-     hdr = "Demonstrate 'Confidence' in a Confidence Interval";
-     demoDivs = CI_demo_Divs();
-    break;
-   }
-   case 'lurkingC1': {
-     	hdr = 'Demo of the effects of a categorical lurking variable on proportion estimates.'
-      demoDivs = ["  ", "  ", "  "];
-      break;
-   }
-   case 'lurkingQ1': {
-     	hdr = 'Demo of the effects of a quantitative lurking variable on mean estimates.'
-      demoDivs = ["  ", "  ", "  "];
-      break;  // power  bootstrap sampling regression
-   }
-   case 'power': {
-     	hdr = 'Visual assessment of the power of a T test to find a difference in means.'
-      demoDivs = ["  ", "  ", "  "];
-      break;
-   }
-   case 'bootstrap': {
-     	hdr = 'Demo of the process of bootstrapping a mean.'
-      demoDivs = ["  ", "  ", "  "];
-      break;
-   }
-   case 'sampling': {
-     	hdr = 'Demo of sampling.'
-      demoDivs = ["  ", "  ", "  "];
-      break;
-   }
-   case 'regression': {
-     	hdr = 'Demo of how regression might be influenced by changing one point.'
-      demoDivs = ["  ", "  ", "  "];
-      break;  // power  bootstrap sampling regression
-   }
-   default : {
-     hdr = "Unknown Demo";
-   }
- }
- title.innerHTML = hdr;
- block1.innerHTML = demoDivs[0];
- block2.innerHTML = demoDivs[1];
- block3.innerHTML = demoDivs[2];
-}
-
-
-
-
-function genericDemoDivs(){
-  var div1, div2, div3;
-  return [div1, div2, div3];
-}
 
 
 function moreCI(nreps, concat) {
@@ -359,18 +284,20 @@ function moreTests(nreps, concat) {
         }
         case 'quant1' :  {
           newSample = resample1Q4Test(nreps);
-          observed = mean;
+          observed = q1Xbar;
           xLabel = "Means from resampled datasets under the null hypothesis ";
           break;
         }
         case 'cat2' :  {
           newSample = resample2C4Test(nreps);
+          nullValue = 0.0;
           observed = difference;
           xLabel = "Differences in proportions from resampled datasets under the null hypothesis ";
           break;
         }
         case 'c1q1':  {
           newSample = resample1C1Q4Test(nreps);
+          nullValue = 0.0;
           observed = difference;
           xLabel = "Differences in means from resampled datasets under the null hypothesis ";
           break;
@@ -429,6 +356,7 @@ function moreTests(nreps, concat) {
           hiV =   observed * (observed >= nullValue) +
               (2 * nullValue - observed) * (observed < nullValue) -
               1 / 1000000;
+          //console.log(lowV, hiV)
           for (i = 0; i < sLen; i++) {
             check = 0 + (sample4Test[i] <= lowV)+ (sample4Test[i] >= hiV);
             extCount += check;
@@ -439,46 +367,93 @@ function moreTests(nreps, concat) {
         default: {  }
       }
       //console.log(testColor);
-      const inferenceSVG = d3.select("#infSVGplot_svg");
       // plot
       testData = stackDots(sample4Test);
       for (i = 0; i < sLen; i++) {
         testData[i].color = circleColors[testColor[i]];
       }
+      if(!d3.select("#infSVGplot_svg").empty()){
+        d3.select("#infSVGplot_svg").remove();
+      }
       //ToDo:  Colors do not change when we change direction of test, but P-value does.
       document.getElementById("infSVGplot").style.display = 'block';
         document.getElementById("moreTEsims").style.display = 'block';
       //document.getElementById("infSVGplot_svg").style.display = 'block';
+    makeScatterPlot(testData, "infSVGplot", xLabel, " ", false);
 
-      if(inferenceSVG.empty()){
-        makeScatterPlot(testData, "infSVGplot", xLabel, " ", false);
-      } else{
-        // add new points to old plots
-        var scatter_group = inferenceSVG.selectAll("circle")
-         .data(testData);
-        scatter_group
-          .selectAll("circle")
-          .data(testData)
-          .enter()
-          .append("g")
-          .attr("class", "infSVGplot_scatter_group")
-          .append("circle")
-          .attr("r", charts_config.point.radius)
-          .attr("fill", d => d.color )
-          .style("opacity", charts_config.point.opacity);
-          scatter_group.attr("transform", function(d, i) {
-            return (
-              "translate(" +
-              (x_scale(d.x) + margins.x.left + margins.axes.y) +
-              "," +
-              (y_scale(d.y) + margins.y.top + margins.title) +
-              ")"
-            );
-          });
-      }
       //find p-value
       //  console.log(testData);
       document.getElementById("inferenceText").innerHTML =
-        "P-value: " + formatPvalue(extCount, sLen);
+        "P-value: " + formatPvalue(extCount, sLen) + "  based on " +sLen +" resamples.";
       document.getElementById("inferenceText").style.display = 'block';
+}
+
+function demoFn(demo){
+  var hdr,
+    demoDivs =[],
+    title = document.getElementById("demoHeader"),
+    block1 = document.getElementById("demoDiv1"),
+    block2 = document.getElementById("demoDiv2"),
+    block3 = document.getElementById("demoDiv3");
+ switch(demo){
+   case 'Spinner': {
+     hdr = 'Random sampling via a spinner';
+     demoDivs = spinDivs();
+     break;
+   }
+   case 'Mixer': {
+     hdr = 'Random sampling by drawing balls from a box';
+     demoDivs = mixerDivs();
+     break;
+   }
+   case 'CIdemo': {
+     hdr = "Demonstrate 'Confidence' in a Confidence Interval";
+     demoDivs = CI_demo_Divs();
+    break;
+   }
+   case 'lurkingC1': {
+     	hdr = 'Demo of the effects of a categorical lurking variable on proportion estimates.'
+      demoDivs = ["  ", "  ", "  "];
+      break;
+   }
+   case 'lurkingQ1': {
+     	hdr = 'Demo of the effects of a quantitative lurking variable on mean estimates.'
+      demoDivs = ["  ", "  ", "  "];
+      break;  // power  bootstrap sampling regression
+   }
+   case 'power': {
+     	hdr = 'Visual assessment of the power of a T test to find a difference in means.'
+      demoDivs = ["  ", "  ", "  "];
+      break;
+   }
+   case 'bootstrap': {
+     	hdr = 'Demo of the process of bootstrapping a mean.'
+      demoDivs = ["  ", "  ", "  "];
+      break;
+   }
+   case 'sampling': {
+     	hdr = 'Demo of sampling.'
+      demoDivs = ["  ", "  ", "  "];
+      break;
+   }
+   case 'regression': {
+     	hdr = 'Demo of how regression might be influenced by changing one point.'
+      demoDivs = ["  ", "  ", "  "];
+      break;  // power  bootstrap sampling regression
+   }
+   default : {
+     hdr = "Unknown Demo";
+   }
+ }
+ title.innerHTML = hdr;
+ block1.innerHTML = demoDivs[0];
+ block2.innerHTML = demoDivs[1];
+ block3.innerHTML = demoDivs[2];
+}
+
+
+function genericDemoDivs(){
+    // set up a demo page
+  var div1, div2, div3;
+  return [div1, div2, div3];
 }

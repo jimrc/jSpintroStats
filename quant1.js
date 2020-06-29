@@ -4,7 +4,7 @@
 
 
  function q1TestEstimate(){
-    var dIn, intervalInpts, testInpts, plot, results;
+    var dIn, testInpts, infText;
     dIn =
     " <div class='w3-container' id='quant1DataIn-Summary'>"+
 		" 	  <div class='w3-cell-row w3-mobile'>"+
@@ -44,10 +44,40 @@
 		" 		</div>"+
 		" 	</div> "+
 		" </div>";
-    dSumm = " ";
-    plot = "";
-      results = "";
-      return [dIn, dSumm,intervalInpts, testInpts, plot, results];
+      dSumm =
+    	" 				<div class='w3-container w3-cell w3-mobile' id='q1Summary' style='display:none'>" +
+    	" 				</div>"
+    intervalInpts= "Estimate Mean";
+    testInpts =
+    " <div class='w3-cell-row w3-mobile'>" +
+    "  			<div class='w3-cell  w3-mobile' style='width: 55%'>"+
+    "  				&nbsp; &nbsp; &nbsp; Test: Is the true mean = &nbsp;"+
+    "  			  </div>"+
+    "  			<div class='w3-cell  w3-mobile' style='width: 35%'>"+
+    "  				 <input class='w3-input w3-card w3-mobile w3-pale-yellow' type='text' id='q1trueMu'"+
+    "             placeholder='0.0' 	onchange= 'nullValue = +this.value' "+
+    "  			   </input>"+
+    "       </div>" +
+    "    </div>" +
+     " <div class='w3-cell' >	Stronger evidence is a mean 	</div>" +
+  		" 	<div class='w3-cell' style='width: 30%'>" +
+  		"		<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='q1testDirection' " +
+     	"  onchange='testDirection = this.value; if(sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>" +
+  	  "  onClick='testDirection = this.value; if(sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>" +
+  			"		<option value='lower'>Less Than or =</option>" +
+  		"			<option value='both' selected>As or More Extreme Than</option>" +
+  		"			<option value='upper'>Greater Than or =</option>" +
+  		"		</select>" +
+  		"	</div>" +
+  		"	<div class='w3-cell' style='width: 30%' id='q1ObsdMean'>" +
+      "		&nbsp;&nbsp; the observed mean = " + observed +
+  		"	</div>" ;
+
+    infText =
+  		" <div id='quant1Output' style='display:none'>" +
+  		" </div>" ;
+
+      return [dIn, dSumm,  testInpts, infText];
   }
 
 
@@ -57,8 +87,8 @@
       // Inputs were created by summarizeMu1
       nullValue = +document.getElementById('q1trueMu').value;
       q1N = q1Values.length;
-      document.getElementById('q1ConfLvl').style.display = 'none';
-      document.getElementById('q1Test1').style.display = 'block';
+      //document.getElementById('q1ConfLvl').style.display = 'none';
+      //document.getElementById('q1Test1').style.display = 'block';
       document.getElementById("moreTEsims").style.display = 'block';
      var shift = q1Xbar - nullValue, resampleq1 = [];
       for (i = 0; i < q1N; i++) {
@@ -85,10 +115,7 @@
 // Inputs:
 //     a string of numbers separated by commas
 //  TODO: allow user to choose a csv data file
-//  TODO: make summary plot y-axis-label work for values which are all unique
-//  TODO: Changing the data removed the inference plot. Howto get it back?
-//  TODO: clicking a point in inference plot should show the sample & its mean in modal box
-/*eslint quotes: [2, "single", "avoid-escape"]*/
+//  TODO: clicking a point in inference plot should show the sample & its mean as a tooltip
 
 var q1SummDiv = d3.select('#q1Inference'),
   q1Tstdata,

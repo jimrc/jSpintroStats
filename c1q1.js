@@ -1,7 +1,7 @@
 // subroutine to estimate a difference in means or test for no difference
 
   function c1q1TestEstimate(){
-    var dIn, intervalInpts, testInpts, plot, results;
+    var dIn, testInpts, results;
     dIn =
     "	<div class='w3-container' id='C1Q1DataIn-Summary'>"	+
 		"	<div class='w3-cell-row w3-mobile' id='C1Q1Data'>"	+
@@ -30,10 +30,9 @@
 		"				<svg id='C1Q1SumSVG' height='200px' width='200px'></svg>"	+
 		//"		  </div>"	+
 		"	</div>"	;
-    choice = "Estimate or Test Difference in Means";
-    plot = "";
+    testInpts = "";
     results = "";
-    return [dIn, dSumm, intervalInpts, testInpts, plot, results];
+    return [dIn, dSumm, testInpts, results];
   }
 
 // Inputs:
