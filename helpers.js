@@ -622,6 +622,7 @@ function discreteChart(sample, svgObject, interactFunction) {
   // builds a d3 svg plot in the svg object which will respond to a mouse-click by calling
   //  interactFunction on that point
   // returns: Dots (svg objects) and the original sample
+  // TODO: pretty up the axes
   var circleColors = ["steelblue", "red"],
     color = [],
     margin = 40,

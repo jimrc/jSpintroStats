@@ -9,7 +9,7 @@
 		"				<h4> Choose Data</h4>"	+
 		"			</div>"	+
 		"				<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='C1Q1DataName'"	+
-    "	          onchange='summarizeDiff()'>"	+
+    "	          onchange='c1q1DataChange()'>"	+
 		"			<div class='w3-cell'>"	+
 		"					<option value='SATprep' selected>SAT prep</option>"	+
 		"					<option value='smoker'>Smoking - Birthweight</option>"	+
@@ -30,11 +30,43 @@
 		"				<svg id='C1Q1SumSVG' height='200px' width='200px'></svg>"	+
 		//"		  </div>"	+
 		"	</div>"	;
-    testInpts = "";
+    testInpts =
+    "<div> <br> </div>" +
+    "<div class='w3-cell-row w3-mobile' style = 'text-align: left'>" +
+    "  			<div class='w3-cell' style='width:250px'>"+
+    "  				Test: Are the two means equal?"+
+    "  			</div>"+
+    "   </div>" +
+    "<div> <br> </div>" +
+    " <div class='w3-cell-row w3-mobile'>" +
+     "    <div class='w3-cell' style='width: 250px' >	Stronger evidence is a difference	</div>" +
+  		" 	<div class='w3-cell' style='width: 30%'>" +
+  		"		  <select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='q2testDirection' " +
+     	"  onchange='testDirection = this.value; if(sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>" +
+  	  "  onClick='testDirection = this.value; if(sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>" +
+  			"		<option value='lower'>Less Than or =</option>" +
+  		"			<option value='both' selected>As or More Extreme Than</option>" +
+  		"			<option value='upper'>Greater Than or =</option>" +
+  		"		  </select>" +
+  		"	  </div>" +
+  		"	  <div class='w3-cell' style='width: 40%' id='q2Obsd'>" +
+      "		  &nbsp;&nbsp; the observed difference = " + observed +
+    "     </div>" +
+  	"	</div>" ;
+
     results = "";
     return [dIn, dSumm, testInpts, results];
   }
 
+  function c1q1DataChange(){
+       sample4Test = sample4CI = [];
+       document.getElementById('infSVGplot').style.display = 'none'
+       document.getElementById('inferenceText').style.display = 'none'
+       document.getElementById("confLvlInpt").style.display = 'none'
+       document.getElementById("testInpt").style.display = 'none'
+       document.getElementById("moreTEsims").style.display = 'none'
+       summarizeDiff()
+  }
 // Inputs:
 //     Select an appropriate dataset from those available (working nicely)
 //       OR:  Load one from csv
@@ -64,21 +96,6 @@ var c1q1SummDiv = d3.select("#C1Q1Inference"),
 	c1q1Data = [],
 	c1q1RawData = [],
 	c1q1DataName,
-	c1q1Color = [],
-	confLevels = [{
-	  key: "80%",
-		value: "0.80"
-  }, {
-		key: "90%",
-		value: "0.90"
-  }, {
-		key: "95%",
-		value: "0.95"
-  }, {
-		key: "99%",
-		value: "0.99"
-  }],
-	c1q1Inference,
 	c1q1Keys = [],
 	//c1q1InfOutput,
 	c1q1Shifted = [],
@@ -142,6 +159,8 @@ function summarizeDiff() {
 	c1q1N2 = x2.length;
 	observed = diff = xbar1 - xbar2;
   nullValue = 0.0;
+
+  document.getElementById('q2Obsd').innerHTML = " &nbsp;&nbsp; the observed difference = " + observed.toPrecision(4)
 
 	x1 = x1.sort(function (a, b) {
 		return (a - b);
@@ -213,6 +232,7 @@ function summarizeDiff() {
     function resample1C1Q4Test(nreps) {
       //function to generate random resamples and compute means
       //
+      observed = diff
       var c1q1N2 = x2.length,
           shift = observed - nullValue,
           c1q1Shifted = [];
@@ -240,247 +260,6 @@ function summarizeDiff() {
       document.getElementById("moreTEsims").style.display = 'block';
       return sampleTstc1q1.diff;
     }
-
-function estimateDiff(nreps) {
-	//function to estimate the differences in mean based on resamples of original numeric data
-
-	//TODO: starts OK on first click to choose estimation,
-	// but afterwards, c1q1CIdata starts nesting in complexity.
-	var cnfLvl = 0.60,
-		CI = [],
-		indices = sequence(0, nreps, 1);
-
-	document.getElementById("C1Q1WhichDot").style.display = "none"; // close modals
-	// Gather Inputs:
-
-	c1q1hdr = document.getElementById("C1Q1Output");
-	c1q1hdr.innerHTML = "<h4>Estimate True Mean with a Confidence Interval</h4>";
-
-	c1q1CLvl = document.getElementById("C1Q1ConfLvl");
-	c1q1CLvl.style.display = "block";
-	c1q1Tst = document.getElementById("C1Q1Test");
-	c1q1Tst.style.display = "none";
-	// show plot
-
-	sampleCIc1q1 = resampleDiffMeans(x1, x2, nreps);
-	// Now sort the indices by order of the first element which is diff
-	//console.log(sampleCIc1q1);
-	indices.sort(function (a, b) {
-		return sampleCIc1q1.diff[a] - sampleCIc1q1.diff[b];
-	});
-	//sampleCIc1q1.diff  = indices.map( function (ndx) {return sampleCIc1q1.diff[ndx];});
-	sampleCIc1q1.mean1 = indices.map(function (ndx) {
-		return sampleCIc1q1.mean1[ndx];
-	});
-	sampleCIc1q1.mean2 = indices.map(function (ndx) {
-		return sampleCIc1q1.mean2[ndx];
-	});
-	for (i = 0; i < nreps; i++) {
-		sampleCIc1q1.diff[i] = sampleCIc1q1.mean1[i] - sampleCIc1q1.mean2[i];
-	}
-
-	CI = ciColor(sampleCIc1q1.diff, c1q1CnfLvl);
-	c1q1Color = CI[0];
-	c1q1lowerBd = CI[1].toPrecision(4);
-	c1q1upperBd = CI[2].toPrecision(4);
-	cnfLvl = CI[3];
-
-	document.getElementById("C1Q1Inference").style.display = "block";
-	c1q1ftr = document.getElementById("C1Q1Results");
-	c1q1ftr.style.display = 'block';
-	c1q1ftr.innerHTML = "<div style='width=50px'></div>" + "<div style = 'width:400px'> " +
-		"Plot shows difference in means in  " + nreps + " Re-samples" + "<br> <br>" + Math.round(cnfLvl * 100) + "% Confidence Interval: (" + c1q1lowerBd + ", " + c1q1upperBd + " )</div>";
-	document.getElementById("C1Q1MoreSims").style.display = 'block';
-
-	//console.log("CI:", c1q1lowerBd, c1q1upperBd);
-
-	return (sampleCIc1q1);
-}
-
-function testDiff(tailChoice) {
-	//function to test 'Is difference in means  = 0?' for quantitative data grouped by a categorical variable
-	// to force the null hypothesis to be true, we resample from
-	// a shifted distribution of values which has sample mean equal to the hypothesized mean.
-	// Gather Inputs:
-
-	c1q1Null = 0.00;
-	//+document.getElementById("c1q1trueDiff").value;
-	//c1q1N = c1q1Values.length;
-	document.getElementById("C1Q1WhichDot").style.display = "none"; // close modals
-	document.getElementById("C1Q1ConfLvl").style.display = "none";
- document.getElementById("C1Q1Test").style.display = "block";
-
-	var sc1q1Len, indices = [];
-	shift = diff - c1q1Null;
-	c1q1Shifted = [];
-
-	for (i = 0; i < c1q1N2; i++) {
-		c1q1Shifted.push(x2[i] + shift);
-	}
-
-	if (tailChoice === 'undefined') {
-		c1q1hdr = document.getElementById("C1Q1Test");
-		c1q1ftr = document.getElementById("C1Q1Results");
-		c1q1hdr.innerHTML = "<div class = 'w3-cell-row'> <div class = 'w3-cell' style = 'width:50%'> " + " Stronger evidence is sample difference </div>" + "<div class = 'w3-cell' style='width:40%'>" + "<select class = 'w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='c1q1Extreme'" + " onchange = 'c1q1TestUpdate()' >" + "<option value='lower'>Less Than or =</option>" + "<option value='both' selected >As or More Extreme Than</option>" + "<option value='upper'>Greater Than or =</option>" + "</select> </div>  <div class ='w3-cell' style = 'width:30%'> &nbsp;&nbsp;" + diff.toPrecision(4) + "</div> </div> ";
-		c1q1ftr.innerHTML = "<div  style = 'width:320px'> Difference in means in samples from H<sub>0</sub>";
-		c1q1hdr.style.display = "block";
-		c1q1ftr.style.display = "block";
-
-		sampleTstc1q1 = resampleDiffMeans(x1, c1q1Shifted, 100);
-		indices = sequence(0, 100, 1);
-		// Now sort the indices by order of the first element which is diff
-		//console.log(sampleTstc1q1);
-		indices.sort(function (a, b) {
-			return sampleTstc1q1.diff[a] - sampleTstc1q1.diff[b];
-		});
-		sampleTstc1q1.diff = indices.map(function (ndx) {
-			return sampleTstc1q1.diff[ndx];
-		});
-		sampleTstc1q1.mean1 = indices.map(function (ndx) {
-			return sampleTstc1q1.mean1[ndx];
-		});
-		sampleTstc1q1.mean2 = indices.map(function (ndx) {
-			return sampleTstc1q1.mean2[ndx];
-		});
-
-		sc1q1Len = sampleTstc1q1.diff.length;
-		//console.log(d3.mean(samplec1q1), sc1q1Len);
-	} else {
-		// what if tailChoice is defined?
-	}
-	document.getElementById("C1Q1Inference").style.display = "block";
-	document.getElementById("C1Q1MoreSims").style.display = 'block';
-	return (sampleTstc1q1);
-}
-
-function c1q1CLChange(arg) {
-	//update plot to illustrate confidence interval
-	//TODO: starts OK on first click to choose estimation,
-	// but afterwards, c1q1CIdata starts nesting in complexity.
-	var sc1q1Len,
-		cnfLvl = c1q1CnfLvl,
-		tempColors = [],
-		sampleCI = [];
-	//console.log(arg);
-	if (arg.value) {
-		cnfLvl = c1q1CnfLvl = +arg.value;
-	} else {
-		cnfLvl = 0.6;
-	}
-	if (!(sampleCIc1q1)) {
-		sampleCIc1q1 = resampleDiffMeans(x1, x2, 100); //
-		indices = sequence(0, 100, 1);
-		// Now sort the indices by order of the first element which is diff
-		indices.sort(function (a, b) {
-			return sampleCIc1q1.diff[a] - sampleCIc1q1.diff[b];
-		});
-		sampleCIc1q1.diff = indices.map(function (i) {
-			return sampleCIc1q1.diff[i];
-		});
-		sampleCIc1q1.mean1 = indices.map(function (i) {
-			return sampleCIc1q1.mean1[i];
-		});
-		sampleCIc1q1.mean2 = indices.map(function (i) {
-			return sampleCIc1q1.mean2[i];
-		});
-		sc1q1Len = 100;
-	} else {
-		sc1q1Len = sampleCIc1q1.mean1.length;
-		for (i = 0; i < sc1q1Len; i++) {
-			sampleCIc1q1.diff[i] = sampleCIc1q1.mean1[i] - sampleCIc1q1.mean2[i];
-		}
-	}
-
-	//console.log(c1q1CIdata.diff[0], sc1q1Len, c1q1CIdata.diff[sc1q1Len-1]);
-	tempColors = ciColor(sampleCIc1q1.diff, cnfLvl);
-	c1q1lowerBd = tempColors[1].toPrecision(4);
-	c1q1upperBd = tempColors[2].toPrecision(4);
-	cnfLvl = tempColors[3];
-	c1q1Colors = tempColors[0];
-	//sampleCI = sampleCIc1q1.diff;
-	//console.log(sampleCIc1q1.diff[0], sc1q1Len, sampleCIc1q1.diff[sc1q1Len-1]);
-	//c1q1InfOutput =
-	if (d3.variance(sampleCIc1q1.diff) > 0.001) {
-		histodot(sampleCIc1q1.diff, c1q1Colors, C1Q1InfSVG, c1q1CIinteract);
-	}
-}
-
-
-function c1q1TestUpdate() {
-	// plots test inference, or updates an existing plot
-	//TODO: starts OK on first click to choose testing, or if (!(sampleTstc1q1))
-	// but afterwards, sampleTstc1q1 starts nesting in complexity.
-
-	var check,
-		extCount = 0,
-		lowP,
-		hiP, indices = [],
-		diffMeans = [],
-		sc1q1Len;
-	c1q1Inference = 'test';
-	// get direction of evidence:
-	c1q1TestDirection = document.getElementById("c1q1Extreme").value;
-	document.getElementById("C1Q1WhichDot").style.display = "none"; // close modals
-
-	if (!(sampleTstc1q1)) {
-		sampleTstc1q1 = resampleDiffMeans(x1, c1q1Shifted, 100); //
-		indices = sequence(0, 100, 1);
-		// Now sort the indices by order of the first element which is diff
-		indices.sort(function (a, b) {
-			return sampleTstc1q1.diff[a] - sampleTstc1q1.diff[b];
-		});
-		sampleTstc1q1.diff = indices.map(function (i) {
-			return sampleTstc1q1.diff[i];
-		});
-		sampleTstc1q1.mean1 = indices.map(function (i) {
-			return sampleTstc1q1.mean1[i];
-		});
-		sampleTstc1q1.mean2 = indices.map(function (i) {
-			return sampleTstc1q1.mean2[i];
-		});
-		sc1q1Len = 100;
-	} else {
-		sc1q1Len = sampleTstc1q1.mean1.length;
-		for (i = 0; i < sc1q1Len; i++) {
-			sampleTstc1q1.diff[i] = sampleTstc1q1.mean1[i] - sampleTstc1q1.mean2[i];
-		}
-	}
-	if (c1q1TestDirection === "lower") {
-		for (i = 0; i < sc1q1Len; i++) {
-			check = 0.0 + (sampleTstc1q1.diff[i] <= diff);
-			extCount += check;
-			c1q1Color[i] = check;
-		}
-	} else if (c1q1TestDirection === "upper") {
-		for (i = 0; i < sc1q1Len; i++) {
-			check = 0.0 + (sampleTstc1q1.diff[i] >= diff);
-			extCount += check;
-			c1q1Color[i] = check;
-		}
-
-	} else {
-		lowP = diff * (diff <= c1q1Null) + (2 * c1q1Null - diff) * (diff > c1q1Null) + 1 / 1000000;
-		hiP = diff * (diff >= c1q1Null) + (2 * c1q1Null - diff) * (diff < c1q1Null) - 1 / 1000000;
-		for (i = 0; i < sc1q1Len; i++) {
-			check = 0.0 + ((sampleTstc1q1.diff[i] <= lowP) | (sampleTstc1q1.diff[i] >= hiP));
-			extCount += check;
-			c1q1Color[i] = check;
-		}
-	}
-	//console.log(d3.sum(c1q1Color));
-	c1q1Pval = extCount / sc1q1Len;
-	c1q1Tstdata = sampleTstc1q1.diff;
-
-	//  c1q1InfOutput =
-
-	// console.log(c1q1Tstdata[0], sc1q1Len, c1q1Tstdata[sc1q1Len-1]);
-	histodot(c1q1Tstdata, c1q1Color, C1Q1InfSVG, c1q1TestInteract);
-
-	c1q1ftr = document.getElementById("C1Q1Results");
-	c1q1ftr.style.display = 'block';
-	c1q1ftr.innerHTML = "<div  style = 'width:400px'> Difference in means in " + sc1q1Len + " Samples from H<sub>0</sub> <br>" + "p-value (strength of evidence): " + formatPvalue(extCount, sc1q1Len) + "</div>";
-	document.getElementById("C1Q1MoreSims").style.display = 'block';
-}
 
 function c1q1CIinteract(d, i) {
 	// open modal box to show diff in means in the selected resample;
@@ -516,74 +295,4 @@ function c1q1TestInteract(d, i) {
 	//		c1q1InfModal.style.display = "none";
 	//	}
 	//}
-}
-
-function c1q1MoreSimFn(more) {
-	// function to add more points to an estimate or test of diff in means
-	var indices = [],
-		more = +more; //document.getElementById("C1Q1More").value,
-		newMns,
-		sampleLength;
-	document.getElementById("C1Q1WhichDot").style.display = "none"; // close modals
-
-	if (more > 0) {
-		if (inference === 'test') {
-			// assume difference in means is c1q1Null, generate resamples of x1 and of x2
-			// and diff in means
-			newMns = resampleDiffMeans(x1, c1q1Shifted, more);
-			sampleTstc1q1.diff = sampleTstc1q1.diff.concat(newMns.diff);
-			sampleTstc1q1.mean1 = sampleTstc1q1.mean1.concat(newMns.mean1);
-			sampleTstc1q1.mean2 = sampleTstc1q1.mean2.concat(newMns.mean2);
-			indices = sequence(0, sampleTstc1q1.diff.length, 1);
-			// Now sort the indices by order of the first element which is diff
-			indices.sort(function (a, b) {
-				return sampleTstc1q1.diff[a] - sampleTstc1q1.diff[b];
-			});
-			sampleTstc1q1.diff = indices.map(function (ndx) {
-				return sampleTstc1q1.diff[ndx];
-			});
-			sampleTstc1q1.mean1 = indices.map(function (ndx) {
-				return sampleTstc1q1.mean1[ndx];
-			});
-			sampleTstc1q1.mean2 = indices.map(function (ndx) {
-				return sampleTstc1q1.mean2[ndx];
-			});
-			//console.log("Test Diff[0]:", sampleTstc1q1.diff[0]);
-			//update inference plot
-			c1q1TestUpdate();
-			//console.log(sampleTstc1q1);
-			return (sampleTstc1q1);
-		} else {
-			// Estimating diff in means, so generate resamples from each group
-			sampleLength = more + sampleCIc1q1.diff.length;
-			//console.log("CI Diff[0]:", sampleCIc1q1.diff[0] , sampleCIc1q1.mean1[0],sampleCIc1q1.mean2[0]);
-			// it's already nested here, but testing above works ??!!!
-			newMns = resampleDiffMeans(x1, x2, more);
-			sampleCIc1q1.diff = sampleCIc1q1.diff.concat(newMns.diff);
-			sampleCIc1q1.mean1 = sampleCIc1q1.mean1.concat(newMns.mean1);
-			sampleCIc1q1.mean2 = sampleCIc1q1.mean2.concat(newMns.mean2);
-			//console.log("CI Diff[last]:", sampleCIc1q1.diff[sampleLength-2] , sampleCIc1q1.mean1[sampleLength-2],sampleCIc1q1.mean2[sampleLength-2]);
-
-			indices = sequence(0, sampleLength, 1);
-			// Now sort the indices by order of diff
-			indices.sort(function (a, b) {
-				return sampleCIc1q1.diff[a] - sampleCIc1q1.diff[b];
-			});
-			//sampleCIc1q1.diff = indices.map( function (ndx) {return sampleCIc1q1.diff[ndx];});
-			sampleCIc1q1.mean1 = indices.map(function (ndx) {
-				return sampleCIc1q1.mean1[ndx];
-			});
-			sampleCIc1q1.mean2 = indices.map(function (ndx) {
-				return sampleCIc1q1.mean2[ndx];
-			});
-			for (i = 0; i < sampleLength; i++) {
-				sampleCIc1q1.diff[i] = sampleCIc1q1.mean1[i] - sampleCIc1q1.mean2[i];
-			}
-			c1q1CLChange({
-				value: c1q1CnfLvl
-			});
-			//console.log(sampleCIc1q1);
-			return (sampleCIc1q1);
-		}
-	}
 }

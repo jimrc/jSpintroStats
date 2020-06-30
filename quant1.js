@@ -3,7 +3,7 @@
 // Fix testing inputs to take null value
 
 
- function q1TestEstimate(){
+function q1TestEstimate(){
     var dIn, testInpts, infText;
     dIn =
     " <div class='w3-container' id='quant1DataIn-Summary'>"+
@@ -22,8 +22,7 @@
 		" 					</td>"+
 		" 					<td>"+
 		" 						<input class='w3-input  w3-mobile w3-pale-yellow' type='text' id='q1Values'"+
-		" 						  onchange = 'document.getElementById('q1Summary').style.display = 'none';"+
-		" 													document.getElementById('allQ1Inference').style.display = 'none';'>"+
+		" 						  onchange = 'q1DataChange();' >"+
 		" 					</td>"+
 		" 				</tr>"+
 		" 			</table>"+
@@ -49,29 +48,33 @@
     	" 				</div>"
     intervalInpts= "Estimate Mean";
     testInpts =
-    " <div class='w3-cell-row w3-mobile'>" +
-    "  			<div class='w3-cell  w3-mobile' style='width: 55%'>"+
-    "  				&nbsp; &nbsp; &nbsp; Test: Is the true mean = &nbsp;"+
-    "  			  </div>"+
-    "  			<div class='w3-cell  w3-mobile' style='width: 35%'>"+
+    "<div> <br> </div>" +
+    "<div class='w3-cell-row w3-mobile' style = 'text-align: left'>" +
+    "  			<div class='w3-cell' style='width:250px'>"+
+    "  				Test: Is the true mean = &nbsp;"+
+    "  			</div>"+
+    "  			<div class='w3-cell' style='width: 30%'>"+
     "  				 <input class='w3-input w3-card w3-mobile w3-pale-yellow' type='text' id='q1trueMu'"+
-    "             placeholder='0.0' 	onchange= 'nullValue = +this.value' "+
+    "             placeholder='0.0' 	onchange= 'nullValue = +this.value; sample4Test =[];' "+
     "  			   </input>"+
     "       </div>" +
-    "    </div>" +
-     " <div class='w3-cell' >	Stronger evidence is a mean 	</div>" +
+    "   </div>" +
+    "<div> <br> </div>" +
+    " <div class='w3-cell-row w3-mobile'>" +
+     "    <div class='w3-cell' style='width: 250px' >	Stronger evidence is a mean 	</div>" +
   		" 	<div class='w3-cell' style='width: 30%'>" +
-  		"		<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='q1testDirection' " +
+  		"		  <select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='q1testDirection' " +
      	"  onchange='testDirection = this.value; if(sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>" +
   	  "  onClick='testDirection = this.value; if(sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>" +
   			"		<option value='lower'>Less Than or =</option>" +
   		"			<option value='both' selected>As or More Extreme Than</option>" +
   		"			<option value='upper'>Greater Than or =</option>" +
-  		"		</select>" +
-  		"	</div>" +
-  		"	<div class='w3-cell' style='width: 30%' id='q1ObsdMean'>" +
-      "		&nbsp;&nbsp; the observed mean = " + observed +
-  		"	</div>" ;
+  		"		  </select>" +
+  		"	  </div>" +
+  		"	  <div class='w3-cell' style='width: 40%' id='q1ObsdMean'>" +
+      "		  &nbsp;&nbsp; the observed mean = " + observed +
+    "     </div>" +
+  	"	</div>" ;
 
     infText =
   		" <div id='quant1Output' style='display:none'>" +
@@ -80,9 +83,17 @@
       return [dIn, dSumm,  testInpts, infText];
   }
 
+function q1DataChange(){
+     sample4Test = sample4CI = [];
+     document.getElementById("q1Summary").style.display = 'none'
+     document.getElementById('infSVGplot').style.display = 'none'
+     document.getElementById('inferenceText').style.display = 'none'
+     document.getElementById("confLvlInpt").style.display = 'none'
+     document.getElementById("testInpt").style.display = 'none'
+     document.getElementById("moreTEsims").style.display = 'none'
+}
 
-
-    function resample1Q4Test(nreps) {
+function resample1Q4Test(nreps) {
       //function to test 'Is the true mean  = some value?'
       // Inputs were created by summarizeMu1
       nullValue = +document.getElementById('q1trueMu').value;
@@ -100,7 +111,7 @@
       return resampleq1;
     }
 
-    function resample1Q4CI(nreps) {
+function resample1Q4CI(nreps) {
       //function to generate random resamples and compute means
       //
       resampleq1 = resample1Mean(q1Values, nreps).sort(function(a, b) {
@@ -167,7 +178,6 @@ function summarizeMu1() {
   q1Label = document.getElementById('q1Label').value;
   q1Values = document.getElementById('q1Values').value.split(',');
   document.getElementById("q1Summary").style.display = "block";
-
   //console.log(q1Values);
   q1N = q1Values.length;
   for (i = 0; i < q1N; i++) {
@@ -191,6 +201,8 @@ function summarizeMu1() {
     '<br> Sample Size = ' +
     q1N;
   q1Summ.style = 'display: block';
+  document.getElementById('q1ObsdMean').innerHTML =
+      "		&nbsp;&nbsp; the observed mean = " + observed.toPrecision(4);
 
   //check for any old output plots. If present, erase them due to change in data
   if (q1InfOutput) {
@@ -220,289 +232,3 @@ function q1SumInteract(d, i) {
     };
   };
 };
-
-
-function colorMu1(resample) {
-  // changes colors for CI illustration
-  var color = [],
-    lowerBd,
-    upperBd,
-    quantile,
-    twoTail,
-    sq1Len = resample.length;
-  if (sq1Len > 0) {
-    //console.log(q1CnfLvl, sq1Len);
-    twoTail = (1 - q1CnfLvl) * sq1Len;
-    quantile = Math.floor(twoTail / 2);
-    if (!twoTail % 2) {
-      // check for odd number
-      q1CnfLvl = q1CnfLvl - 1 / sq1Len; // reduce to lower confidence
-    }
-
-    for (i = quantile; i <= sq1Len - quantile; i++) {
-      color[i] = 0; // color for middle circles
-    }
-
-    for (i = 0; i <= quantile; i++) {
-      color[i] = 1;
-
-      // color lower tail
-      color[sq1Len - i - 1] = 1;
-
-      // color upper tail
-      lowerBd = resample[i]; // move lowerBd up
-      upperBd = resample[sq1Len - i - 1]; // move upperBd down
-    }
-  } else {
-    console.log('No Data for CI');
-  }
-
-  return [color, lowerBd, upperBd];
-}
-
-function estimateMu1() {
-  //function to estimate the true mean based on resamples of original numeric data
-  var cnfLvl = 0.6,
-    CI = [];
-
-  // Gather Inputs:
-
-  q1Label = document.getElementById('q1Label').value;
-  q1Values = document.getElementById('q1Values').value.split(',');
-  q1N = q1Values.length;
-  q1Xbar = d3.mean(q1Values);
-
-  q1hdr = document.getElementById('q1Output');
-  q1hdr.innerHTML = '<h4>Estimate True Mean with a Confidence Interval</h4>';
-
-  q1CLvl = document.getElementById('q1ConfLvl');
-  q1CLvl.style.display = 'block';
-  q1Tst = document.getElementById('q1Test1');
-  q1Tst.style.display = 'none';
-  document.getElementById('allQ1Inference').style.display = 'block';
-
-  // show plot
-
-  resampleq1 = resample1Mean(q1Values, 100).sort(function(a, b) {
-    return a - b;
-  });
-
-  sq1Len = resampleq1.length;
-
-  CI = ciColor(resampleq1, q1CnfLvl);
-  q1Color = CI[0];
-  q1lowerBd = CI[1].toPrecision(4);
-  q1upperBd = CI[2].toPrecision(4);
-  cnfLvl = CI[3];
-
-  q1ftr = document.getElementById('q1Results');
-  q1ftr.style.display = 'block';
-  q1ftr.innerHTML =
-    "<div style='width=50px'></div>" +
-    "<div style = 'width:360px'> Plot shows mean " +
-    q1Label +
-    ' in  ' +
-    sq1Len +
-    ' Re-samples' +
-    '<br> <br>' +
-    Math.round(cnfLvl * 100) +
-    '% Confidence Interval: (' +
-    q1lowerBd +
-    ', ' +
-    q1upperBd +
-    ' )</div>';
-  document.getElementById('q1MoreSims').style.display = 'block';
-
-  //console.log(q1lowerBd, q1upperBd);
-
-  return [resampleq1, q1Color];
-}
-
-function testMu1(tailChoice) {
-  //function to test 'Is the true mean  = some value?' for quantitative data
-  // to force the null hypothesis to be true, we resample from
-  // a shifted distribution of values which has sample mean equal to the hypothesized mean.
-  // Gather Inputs:
-  document.getElementById('allQ1Inference').style.display = 'block';
-
-  q1Label = document.getElementById('q1Label').value;
-  q1Values = document.getElementById('q1Values').value.split(',');
-  q1MuNull = +document.getElementById('q1trueMu').value;
-  q1N = q1Values.length;
-  q1Xbar = d3.mean(q1Values);
-
-  q1CLvl = document.getElementById('q1ConfLvl');
-  q1CLvl.style.display = 'none';
-
-  q1Tst = document.getElementById('q1Test1');
-  q1Tst.style.display = 'block';
-
-  //q1Pval = undefined;
-
-  var sq1Len,
-    shift = q1Xbar - q1MuNull;
-
-  for (i = 0; i < q1N; i++) {
-    q1Shifted[i] = q1Values[i] - shift;
-  }
-
-  if (tailChoice === 'undefined') {
-    q1hdr = document.getElementById('q1Output');
-
-    //q1hdr.innerHTML = "<div class = 'w3-cell-row'> <div class = 'w3-cell' style = 'width:50%'> "+
-    //	" Stronger evidence is sample mean </div>"+
-    //   "<div class = 'w3-cell' style='width:40%'>"+
-    //   "<select class = 'w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='q1Extreme'"+
-    //   " onchange = 'q1TestUpdate()' >"+
-    //		"<option value='lower'>Less Than or =</option>"+
-    //		"<option value='both' selected >As or More Extreme Than</option>"+
-    //		"<option value='upper'>Greater Than or =</option>"+
-    //   	"</select> </div>  <div class ='w3-cell' style = 'width:30%'> &nbsp;&nbsp;" + q1Xbar.toPrecision(4) +
-    //   	"</div> </div> ";
-
-    document.getElementById('q1ObsrvedMean').innerHTML =
-      '&nbsp;&nbsp;' + q1Xbar.toPrecision(4) + '(from above)';
-
-    q1ftr.innerHTML =
-      "<div  style = 'width:320px'> Mean " +
-      q1Label +
-      ' in samples from H<sub>0</sub>';
-    sampleq1 = resample1Mean(q1Shifted, 100);
-    sq1Len = sampleq1.length;
-
-    //console.log(d3.mean(sampleq1), sq1Len);
-  } //else {  }
-
-  return sampleq1;
-}
-
-function q1TestUpdate() {
-  var check,
-    extCount = 0,
-    lowP,
-    hiP,
-    sq1Len;
-  q1Inference = 'test';
-
-  // get direction of evidence:
-  q1TestDirection = document.getElementById('q1Extreme').value;
-
-  if (!sampleq1) {
-    sampleq1 = testMu1();
-  }
-
-  sq1Len = sampleq1.length;
-  if (q1TestDirection === 'lower') {
-    for (i = 0; i < sq1Len; i++) {
-      check = 0 + (sampleq1[i] <= q1Xbar);
-      extCount += check;
-      q1Color[i] = check;
-    }
-  } else if (q1TestDirection === 'upper') {
-    for (i = 0; i < sq1Len; i++) {
-      check = 0 + (sampleq1[i] >= q1Xbar);
-      extCount += check;
-      q1Color[i] = check;
-    }
-  } else {
-    lowP =
-      q1Xbar * (q1Xbar <= q1MuNull) +
-      (2 * q1MuNull - q1Xbar) * (q1Xbar > q1MuNull) +
-      1 / 1000000;
-    hiP =
-      q1Xbar * (q1Xbar >= q1MuNull) +
-      (2 * q1MuNull - q1Xbar) * (q1Xbar < q1MuNull) -
-      1 / 1000000;
-    for (i = 0; i < sq1Len; i++) {
-      check = 0 + ((sampleq1[i] <= lowP) | (sampleq1[i] >= hiP));
-      extCount += check;
-      q1Color[i] = check;
-    }
-  }
-
-  //console.log(d3.sum(q1Color));
-  q1Pval = extCount / sq1Len;
-  q1Tstdata = [sampleq1, q1Color];
-  q1InfOutput = discreteChart(q1Tstdata, q1InfSVG, q1TestInteract);
-
-  q1ftr = document.getElementById('q1Results');
-  q1ftr.style.display = 'block';
-  q1ftr.innerHTML =
-    "<div  style = 'width:320px'> Mean " +
-    q1Label +
-    ' in ' +
-    sq1Len +
-    ' Samples from H<sub>0</sub> <br>' +
-    'p-value (strength of evidence): ' +
-    formatPvalue(extCount, sq1Len) +
-    '</div>';
-  document.getElementById('q1MoreSims').style.display = 'block';
-}
-
-//function q1InteractWith(infOut){
-//	var sample = infOut[1],  // values
-//	    dots = infOut[0][0];    // circles on the chart
-//dots.style("fill","steelblue");
-//}
-
-function q1CIinteract(d, i) {
-  //console.log(d.x);
-  var q1modal = document.getElementById('q1SelectedSample');
-  q1modal.style.display = 'block';
-  q1modal.innerHTML = d.x;
-
-  // open modal box to show success and failure counts in the selected resample;
-  window.onclick = function(event) {
-    if (event.target == q1modal) {
-      q1modal.style.display = 'none';
-    }
-  };
-}
-
-function q1TestInteract(d, i) {
-  console.log(d.x);
-
-  // open modal box to show mean of the selected sample;
-  var q1modal = document.getElementById('q1SelectedSample');
-  q1modal.style.display = 'block';
-  q1modal.innerHTML = d.x;
-
-  // on click, close the box
-  window.onclick = function(event) {
-    if (event.target == q1modal) {
-      q1modal.style.display = 'none';
-    }
-  };
-}
-
-function quant1MoreSimFn(more) {
-  // function to add more points to an estimate or test of one proportion
-  var sq1Len,
-    more = +more; //document.getElementById('q1More').value,
-    newValues = [];
-  if (more > 0) {
-    if (inference === 'test') {
-      newValues = resample1Mean(q1Shifted, more);
-      for (i = 0; i < more; i++) {
-        sampleq1.push(newValues[i]);/*eslint quotes: [2, "single", "avoid-escape"]*/
-      }
-
-            sampleq1 = sampleq1.sort(function(a, b) {
-              return a - b;
-            });
-
-      //console.log(d3.mean(sampleq1), sampleq1.length);
-      q1TestUpdate();
-      return sampleq1;
-    } else {
-      newValues = resample1Mean(q1Values, more);
-      for (i = 0; i < more; i++) {
-        resampleq1.push(newValues[i]);
-      }
-
-      //console.log(q1CnfLvl);
-      q1CLChange({ value: q1CnfLvl });
-      return resampleq1;
-    }
-  }
-}

@@ -298,7 +298,7 @@ function moreTests(nreps, concat) {
         case 'c1q1':  {
           newSample = resample1C1Q4Test(nreps);
           nullValue = 0.0;
-          observed = difference;
+          observed = diff;
           xLabel = "Differences in means from resampled datasets under the null hypothesis ";
           break;
         }
