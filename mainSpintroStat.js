@@ -127,7 +127,6 @@ function testEstFn(vble) {
   d3.select("#infSVGplot_svg").remove();
   document.getElementById('inferenceText').style.display = 'none';
   document.getElementById("moreTEsims").style.display = 'none';
-  document.getElementById("moreTEsims").style.display = 'none';
 
   switch (vble) {
   case 'cat1': {
@@ -165,7 +164,7 @@ function testEstFn(vble) {
   block2.innerHTML = divs[1]; //dataSummary
   block3.innerHTML = divs[2]; // Test Input
   //block4.innerHTML = divs[4]; // Inf Text
-  document.getElementById("moreTEsims").style.display = "block";
+  document.getElementById("moreTEsims").style.display = "none";
 }
 
 function CLChange(arg) {

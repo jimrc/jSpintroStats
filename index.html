@@ -217,19 +217,22 @@
 					document.getElementById("confLvlInpt").style.display = "block";
 				 	document.getElementById("inferenceText").style.display = "none" ;
 						if(!d3.select("#infSVGplot_svg").empty()){
-						d3.select("#infSVGplot_svg").selectAll(".infSVGplot_scatter_group").remove();
-
-						}
+						  d3.select("#infSVGplot_svg").selectAll(".infSVGplot_scatter_group").remove();
+				  	};
+					document.getElementById("moreTEsims").style.display = "none";
 					moreCI(100, false)'>
   				&nbsp; Estimate the true value.
   			</button>
   			&nbsp; OR &nbsp;
   			<button id='Test' class='w3-button w3-pale-blue w3-medium w3-round-xlarge'
 				 onclick='inference = "test" ;
+ 					  document.getElementById("inferenceInputs").style.display = "block";
 				 		document.getElementById("testInpt").style.display = "block";
 				 		document.getElementById("confLvlInpt").style.display = "none" ;
 				 		document.getElementById("inferenceText").style.display = "none" ;
-						d3.select("#infSVGplot_svg").selectAll(".infSVGplot_scatter_group").remove();
+						if(!d3.select("#infSVGplot_svg").empty()){
+						  d3.select("#infSVGplot_svg").selectAll(".infSVGplot_scatter_group").remove();
+						}
 						document.getElementById("infSVGplot_svg").style.display = "none";
 						document.getElementById("moreTEsims").style.display = "none";
 						'>

@@ -55,7 +55,7 @@ function q1TestEstimate(){
     "  			</div>"+
     "  			<div class='w3-cell' style='width: 30%'>"+
     "  				 <input class='w3-input w3-card w3-mobile w3-pale-yellow' type='text' id='q1trueMu'"+
-    "             placeholder='0.0' 	onchange= 'nullValue = +this.value; sample4Test =[];' "+
+    "             placeholder='0.0' 	onchange= 'nullValue = +this.value; changeNullQ1();' "+
     "  			   </input>"+
     "       </div>" +
     "   </div>" +
@@ -92,6 +92,16 @@ function q1DataChange(){
      document.getElementById("testInpt").style.display = 'none'
      document.getElementById("moreTEsims").style.display = 'none'
 }
+
+function changeNullQ1 (){
+      //function to remove outdated info and Plot
+      sample4Test = testData = [];
+       document.getElementById("infSVGplot").style.display = 'none';
+       document.getElementById("moreTEsims").style.display = 'none';
+       document.getElementById("inferenceText").style.display = 'none';
+    };
+
+
 
 function resample1Q4Test(nreps) {
       //function to test 'Is the true mean  = some value?'

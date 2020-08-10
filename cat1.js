@@ -137,6 +137,9 @@ function renewC1 (){
       sample4CI = resample4CI = testData = CIData = [];
        document.getElementById('cat1SummaryText').style.display = 'none';
  			 document.getElementById('cat1SummarySVGgoesHere').style.display =  'none';
+       document.getElementById("moreTEsims").style.display = 'none';
+       document.getElementById("inferenceText").style.display = 'none';
+         document.getElementById("inferenceInputs").style.display = 'none';
        document.getElementById("infSVGplot").style.display = 'none';
     };
 
