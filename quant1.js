@@ -4,7 +4,7 @@
 
 
 function q1TestEstimate(){
-    var dIn, testInpts, infText;
+    var dIn, dSumm, infText, testInpts;
     dIn =
     " <div class='w3-container' id='quant1DataIn-Summary'>"+
 		" 	  <div class='w3-cell-row w3-mobile'>"+
@@ -64,12 +64,12 @@ function q1TestEstimate(){
      "    <div class='w3-cell' style='width: 250px' >	Stronger evidence is a mean 	</div>" +
   		" 	<div class='w3-cell' style='width: 30%'>" +
   		"		  <select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='q1testDirection' " +
-     	"  onchange='testDirection = this.value; if(sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>" +
-  	  "  onClick='testDirection = this.value; if(sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>" +
-  			"		<option value='lower'>Less Than or =</option>" +
-  		"			<option value='both' selected>As or More Extreme Than</option>" +
-  		"			<option value='upper'>Greater Than or =</option>" +
-  		"		  </select>" +
+     	"  onmouseup ='testDirection = this.value; if(sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>" +
+  	  "  onselect  ='testDirection = this.value; if(sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>" +
+      "         <option value='lower'>Less Than or =</option>" +
+  		"			    <option value='both' selected >As or More Extreme Than</option>" +
+  		"			    <option value='upper'>Greater Than or =</option>" +
+      "     </select>" +
   		"	  </div>" +
   		"	  <div class='w3-cell' style='width: 40%' id='q1ObsdMean'>" +
       "		  &nbsp;&nbsp; the observed mean = " + observed +

@@ -6,7 +6,7 @@
 //  **************************************************************//
 var x_scale, y_scale, margins = [];
 
-function makeScatterPlot(data, plot, xlabel, ylabel, addLine) {
+function makeScatterPlot(data, plot, xlabel, shortXlabel, ylabel, addLine) {
   // draw scatterplot of 2 quantitative variables of given color
   // input array with x, y, and colors
   var svg,
@@ -155,7 +155,7 @@ function makeScatterPlot(data, plot, xlabel, ylabel, addLine) {
     var d = d3.select(this).datum();
     make_tooltip(
       d3.select(this),
-      [xlabel + ": " + d.x.toPrecision(3)],
+      [shortXlabel + ": " + d.x.toPrecision(3)],
       chart_group,
       canvas,
       margins

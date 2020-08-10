@@ -229,9 +229,10 @@
 				 		document.getElementById("testInpt").style.display = "block";
 				 		document.getElementById("confLvlInpt").style.display = "none" ;
 				 		document.getElementById("inferenceText").style.display = "none" ;
-						if(!d3.select("#infSVGplot_svg").empty()){
-							d3.select("#infSVGplot_svg").selectAll(".infSVGplot_scatter_group").remove();
-						}'>
+						d3.select("#infSVGplot_svg").selectAll(".infSVGplot_scatter_group").remove();
+						document.getElementById("infSVGplot_svg").style.display = "none";
+						document.getElementById("moreTEsims").style.display = "none";
+						'>
   				&nbsp; Test for a particular value.
   			</button>
   		</div>

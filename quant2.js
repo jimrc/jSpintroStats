@@ -1,7 +1,6 @@
 // subroutine to estimate a slope or correlation or test for slope of zero
 // Inputs:   choose a prebuilt data set
 //  TODO:  allow input of csv file and parse it.
-// TODO:  Test plot shows at first, then disappears if updated
 
 var correlation,
   drawq2Inf = false,
@@ -23,8 +22,8 @@ function q2TestEstimate(){
   	" 			<div class='w3-cell' style='width:50%'>" +
   	" 				<h4> Choose Data: </h4>" +
   	" 				<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='quant2DataName'" +
-  	" 				   onchange='sample4Test = []; summarizeSlope(this.value)'>" +
-  	" 					<option value='none' selected>Choose Data</option>" +
+  	" 				   onselect ='q2DataChange(); sample4Test = sample4CI = []; summarizeSlope(this.value)'>" +
+  	" 				   onmouseup='q2DataChange(); sample4Test = sample4CI = []; summarizeSlope(this.value)'>" +
   	" 					<option value='shuttle' selected>Shuttle</option>" +
   	" 					<option value='women'>Women rate men</option>" +
   	" 					<option value='men'>Men rate women</option>" +
@@ -35,31 +34,38 @@ function q2TestEstimate(){
     dSumm =
   	" 				<div class='w3-container w3-cell w3-mobile' id='q2Summary' style='display:none'>" +
   	" 				</div>"
-  intervalInpts= "Estimate Slope";
   testInpts = 	"<div class='w3-cell' >	Stronger evidence is a slope 	</div>" +
 		"	<div class='w3-cell' style='width: 30%'>" +
 		"		<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='q2testDirection' " +
-   	"  onchange='testDirection = this.value; if(sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>" +
-	  "  onClick='testDirection = this.value; if(sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>" +
+   	"  onmouseup='testDirection = this.value; if(sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>" +
+	  "  onselect='testDirection = this.value; if(sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>" +
 			"		<option value='lower'>Less Than or =</option>" +
 		"			<option value='both' selected>As or More Extreme Than</option>" +
 		"			<option value='upper'>Greater Than or =</option>" +
 		"		</select>" +
 		"	</div>" +
 		"	<div class='w3-cell' style='width: 30%' id='q2ObsdSlope'>" +
-    "		&nbsp;&nbsp; observed &beta;&#770;<sub>1</sub> = " + slope +
+    "		&nbsp;&nbsp; observed &beta;&#770;<sub>1</sub> =  value above" +
 		"	</div>" ;
 
-  plot =
-		" <div id='quant2Output' style='display:none'>" +
-		" </div>" +
-		" <div class='w3-container w3-cell w3-mobile' id='quant2Inference' style='width:420px; display:none'>" +
-		" 		<svg id='quant2InfSVG' height='400px' width='400px'></svg>" +
-		" </div>" ;
 
-    return [dIn, dSumm, intervalInpts, testInpts, plot];
+    infText =
+  		" <div id='quant2Output' style='display:none'>" +
+  		" </div>" ;
+
+    return [dIn, dSumm, testInpts, infText];
   }
 
+
+  function q2DataChange(){
+       sample4Test = sample4CI = [];
+       document.getElementById("q2Summary").style.display = 'none'
+       document.getElementById('infSVGplot').style.display = 'none'
+       document.getElementById('inferenceText').style.display = 'none'
+       document.getElementById("confLvlInpt").style.display = 'none'
+       document.getElementById("testInpt").style.display = 'none'
+       document.getElementById("moreTEsims").style.display = 'none'
+  }
 
 function summarizeSlope(q2DataName) {
   // builds summary table and dot plot for 2 quantitative variables
@@ -79,7 +85,7 @@ function summarizeSlope(q2DataName) {
    document.getElementById("testInpt").style.display = 'none';
    document.getElementById("confLvlInpt").style.display = 'none';
    d3.select("#infSVGplot_svg").remove();
-  //q2DataName = document.getElementById("quant2DataName").value;
+   q2DataName = document.getElementById("quant2DataName").value;
   q2RawData =
     q2DataName === "shuttle"    ? shuttle
       : q2DataName === "women"  ? womenJudgingMen
@@ -139,10 +145,8 @@ function summarizeSlope(q2DataName) {
       makeScatterPlot(q2Values, "dataSummary", q2Keys[0], q2Keys[1], true);
     }
 
-    document.getElementById("moreTEsims").style.display = "none";
+    //document.getElementById("moreTEsims").style.display = "none";
     //document.getElementById("inferenceChoices").style.display = "block";
-    document.getElementById("q2ObsdSlope").innerHTML =
-      "&nbsp;&nbsp;" + slope.toPrecision(4) + " from above.";
   }
 }
 
@@ -159,6 +163,7 @@ function resampleSlope4Test(data, reps) {
   xBar = d3.mean(x);
   xVar = d3.variance(x);
 
+  document.getElementById("q2ObsdSlope").innerHTML =  "&nbsp;&nbsp;" + slope.toPrecision(4) + " from above.";
   for (i = 0; i < reps; i++) {
     coVar = 0;
     // could resample these as well as y's, but then we could get all x values equal

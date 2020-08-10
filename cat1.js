@@ -64,7 +64,7 @@ var
   }
 
 function c1TestEstimate(){
-  var dIn, intervalInpts, testInpts, plot, results;
+  var dIn, dSumm, infText, testInpts;
   dIn =
   " 		<div class='w3-cell-row w3-mobile'>"+
   " 			 <div class='w3-cell' style='width:40%'>"+
@@ -94,9 +94,6 @@ function c1TestEstimate(){
   "    </div>  </div>";
   dSumm = " ";
   //  		<!--  Inputs for each inference  (before plotting)  -->
-  intervalInpts =
-  "  			Choose a Confidence Level:"
-  "  		</div>";
 
   testInpts=
   "<div class='w3-cell-row w3-mobile'>" +
@@ -105,7 +102,7 @@ function c1TestEstimate(){
   "  			  </div>"+
   "  			<div class='w3-cell  w3-mobile' style='width: 35%'>"+
   "  				 <input class='w3-input w3-card w3-mobile w3-pale-yellow' type='text' id='cat1Null'"+
-  "             placeholder='0.625' 	onchange= 'nullValue = this.value' "+
+  "             placeholder='0.625' 	onchange= 'nullValue = this.value; changeNullC1();' "+
   "  			   </input>"+
   "       </div>" +
   "   </div>" +
@@ -127,22 +124,29 @@ function c1TestEstimate(){
   " 			</div>"+
   " </div>";
 
-  plot = " ";
+  infText = " ";
 
-  results =
-  "  	 ";
 
-  return [dIn, dSumm, intervalInpts, testInpts, plot, results];
+  return [dIn, dSumm, testInpts, infText];
 }
 
 
 
 function renewC1 (){
-      //function to remove outdated info and PlotGoesHere
+      //function to remove outdated info and Plot
+      sample4CI = resample4CI = testData = CIData = [];
        document.getElementById('cat1SummaryText').style.display = 'none';
  			 document.getElementById('cat1SummarySVGgoesHere').style.display =  'none';
+       document.getElementById("infSVGplot").style.display = 'none';
     };
 
+function changeNullC1 (){
+      //function to remove outdated info and Plot
+      sample4Test = testData = [];
+       document.getElementById("infSVGplot").style.display = 'none';
+       document.getElementById("moreTEsims").style.display = 'none';
+       document.getElementById("inferenceText").style.display = 'none';
+    };
 
 
 

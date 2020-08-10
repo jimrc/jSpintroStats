@@ -9,7 +9,7 @@
 		"				<h4> Choose Data</h4>"	+
 		"			</div>"	+
 		"				<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='C1Q1DataName'"	+
-    "	          onchange='c1q1DataChange()'>"	+
+    "	          onselect='c1q1DataChange()' onmouseup='c1q1DataChange()' >"	+
 		"			<div class='w3-cell'>"	+
 		"					<option value='SATprep' selected>SAT prep</option>"	+
 		"					<option value='smoker'>Smoking - Birthweight</option>"	+
@@ -42,9 +42,9 @@
      "    <div class='w3-cell' style='width: 250px' >	Stronger evidence is a difference	</div>" +
   		" 	<div class='w3-cell' style='width: 30%'>" +
   		"		  <select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='q2testDirection' " +
-     	"  onchange='testDirection = this.value; if(sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>" +
-  	  "  onClick='testDirection = this.value; if(sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>" +
-  			"		<option value='lower'>Less Than or =</option>" +
+     	"  onmouseup='testDirection = this.value; if(sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>" +
+  	 	"  onselect ='testDirection = this.value; if(sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>" +
+  	 	"		<option value='lower'>Less Than or =</option>" +
   		"			<option value='both' selected>As or More Extreme Than</option>" +
   		"			<option value='upper'>Greater Than or =</option>" +
   		"		  </select>" +
