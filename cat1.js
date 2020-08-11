@@ -139,7 +139,7 @@ function renewC1 (){
  			 document.getElementById('cat1SummarySVGgoesHere').style.display =  'none';
        document.getElementById("moreTEsims").style.display = 'none';
        document.getElementById("inferenceText").style.display = 'none';
-         document.getElementById("inferenceInputs").style.display = 'none';
+       document.getElementById("inferenceInputs").style.display = 'none';
        document.getElementById("infSVGplot").style.display = 'none';
     };
 

@@ -77,8 +77,7 @@ function q1TestEstimate(){
   	"	</div>" ;
 
     infText =
-  		" <div id='quant1Output' style='display:none'>" +
-  		" </div>" ;
+  		" <div>  </div>" ;
 
       return [dIn, dSumm,  testInpts, infText];
   }

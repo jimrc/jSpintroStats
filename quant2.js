@@ -17,13 +17,12 @@ var correlation,
 
 function q2TestEstimate(){
   // function to modify the generic test-estimate page to suit 2 quantitative variables
-  var dIn, intervalInpts, testInpts, plot, results;
+  var dIn, dSumm, infText, testInpts;
   dIn =
   	" 			<div class='w3-cell' style='width:50%'>" +
   	" 				<h4> Choose Data: </h4>" +
   	" 				<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='quant2DataName'" +
-  	" 				   onselect ='q2DataChange(); sample4Test = sample4CI = []; summarizeSlope(this.value)'>" +
-  	" 				   onmouseup='q2DataChange(); sample4Test = sample4CI = []; summarizeSlope(this.value)'>" +
+  	" 				   onselect ='q2DataChange()'  onmouseup='q2DataChange()'>" +
   	" 					<option value='shuttle' selected>Shuttle</option>" +
   	" 					<option value='women'>Women rate men</option>" +
   	" 					<option value='men'>Men rate women</option>" +
@@ -32,9 +31,17 @@ function q2TestEstimate(){
   	" 				</select>" +
   	" 			</div>"
     dSumm =
-  	" 				<div class='w3-container w3-cell w3-mobile' id='q2Summary' style='display:none'>" +
-  	" 				</div>"
-  testInpts = 	"<div class='w3-cell' >	Stronger evidence is a slope 	</div>" +
+    "	<div class='flex-container' style='display:flex; wrap:nowrap;' >"+
+		"		  <div  id='Q2SumText' style='width:300px; display: none'>"	+
+		"		  </div>"	+
+		"				<svg id='Q2SumSVG' height='400px' width='400px'></svg>"	+
+		"	</div>"	;
+  testInpts =
+    "<div class='w3-cell-row w3-mobile' style = 'text-align: left'>" +
+    "  			<div class='w3-cell' style='width:250px'>"+
+    "  				Test: Is the true slope zero?"+
+    "  			</div>"+
+    "   </div>" +	"<div class='w3-cell' >	Stronger evidence is a slope 	</div>" +
 		"	<div class='w3-cell' style='width: 30%'>" +
 		"		<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='q2testDirection' " +
    	"  onmouseup='testDirection = this.value; if(sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>" +
@@ -59,18 +66,19 @@ function q2TestEstimate(){
 
   function q2DataChange(){
        sample4Test = sample4CI = [];
-       document.getElementById("q2Summary").style.display = 'none'
        document.getElementById('infSVGplot').style.display = 'none'
        document.getElementById('inferenceText').style.display = 'none'
        document.getElementById("confLvlInpt").style.display = 'none'
        document.getElementById("testInpt").style.display = 'none'
        document.getElementById("moreTEsims").style.display = 'none'
+       summarizeSlope()
   }
 
-function summarizeSlope(q2DataName) {
+function summarizeSlope() {
   // builds summary table and dot plot for 2 quantitative variables
   var margin = 20,  dataLength,  q2Keys,
-    xbar,    xVar,    ybar,    yVar,    coVar = 0;
+    xbar,    xVar,    ybar,    yVar,    coVar = 0,
+    q2DataName = document.getElementById("quant2DataName").value;
 
     // clear out old copies of data
     x = [];
@@ -79,13 +87,13 @@ function summarizeSlope(q2DataName) {
     testData = [];
     sampleq2 = resampleq2 = [];
 
+   document.getElementById("dataSummary").style.display = 'block';
    document.getElementById("inferenceInputs").style.display = 'block';
    document.getElementById("inferenceText").innerHTML = ' ';
    document.getElementById("moreTEsims").style.display = 'none';
    document.getElementById("testInpt").style.display = 'none';
    document.getElementById("confLvlInpt").style.display = 'none';
    d3.select("#infSVGplot_svg").remove();
-   q2DataName = document.getElementById("quant2DataName").value;
   q2RawData =
     q2DataName === "shuttle"    ? shuttle
       : q2DataName === "women"  ? womenJudgingMen
@@ -112,7 +120,7 @@ function summarizeSlope(q2DataName) {
     intercept = ybar - slope * xbar;
     correlation = coVar / Math.sqrt(yVar * xVar);
 
-    q2Summ = document.getElementById("dataSummary");
+    q2Summ = document.getElementById("Q2SumText");
     q2SumData = [
       { label: "Xbar", xx: xbar },
       { label: "Ybar", xx: ybar },
@@ -140,9 +148,9 @@ function summarizeSlope(q2DataName) {
 
     if (q2Values) {
       document.getElementById("dataIn").style.display = "block";
-      document.getElementById("dataSummary").style.display = "block";
+      document.getElementById("Q2SumText").style.display = "block";
 
-      makeScatterPlot(q2Values, "dataSummary", q2Keys[0], q2Keys[1], true);
+      makeScatterPlot(q2Values, "Q2SumSVG", q2Keys[0], q2Keys[0], q2Keys[1], true);
     }
 
     //document.getElementById("moreTEsims").style.display = "none";
