@@ -153,8 +153,6 @@ function summarizeSlope() {
       makeScatterPlot(q2Values, "Q2SumSVG", q2Keys[0], q2Keys[0], q2Keys[1], true);
     }
 
-    //document.getElementById("moreTEsims").style.display = "none";
-    //document.getElementById("inferenceChoices").style.display = "block";
   }
 }
 
