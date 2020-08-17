@@ -19,9 +19,6 @@ function makeScatterPlot(data, plot, xlabel, shortXlabel, ylabel, addLine) {
   //if (document.getElementById(plot).style.display === "none") {
   //    document.getElementById(plot).style.display = "block";
   //}
-  //var xydata =[];
-  // calculate slope and intercept *** //
-  var crossprod = 0.0,
     dataLength = data.length,
     i,
     x = [],

@@ -228,16 +228,3 @@ function summarizeMu1() {
 
   discreteChart(q1Values, q1SmrySVG, q1SumInteract);
 }
-
-function q1SumInteract(d, i) {
-  var q1SumModal = document.getElementById('q1SelectedSampleA');
-  q1SumModal.style.display = 'block';
-  q1SumModal.innerHTML = q1Values[i];
-
-  // open modal box to show data value
-  window.onclick = function(event) {
-    if (event.target == q1SumModal) {
-      q1SumModal.style.display = 'none';
-    };
-  };
-};

@@ -260,39 +260,3 @@ function summarizeDiff() {
       document.getElementById("moreTEsims").style.display = 'block';
       return sampleTstc1q1.diff;
     }
-
-function c1q1CIinteract(d, i) {
-	// open modal box to show diff in means in the selected resample;
-	//console.log(d.x);
-	var c1q1InfModal = document.getElementById("C1Q1WhichDot"),
-		c1q1InfModalContent = document.getElementById("C1Q1SelectedSample");
-	c1q1InfModal.style.display = "block";
-	c1q1InfModalContent.style.display = "block";
-	c1q1InfModalContent.innerHTML = c1q1Keys[0] + "\t Mean: " + sampleCIc1q1.mean1[i].toPrecision(4) +
-		"<br>" + c1q1Keys[1] + "\t Mean: " + sampleCIc1q1.mean2[i].toPrecision(4) +
-		"<br> Difference: " + sampleCIc1q1.diff[i].x.toPrecision(4) +
-		"<br> Click to Close";
-	//window.onclick = function(event) {
-	//	if (event.target == c1q1InfModal) {
-	//		c1q1InfModal.style.display = "none";
-	//	}
-	//}
-}
-
-function c1q1TestInteract(d, i) {
-	// open modal box to show diff in means in the selected resample;
-	//console.log(d.x);
-	var c1q1InfModal = document.getElementById("C1Q1WhichDot"),
-		c1q1InfModalContent = document.getElementById("C1Q1SelectedSample");
-	c1q1InfModal.style.display = "block";
-	c1q1InfModalContent.style.display = "block";
-	c1q1InfModalContent.innerHTML = c1q1Keys[0] + "\t Mean: " + sampleTstc1q1.mean1[i].toPrecision(4) +
-		"<br>" + c1q1Keys[1] + "\t Mean: " + sampleTstc1q1.mean2[i].toPrecision(4) +
-		"<br> Difference: " + sampleTstc1q1.diff[i].x.toPrecision(4) +
-		"<br> Click to Close";
-	//window.onclick = function(event) {
-	//	if (event.target == c1q1InfModal) {
-	//		c1q1InfModal.style.display = "none";
-	//	}
-	//}
-}

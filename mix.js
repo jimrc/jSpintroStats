@@ -9,9 +9,9 @@
 function mixerDivs(){
   var div1, div2, div3;
   div1 =
-    " 	<p>	Setup: Type as many labels in the first box, separated by commas, " +
-    " 		and numbers of balls for each label in the second box.	</p> " +
-    " 	<div class='w3-form w3-cell-row w3-mobile' id='mixInputs'> " +
+    " 	<p>	Setup: Type labels in the first box separated by commas. " +
+    " 		In the second box type a number of balls for each label separated by commas.	</p> " +
+    " 	<div class=' w3-cell-row w3-mobile' id='mixInputs'> " +
     " 		<div class='w3-cell w3-mobile' style='width:30%'> " +
     " 			Labels: " +
     " 			<input class='w3-input w3-border w3-mobile w3-pale-yellow' type='text' id='mixCats'  " +
@@ -33,10 +33,10 @@ function mixerDivs(){
     " 	</div> "
 
     div2 = " 	Stop after: " +
-    " 	<div class='w3-form w3-cell-row w3-mobile' id='mixStops'> " +
+    " 	<div class='w3-cell-row w3-mobile' id='mixStops'> " +
     " 		<div class='w3-cell w3-mobile' style='width:30%'> " +
     " 			<input class='w3-input w3-border w3-mobile w3-pale-blue ' type='text' id='nDraws'  " +
-    "       placeholder='This many draws:' onchange='mixNtimes()' style='display:block'> " +
+    "       placeholder='This many draws:' onchange='mixNtimes(this.value)' style='display:block'> " +
     " 		</div> " +
     " 		&nbsp; or&nbsp; " +
     " 		<div class='w3-cell w3-mobile' style='width:30%'> " +
@@ -51,16 +51,16 @@ function mixerDivs(){
     " 		</div> " +
     " 	</div> " +
     " 	<br> " +
-    " 	<div class='w3-form w3-cell-row w3-mobile' style='display:block'> " +
-    " 		<div class='w3-container w3-cell w3-mobile' id='mixSVGgoesHere'></div> " +
-    "       <svg  id='mixSVG' height=300 width=440></svg> " +
+    " 	<div class='w3-cell-row w3-mobile' style='display:block'> " +
+    " 		<div class='w3-container w3-cell w3-mobile' id='mixSVGgoesHere'> " +
+    "       <svg  id='mixSVG' height=300 width=440></svg> </div> " +
     " 		<div class='w3-cell w3-mobile'> " +
     " 			<button onclick='hideShowMix()' class='w3-button w3-pale-green w3-medium w3-round-xlarge'> " +
     " 				&nbsp; Hide / Show " +
     " 			</button> " +
     " 		</div> " +
     " 	</div> " +
-    " 	<div class='w3-form w3-cell-row w3-mobile' style='display:none' id='repeatMix'> " +
+    " 	<div class='w3-cell-row w3-mobile' style='display:none' id='repeatMix'> " +
       " 	<div class='w3-btn w3-cell'></div> " +
       " 	<form class='w3-cell w3-card'> " +
       " 		<h4>Repeat Process:</h4> " +
@@ -84,30 +84,30 @@ function mixerDivs(){
 return [div1, div2, div3];
 };
 
-    var w =  Number(400), // - margin.right - margin.left,
-        h = Number(300), // - margin.top - margin.bottom
-        balls = [],
-        boxData = [ { "x": w/2 -40,   "y": h/2-2 },  { "x": -w/2 +22,  "y": h/2-2},
+var w =  Number(400), // - margin.right - margin.left,
+    h = Number(300), // - margin.top - margin.bottom
+    balls = [];
+var boxData = [ { "x": w/2 -40,   "y": h/2-2 },  { "x": -w/2 +22,  "y": h/2-2},
                   { "x": -w/2+22,  "y": -h/+2}, { "x":w/2 -40 ,  "y": -h/2+2},
                   { "x": w/2 -40,  "y": h/2 - 40}],
-        colors = [],
-        hideMix = false,
-        mixDiv = d3.select("#mixSVGgoesHere"),
-        mixCircles =[],
-        mixData = [],
-        mixDraws=[],     // cumulative probabilities
+    colors = [],
+    hideMix = false,
+    mixDiv = d3.select("#mixSVGgoesHere"),
+    mixCircles =[],
+    mixData = [],
+    mixDraws=[],     // cumulative probabilities
  		mixDuration = 400,
-        mixSlideDuration = 400,
-        mixGroups =[],
-        mixMatch,
-        mixNs = [],
-        mixStopRule,
-        mixRadius = 10,
-        mixRepResults = [],
-        mixText = [],
-        nCat,
-        nMix,
-        spacing =12;
+    mixSlideDuration = 400,
+    mixGroups =[],
+    mixMatch,
+    mixNs = [],
+    mixStopRule,
+    mixRadius = 10,
+    mixRepResults = [],
+    mixText = [],
+    nCat,
+    nMix,
+    spacing =12;
 
    var mixSVG = d3.select('#mixSVG')
       .append("g")
@@ -127,11 +127,11 @@ return [div1, div2, div3];
 
 function initialMixState(){
 	//setup the original batch of balls in the box -- mixCircles with data: balls
-	var //balls = [],
+	var
 		colorSeq = [],
 		k = 0,
 		grdSize = Math.floor(Math.min(w,h)/( mixRadius*2)),
-		xyvalues = jStat.seq(0, grdSize -1, grdSize); // integer values for a lattice
+		xyvalues = sequence(0, grdSize, 1); // integer values for a lattice
 
     mixGroups =  document.getElementById("mixCats").value.split(","); // labels of each
     mixNs =   jStat.map(document.getElementById("mixNs").value.split(","), Number);
@@ -148,7 +148,7 @@ function initialMixState(){
     	mixNs.length = mixNCat;
     }
     mixNballs = d3.sum(mixNs);
-    colorSeq = jStat.seq(30, 300, mixNCat)
+    colorSeq = sequence(30, 301, 360/mixNCat)
 
     for ( i=0; i < mixNCat; i++)  {
             mixData[i]  = { "label": mixGroups[i] ,
@@ -202,8 +202,6 @@ function initialMixState(){
          //.attr("text",function(d){return mixGroups[d.group];})  //
          ;//.attr("class", "circle")
       mixCircles.exit().remove();
-
-
 }  //end of initialMixState
 
     // Transitions and timers
@@ -217,7 +215,6 @@ function turn(i) {// rotate the whole batch of mixCircles
 			return d3.interpolateString("rotate( 0, 0, 0)", "rotate(-720, 0, 0)");
 		});
 }
-
 
 function mixTest(draws) {
 	// for testing
@@ -250,13 +247,13 @@ function mixTest(draws) {
 	});
 }
 
-function mixNtimes(){
+function mixNtimes(nMix){
 	// generate a fixed number of draws
     var
     	mixSeq = [];
 
 	initialMixState();
-    mixReplace =  document.getElementById("mix_Replace").value;
+  mixReplace =  document.getElementById("mix_Replace").value;
 	nMix =   +document.getElementById("nDraws").value;
     //if(mixStopRule !== "Fixed"){
     	// zap any results hanging around

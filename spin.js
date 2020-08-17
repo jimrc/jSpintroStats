@@ -35,208 +35,225 @@ var margin = [{ top: 50 }, { right: 20 }, { bottom: 50 }, { left: 20 }],
   spinMatch,
   spinProb = [],
   spinRepResults = [],
-  spinStopRule;
+  spinStopRule,
+  stopRuleChange = false;
 
 
   function spinDivs() {
+    // set up the generic Demo divs for the spinner demo
    div1 =  "Type labels in the first box separated by commas or tabs " +
-  "<br> and the same number of percentages or probability weights in the second box. " +
-  "<div class='w3-form w3-cell-row w3-mobile' id='spinInputs'> " +
-  "  <div class='w3-cell w3-mobile' style='width:40%'> " +
-  "    Labels: " +
-  "    <input class='w3-input w3-border w3-mobile w3-pale-yellow' type='text' id='spinCats'  " +
-  "    style='display:block'> " +
-  "  </div> " +
-  "  <div class='w3-cell w3-mobile'></div> " +
-  "  <div class='w3-cell w3-mobile' style='width:40%'> " +
-  "    Probability weights: " +
-  "    <input class='w3-input w3-border w3-mobile w3-pale-yellow' type='text' id='spinProbs'  " +
-  "    style='display:block'> " +
-  "  </div> " +
-  "</div> ";
-   div2 =  "Stop after: " +
-  "<div class='w3-form w3-cell-row w3-mobile' id='spinStops'> " +
+    "<br> and the same number of percentages or probability weights in the second box. " +
+    "<div class='w3-cell-row w3-mobile' id='spinInputs'> " +
+    "  <div class='w3-cell w3-mobile' style='width:40%'> " +
+    "    Labels: " +
+    "    <input class='w3-input w3-border w3-mobile w3-pale-yellow' type='text' id='spinCats'  " +
+    "    style='display:block'> " +
+    "  </div> " +
+    "  <div class='w3-cell w3-mobile'></div> " +
+    "  <div class='w3-cell w3-mobile' style='width:40%'> " +
+    "    Probability weights: " +
+    "    <input class='w3-input w3-border w3-mobile w3-pale-yellow' type='text' id='spinProbs'  " +
+    "    style='display:block' onblur = 'drawDonut()' > " +
+    "  </div> " +
+    "</div> ";
+ div2 =  "Stop after: " +
+  "<div class='w3-cell-row w3-mobile' id='spinStops'> " +
   "  <div class='w3-cell w3-mobile' style='width:30%'> " +
   "    <input class='w3-input w3-border w3-mobile w3-pale-blue ' type='text' id='nSpins'  " +
-  "    placeholder='This many spins: ' onchange='spinNSpins();' style='display:block'> " +
+  "    placeholder='This many spins: ' onchange='restartSpins(); spinNSpins();  stopRuleChange =true;' style='display:block'> " +
   "  </div>  &nbsp; or &nbsp; " +
   "  <div class='w3-cell w3-mobile' style='width:30%'> " +
   "    <input class='w3-input w3-border w3-mobile w3-pale-blue ' type='text' id='spin1'  " +
-  "    placeholder='Getting one of this type: ' onchange='spinsTill1();' style='display:block'> " +
+  "    placeholder='Getting one of this type: ' onchange='restartSpins(); spinsTill1();' style='display:block'> " +
   "  </div> &nbsp; or &nbsp;" +
   "  <div class='w3-cell w3-mobile' style='width:30%'> " +
-  "<button id='spinAllButton' onclick='spinsTillAll()' class='w3-button w3-pale-blue w3-medium  " +
+  "<button id='spinAllButton' onclick='restartSpins(); spinsTillAll(); ' class='w3-button w3-pale-blue w3-medium  " +
       "       w3-round-xlarge'> Getting one of EACH type:  </button> " +
   "  </div> " +
   "</div> " +
-  "<br> ";
-  div3 =    "<div class='w3-form w3-cell-row w3-mobile' style='display:block'> " +
-      "<div class='w3-container w3-cell w3-mobile' id='spinSVGgoesHere'> " +
-      "<svg  id='spinSVG' height=300 width=440></svg> " +
+  "<br> "+
+  "<div class='w3-cell-row w3-mobile' style='display:block'> " +
+      "<div class='w3-container w3-cell w3-mobile' id='spinSVGgoesHere' style='width:340px'> " +
       "</div> " +
-      "<div class='w3-cell w3-mobile'> " +
-      "  <button onclick='hideShowSpins()' class='w3-button w3-pale-green w3-medium w3-round-xlarge'> " +
-      "    &nbsp; Hide / Show " +
-      "  </button> " +
-      "</div> " +
-    "<div class='w3-form w3-cell-row w3-mobile' style='display:none' id='repeatSpins'> " +
-      "<div class='w3-btn w3-cell'></div> " +
-      "<form class='w3-cell w3-card'> " +
-        "<h4>Repeat Process:</h4> " +
-        "<div class='w3-bar'> " +
-          "<input class='w3-radio' value=100 type='radio' name='spinReps'  " +
-          "onClick='spinRepeat(100);  dotChart1(spinRepResults );' /> " +
-          "<label>100</label> " +
-          "<input class='w3-radio' value=1000 type='radio' name='spinReps'  " +
-          "onClick='spinRepeat(1000); dotChart1(spinRepResults);' checked='checked' /> " +
-          "<label>1000</label> " +
-        "  <input class='w3-radio' value=5000 type='radio' name='spinReps'  " +
-          "onClick='spinRepeat(5000); dotChart1(spinRepResults);' /> " +
-        "  <label>5000</label> " +
-        "</div> " +
-      "</form> " +
-    "</div> " +
+          "<div class='w3-cell w3-mobile'> " +
+          "  <button onclick='hideShowSpins()' class='w3-button w3-pale-green w3-medium w3-round-xlarge'> " +
+          "    &nbsp; Hide / Show " +
+          "  </button> " +
+          "</div> " +
+          "</div>";
+  div3 =
+   "<div id='repeatSpins' class='w3-container' style='display:none'>" +
+			"	<div class='w3-cell-row'>" +
+			"		<div class='w3-cell  w3-mobile' style='width: 20%'>  Show results of &nbsp;" +
+			"   </div>"  +
+			"		<div class='w3-cell  w3-mobile' style='width: 20%'>" +
+			" 			<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='moreSpinPoints' " +
+      "          placeholder='0' onclick='spinRepeat(this.value); dotChart1(spinRepResults );'" +
+			" 				 onchange='spinRepeat(this.value); dotChart1(spinRepResults );'>" +
+			" 		</div>" +
+			" 		<div class='w3-cell  w3-mobile' style='width: 80%'>" +
+			" 		&nbsp; (more)	trials" +
+			" 		</div>" +
+			" 	</div>" +
+			" </div>" +
     "<div class='w3-container w3-cell w3-mobile' id='spinSmrySVGdiv'> " +
-    "  <svg id='spinSmrySVG'></svg> " +
+    "</div> " +
+    "<div class='w3-container w3-mobile' id='spinSmryCount'> " +
     "</div> " +
   "</div> ";
   return [div1, div2, div3];
   };
 
-var svgSpin = d3.select('#spinSVG')
-  .append('g')
-  .attr('transform', 'translate(' + (+r + 10) + ',' + (+r + 10) + ')');
-
-
-var arrowData = [
-  { x: 4, y: 78 },
-  { x: 0, y: 0 },
-  { x: -4, y: 78 },
-  { x: 0, y: 0 },
-  { x: 0, y: 80 },
-  { x: 0, y: 0 },
-  { x: 0, y: -93 },
-  { x: -4, y: -83 },
-  { x: 4, y: -83 },
-  { x: 0, y: -93 }
-];
-//using this method
-var lineFunction = d3
-  .line()
-  .x(function(d) {
-    return d.x;
-  })
-  .y(function(d) {
-    return d.y;
-  }); //.interpolate('linear');
-// now draw the pointer
-
-function drawDonut() {
-  var w = swidth;
-  spinGroups = document.getElementById('spinCats').value.split(','); // labels of each
-  spinProb = jStat.map(
-    document.getElementById('spinProbs').value.split(','),
-    Number
-  );
-  spinNCat = spinGroups.length;
-  if (spinNCat < 2) {
-    alert('Must have more than one label and more than one probability');
+  function restartSpins(){
+      spinRepResults =[]
+      if(!d3.select("#spinSmrySVGdiv_svg").empty()){
+        d3.selectAll("#spinSmrySVGdiv_svg.g").remove();
+      }
+      document.getElementById("spinSmryCount").innerHTML = " ";
+      document.getElementById("spinSmrySVGdiv").style.display = 'none';
   }
 
-  // force group length to = prob length
-  if (spinNCat > spinProb.length) {
-    spinGroups.length = spinNCat = spinProb.length;
-  } else if (spinProb.length < spinNCat) {
-    spinProb.length = spinNCat;
-  }
+  function drawDonut() {
+    // open svg canvas and draw the initial setup of the spinner
+    if (d3.select("#spin_SVG").empty()) {
+      svgSpin = d3.select('#spinSVGgoesHere')
+         .append('svg')
+         .attr("id", "spin_SVG")
+         .attr("width", 330)
+         .attr("height", 320);
+    } else {
+      svgSpin = d3.select("#spin_SVG");
+      svgSpin.select("g").remove();
+    }
 
-  arc = d3
-    .arc() // create <path> elements  in arcs
-    .outerRadius(r)
-    .innerRadius(ir);
+   svgSpin = svgSpin
+    .append("g")
+    .attr('transform', 'translate(' + (+r + 10) + ',' + (+r + 10) + ')');
+   arrowData = [
+    { x: 4, y: 78 },
+    { x: 0, y: 0 },
+    { x: -4, y: 78 },
+    { x: 0, y: 0 },
+    { x: 0, y: 80 },
+    { x: 0, y: 0 },
+    { x: 0, y: -93 },
+    { x: -4, y: -83 },
+    { x: 4, y: -83 },
+    { x: 0, y: -93 }
+  ];
+  //using this method
+   lineFunction = d3
+    .line()
+    .x(function(d) {
+      return d.x;
+    })
+    .y(function(d) {
+      return d.y;
+    }); //.interpolate('linear');
+  // now draw the pointer
 
-  var spinTotalProb = jStat.sum(spinProb),
-    stdize = function(x) {
-      return x / spinTotalProb;
-    };
-  spinProb = jStat.map(spinProb, stdize);
-  spinCumProb = jStat.cumsum(spinProb);
-  spinCumProb.unshift(0);
+    var w = swidth;
+    spinGroups = document.getElementById('spinCats').value.split(','); // labels of each
+    spinProb = jStat.map(
+      document.getElementById('spinProbs').value.split(','),  Number );
+    spinNCat = spinGroups.length;
+    if (spinNCat < 2) {
+      alert('Must have more than one label and more than one probability');
+    }
 
-  for (i = 0; i < spinNCat; i++) {
-    pieData[i] = { label: spinGroups[i], value: spinProb[i] };
-    colors[i] = d3.hcl(30 + (300 * i) / spinNCat, 25, 80, 0.8);
-  }
-  pieData.length = spinNCat;
+    // force group length to = prob length
+    if (spinNCat > spinProb.length) {
+      spinGroups.length = spinNCat = spinProb.length;
+    } else if (spinProb.length < spinNCat) {
+      spinProb.length = spinNCat;
+    }
 
-  spinColorFn = d3.scaleOrdinal().range(colors);
+    arc = d3
+      .arc() // create <path> elements  in arcs
+      .outerRadius(r)
+      .innerRadius(ir);
 
-  svgSpin
-    .data([pieData])
-    .append('svgSpin:g')
-    .attr('transform', 'translate(' + (r + 10) + ',' + (r + 35) + ')');
+    var spinTotalProb = jStat.sum(spinProb),
+      stdize = function(x) {
+        return x / spinTotalProb;
+      };
+    spinProb = jStat.map(spinProb, stdize);
+    spinCumProb = jStat.cumsum(spinProb);
+    spinCumProb.unshift(0);
 
-  var pie = d3
-    .pie()
-    .sort(null)
-    .value(function(d) {
-      return d.value;
-    });
+    for (i = 0; i < spinNCat; i++) {
+      pieData[i] = { label: spinGroups[i], value: spinProb[i] };
+      colors[i] = d3.hcl((360 * i) / spinNCat, 25, 80, 0.8);
+    }
+    pieData.length = spinNCat;
+
+    spinColorFn = d3.scaleOrdinal().range(colors);
+
+    svgSpin
+      .data([pieData])
+      .append('svgSpin:g')
+      .attr('transform', 'translate(' + (r + 10) + ',' + (r + 35) + ')');
+
+    var pie = d3
+      .pie()
+      .sort(null)
+      .value(function(d) {
+        return d.value;
+      });
   // create arc data for us given a list of values
 
-  arcs = svgSpin
-    .selectAll('g.slice')
-    .data(
-      d3
-        .pie()
+    arcs = svgSpin
+      .selectAll('g.slice')
+      .data(
+        d3.pie()
         .value(function(d, i) {
           return d.value;
         })
         .sort(null)
-    )
+      )
     //  .data([drawData])
-    .enter()
-    .append('svgSpin:g')
-    .attr('class', 'slice');
+      .enter()
+      .append('svgSpin:g')
+      .attr('class', 'slice');
 
-  arcs
-    .append('svgSpin:path')
-    .attr('fill', function(d, i) {
-      return colors[i];
-    })
-    .attr('d', arc);
+    arcs
+      .append('svgSpin:path')
+      .attr('fill', function(d, i) {
+        return colors[i];
+      })
+      .attr('d', arc);
 
-  arcs
-    .append('svgSpin:text') //add a label to each slice
-    .attr('transform', function(d) {
-      d.innerRadius = 0;
-      d.outerRadius = tr;
-      return 'translate(' + arc.centroid(d) + ')';
-    })
-    .attr('text-anchor', 'middle')
-    .text(function(d, i) {
-      return pieData[i].label;
-    });
+    arcs
+      .append('svgSpin:text') //add a label to each slice
+      .attr('transform', function(d) {
+        d.innerRadius = 0;
+        d.outerRadius = tr;
+        return 'translate(' + arc.centroid(d) + ')';
+      })
+      .attr('text-anchor', 'middle')
+      .text(function(d, i) {
+        return pieData[i].label;
+      });
 
-  svgSpin
-    .append('circle')
-    .attr('cx', 0)
-    .attr('cy', 0)
-    .attr('fill', 'blue')
-    .attr('r', 5);
+    svgSpin
+      .append('circle')
+      .attr('cx', 0)
+      .attr('cy', 0)
+      .attr('fill', 'blue')
+      .attr('r', 5);
 
-  arrow = svgSpin
-    .append('path')
-    .attr('d', lineFunction(arrowData))
-    .attr('stroke', 'blue')
-    .attr('stroke-width', 4)
-    .attr('fill', 'blue');
+    arrow = svgSpin
+      .append('path')
+      .attr('d', lineFunction(arrowData))
+      .attr('stroke', 'blue')
+      .attr('stroke-width', 4)
+      .attr('fill', 'blue');
 } //end of drawDonut
 
 // -----  Transitions --- //                     TODO: check timing to be sequential
 // t1  spin it to angle
 // t2  toss out the sampled circle
-var tween = function(i) {
+function tween(i) {
   arrow
     .transition()
     .delay((spinSlideDuration + spinDuration) * i)
@@ -277,10 +294,7 @@ function xspace(i) {
 function spinNSpins() {
   nSpin = +document.getElementById('nSpins').value;
   spinGroups = document.getElementById('spinCats').value.split(','); // labels of each
-  spinProb = jStat.map(
-    document.getElementById('spinProbs').value.split(','),
-    Number
-  );
+  spinProb = jStat.map( document.getElementById('spinProbs').value.split(','), Number );
   spinNCat = spinGroups.length;
 
   if (spinStopRule !== 'Fixed') {
@@ -303,8 +317,6 @@ function spinMore(nDraws) {
   var angle, spinColor;
   spinData = [];
 
-  //drawDonut();
-
   for (i = 0; i < nDraws; i++) {
     angle = Math.random();
     spinColor = cut(angle, spinCumProb);
@@ -317,6 +329,7 @@ function spinMore(nDraws) {
 //  end of spinMore
 
 function spinsTill1() {
+  // keep spinning till we get the desired outcome
   var spinStopper = document.getElementById('spin1').value,
     angle,
     i = 0,
@@ -362,6 +375,7 @@ function spinsTill1() {
 }
 
 function spinsTillAll() {
+  // spin until we get one of each possible outcome
   var angle,
     error = ' ',
     i = 0,
@@ -414,7 +428,6 @@ function spinsTillAll() {
 function showSpinSequence(spinData) {
   var nDraws = spinData.length;
   var spacing = (swidth - 20) / (nDraws + 1); //for sampled circles
-  // console.log([nDraws, spacing]);
   function xspace(i) {
     return i * spacing - r + 10;
   }
@@ -519,7 +532,12 @@ function hideShowSpins() {
 
 function spinRepeat(times) {
   var i, thisProb;
-
+  if (stopRuleChange){
+    spinRepResults = [];
+    if(!d3.select("#spinSmrySVGdiv_svg").empty()){
+      d3.selectAll("#spinSmrySVGdiv_svg.g").remove();
+    }
+  }
   switch (spinStopRule){
     case 'Fixed' : {
       thisProb = spinProb[0];
@@ -538,8 +556,8 @@ function spinRepeat(times) {
     }
     case 'OneOfEach': {
       // track number of spins needed
-      spinRepResults[0] = spinData.length;
-      spinRepResults = spinRepResults.concat(spins2get1ofEach(times));
+      spinRepResults[0] = spins2get1ofEach(1);
+      spinRepResults = spinRepResults.concat(spins2get1ofEach(times - 1));
       break;
     }
     default: {
@@ -551,7 +569,7 @@ function spinRepeat(times) {
 
 function spins2get1ofEach(reps) {
   // randomly spin til we get one of each category
-  // returns the number of spins needed
+  // returns the numbers of spins needed for each of 'reps' trials
   var i = 0,
     j = 0,
     table = [],
@@ -579,6 +597,10 @@ function spins2get1ofEach(reps) {
 }
 
 function recursiveSpins(probs) {
+  // to get one of each type, we draw a random geometric RV with prob of success =
+  // total of the not-yet-selected categories.
+  // If only one category is left, we just add that number to the existing number of spins.
+  // Otherwise, we have to 'flip a coin' to see which of the remaining categories was selected.
   var sumProb = d3.sum(probs), // this needs to be less than 1 for rgeom to work
     draw,
     group,
@@ -592,114 +614,29 @@ function recursiveSpins(probs) {
   if (nCat === 1) {
     return draw;
   } else {
+    // randomly select which category appeared on this spin
     group = sampleWOrep(sequence(0, nCat - 1, 1), 1, probs);
-    probs.splice(group, 1); // remove the observed probability
+    // remove the prob of that category from the prob sequence
+    probs.splice(group, 1);
+    // and recurse to get the remaining categories
     return draw + recursiveSpins(probs);
   }
 }
 
-//TODO:
-//  Need a generic plotting function for dotcharts.
-//  This is too specific to spinner. Generalize it and add an x axis label.
-
 var dotChart1 = function(plotData) {
-  var margin = 40,
-    myArray = [],
-    nN = plotData.length,
-    plotX,
-    ypos = 0,
-    wdth = 440 - margin * 2,
-    hght = 320 - margin * 2,
-    xlegend =
+  var
+    xyData = [],
+    xLabel = xLab =
       spinStopRule === 'Fixed'
-        ? 'Spins to get one of the first type'
+        ? 'Number of the first type in ' + document.getElementById('nSpins').value + ' spins'
         : spinStopRule === 'OneOfOneType'
         ? 'Spins to get a ' + spinGroups[spinMatch]
         : 'Spins to get one of each type';
-
-  plotData.sort(function(a, b) {
-    return a - b;
-  });
-  // numeric sort to build bins for y values
-  // start on left with smallest x.
-
-  // TODO: trouble with size of svg -- not big enough to allow axis labels
-  var radius = nN < 101 ? 6 : nN < 501 ? 5 : nN < 1001 ? 4 : nN < 5001 ? 3 : 2; // perhaps this should relate to width/height of svg]
-  var gees = d3.select('#spinSmrySVG').selectAll('g');
-  if (typeof gees === 'object') {
-    gees.remove();
-  }
-  //  first dot goes at y=0, then add one to each from there
-  var j = 0;
-  while (j < nN) {
-    plotX = plotData[j]; // start a fresh bin with left edge at plotData[j]
-    ypos = 0; // bin y starts at 0
-    myArray[j] = { x: plotData[j++], y: ypos++ };
-    while ((plotData[j] - plotX < radius / 6) & (j < nN)) {
-      //stay in same bin -- increment yposition
-      myArray[j] = { x: plotData[j++], y: ypos++ };
-    }
-    // console.log(x(plotX));
-  }
-  sampMax = d3.max(myArray, function(d) {
-    return d.y;
-  });
-
-  var DCyScale = d3
-    .scaleLinear()
-    .range([hght, 0])
-    .domain([0, sampMax + 0.5]);
-
-  var DCxScale = d3
-    .scaleLinear()
-    .range([margin, wdth])
-    .domain([-0.1, plotData[nN - 1] + 0.5]);
-
-  // change scales to hold all x, all y
-  var DCxAxis = d3.axisBottom(DCxScale);
-
-  var DCyAxis = d3.axisLeft(DCyScale);
-
-  var graph = d3
-    .select('#spinSmrySVG')
-    .attr('width', wdth + margin * 2) // size problems
-    .attr('height', hght + margin * 2)
-    .append('g')
-    .attr('transform', 'translate(' + margin + ',' + margin + ')');
-
-  graph
-    .append('g')
-    .attr('class', 'y axis')
-    .attr('font-size', '10px')
-    .call(DCyAxis);
-
-  graph
-    .append('g')
-    .attr('class', 'x axis')
-    .attr('transform', 'translate(0,' + (radius + hght) + ')')
-    .call(DCxAxis);
-
-  Dots = graph.selectAll('g.circle').data(myArray);
-  Dots.enter()
-    .append('circle')
-    .attr('cx', function(d) {
-      return DCxScale(d.x);
-    })
-    .attr('r', radius)
-    .attr('cy', function(d) {
-      return DCyScale(d.y);
-    })
-    .style('fill', 'steelblue')
-    .style('fill-opacity', 0.6);
-  //return Dots; // and myArray?
-  graph
-    .append('g')
-    .attr('class', 'text')
-    .attr('x', wdth / 2)
-    .attr('y', 20)
-    .style('text-anchor', 'middle')
-    .attr('font-family', 'sans-serif')
-    .attr('opacity', 1)
-    .attr('font-size', '10px')
-    .text(xlegend);
+  stopRuleChange = false;
+  plotData = plotData.sort(function(a,b) { return(a-b);});
+  xyData = stackDots(plotData);
+  document.getElementById("spinSmrySVGdiv").style.display = 'block';
+  makeScatterPlot(xyData, "spinSmrySVGdiv", xLabel, xLab, " ", false);
+  document.getElementById("spinSmrySVGdiv").style.display = 'block';
+  document.getElementById("spinSmryCount").innerHTML = "Based on " + plotData.length +" simulations";
 };

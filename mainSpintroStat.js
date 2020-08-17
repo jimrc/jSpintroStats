@@ -449,7 +449,7 @@ function demoFn(demo) {
   }
   case 'CIdemo': {
     hdr = "Demonstrate 'Confidence' in a Confidence Interval";
-    demoDivs = CI_demo_Divs();
+    demoDivs = ["  ", "  ", "  "]; //CI_demo_Divs();
     break;
   }
   case 'lurkingC1': {
