@@ -5,7 +5,7 @@
 //  TODO: Clarify options.  Allow repeated of the process
 // TODO:	change color on text labels of each spin
 // TODO:  colors 3 and 4 are too similar. Use color brewer?
-// TODO:  zap old summary plot when anything above changes.
+
 /*eslint quotes: [2, 'single', 'avoid-escape']*/
 
 var margin = [{ top: 50 }, { right: 20 }, { bottom: 50 }, { left: 20 }],
@@ -39,7 +39,8 @@ var margin = [{ top: 50 }, { right: 20 }, { bottom: 50 }, { left: 20 }],
   stopRuleChange = false;
 
 
-  function spinDivs() {
+function spinDivs() {
+  var div1, div2, div3;
     // set up the generic Demo divs for the spinner demo
    div1 =  "Type labels in the first box separated by commas or tabs " +
     "<br> and the same number of percentages or probability weights in the second box. " +
@@ -64,10 +65,10 @@ var margin = [{ top: 50 }, { right: 20 }, { bottom: 50 }, { left: 20 }],
   "  </div>  &nbsp; or &nbsp; " +
   "  <div class='w3-cell w3-mobile' style='width:30%'> " +
   "    <input class='w3-input w3-border w3-mobile w3-pale-blue ' type='text' id='spin1'  " +
-  "    placeholder='Getting one of this type: ' onchange='restartSpins(); spinsTill1();' style='display:block'> " +
+  "    placeholder='Getting one of this type: ' onchange='restartSpins();  stopRuleChange =true; spinsTill1();' style='display:block'> " +
   "  </div> &nbsp; or &nbsp;" +
   "  <div class='w3-cell w3-mobile' style='width:30%'> " +
-  "<button id='spinAllButton' onclick='restartSpins(); spinsTillAll(); ' class='w3-button w3-pale-blue w3-medium  " +
+  "<button id='spinAllButton' onclick='restartSpins(); stopRuleChange =true; spinsTillAll(); ' class='w3-button w3-pale-blue w3-medium  " +
       "       w3-round-xlarge'> Getting one of EACH type:  </button> " +
   "  </div> " +
   "</div> " +
@@ -105,7 +106,7 @@ var margin = [{ top: 50 }, { right: 20 }, { bottom: 50 }, { left: 20 }],
   };
 
   function restartSpins(){
-      spinRepResults =[]
+      spinRepResults =[];
       if(!d3.select("#spinSmrySVGdiv_svg").empty()){
         d3.selectAll("#spinSmrySVGdiv_svg.g").remove();
       }
@@ -119,7 +120,7 @@ var margin = [{ top: 50 }, { right: 20 }, { bottom: 50 }, { left: 20 }],
       svgSpin = d3.select('#spinSVGgoesHere')
          .append('svg')
          .attr("id", "spin_SVG")
-         .attr("width", 330)
+         .attr("width", 400)
          .attr("height", 320);
     } else {
       svgSpin = d3.select("#spin_SVG");
@@ -531,11 +532,15 @@ function hideShowSpins() {
 }
 
 function spinRepeat(times) {
+  // TODO:  in summary plot, a click on the x value should show the count in that column of dots
   var i, thisProb;
+  //console.log(stopRuleChange);
   if (stopRuleChange){
     spinRepResults = [];
     if(!d3.select("#spinSmrySVGdiv_svg").empty()){
-      d3.selectAll("#spinSmrySVGdiv_svg.g").remove();
+      d3.select("#spinSmrySVGdiv_svg").style.display = 'none'
+      //selectAll("circle").
+      //data(spinRepResults).exit().remove()
     }
   }
   switch (spinStopRule){
@@ -557,7 +562,7 @@ function spinRepeat(times) {
     case 'OneOfEach': {
       // track number of spins needed
       spinRepResults[0] = spins2get1ofEach(1);
-      spinRepResults = spinRepResults.concat(spins2get1ofEach(times - 1));
+      spinRepResults = spinRepResults.concat(spins2get1ofEach(times));
       break;
     }
     default: {
@@ -623,10 +628,9 @@ function recursiveSpins(probs) {
   }
 }
 
-var dotChart1 = function(plotData) {
-  var
-    xyData = [],
-    xLabel = xLab =
+function dotChart1(plotData) {
+  var xyData = [],
+      xLabel = xLab =
       spinStopRule === 'Fixed'
         ? 'Number of the first type in ' + document.getElementById('nSpins').value + ' spins'
         : spinStopRule === 'OneOfOneType'

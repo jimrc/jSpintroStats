@@ -32,9 +32,12 @@ function makeScatterPlot(data, plot, xlabel, shortXlabel, ylabel, addLine) {
   svg = make_chart_svg(plot);
   //console.log(svg);
   if (svg.select("g." + plot + "_group").empty()) {
-    chart_group = svg.append("g").attr("class", plot + "_group");
+    chart_group = svg
+                  .append("g")
+                  .attr("class", plot + "_group");
   } else {
-    chart_group = svg.select("g." + plot + "_group");
+    chart_group = svg
+                  .select("g." + plot + "_group");
   }
   chart_group.data(data);
 
@@ -98,18 +101,20 @@ function makeScatterPlot(data, plot, xlabel, shortXlabel, ylabel, addLine) {
 
   var scatter_group = chart_group
     .selectAll("g." + plot + "_scatter_group")
-    .data(data);
+    .data(data, function(d,i) { return i;} );
   chart_group
     .selectAll("g." + plot + "_scatter_group")
     .data(data)
-    .enter()
-    .append("g")
-    .attr("class", plot + "_scatter_group")
-    .append("circle")
-    .attr("r", charts_config.point.radius)
-    .attr("fill", d => d.color )
-    .style("opacity", charts_config.point.opacity);
-
+    .join("g") //.enter()    .append("g")
+      .attr("class", plot + "_scatter_group")
+      .append("circle")
+      .attr("r", charts_config.point.radius)
+      .attr("fill", d => d.color )
+      .style("opacity", charts_config.point.opacity);
+    //chart_group.exit().remove();//remove unneeded circles
+    //chart_group.enter().append("g")
+    //.attr("class", plot + "_scatter_group")
+    //.append("circle")
   scatter_group = d3.selectAll("g." + plot + "_scatter_group");
   scatter_group.attr("transform", function(d, i) {
     return (
