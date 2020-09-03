@@ -186,21 +186,28 @@ function sample1(nItems) {
   return Math.floor(Math.random() * nItems);
 }
 
+function shuffle(arr1) {
+  // random shuffle of array elements
+  var i, ndx, tmp ;
+  for (i = arr1.length -1 ; i > 1; i-- ){
+        ndx = Math.floor(Math.random() * i);
+        tmp = arr1[i];
+        arr1[i] = arr1[ndx];
+        arr1[ndx] = tmp;
+    }
+    return arr1;
+}
+
 function sampleWOrep(values, nreps) {
-  var i,
-    k,
+  var i,    k,
     len = values.length,
     ids = [],
-    out = [];
-  var seq1 = sequence(0, len - 1, 1);
-  nreps = Math.min(nreps, len); // can't draw more than the number of values
-  for (i = 0; i < nreps; i++) {
-    k = sample1(seq1.length);
-    //console.log(k, seq1[k]);
-    ids.push(seq1[k]);
-    out.push(values[seq1[k]]);
-    seq1.splice(k, 1); // remove kth element and repeat as needed
-    //console.log(seq1);
+    out = [],
+    seq1 = shuffle(sequence(0, len, 1));
+    nreps = Math.min(nreps, len); // can't draw more than the number of values
+  for (i = 0; i < nreps ; i++) {
+    ids.push(seq1[i]);
+    out.push(values[seq1[i]]);
   }
   //console.log(out);
   // return the values in sampled order and their ids or positions in the original list
@@ -234,6 +241,10 @@ function sampleWrep(values, nreps, prob) {
   stdize = function(x) {
     return x / totalProb;
   };
+  if(prob.length !== values.length){
+    console.log("Values and Probs must have the same length.")
+    return ;
+  }
   prob = jStat.map(prob, stdize);
   cumProb = jStat.cumsum(prob);
   cumProb.unshift(0);
