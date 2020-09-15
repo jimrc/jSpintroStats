@@ -8,7 +8,7 @@
   CIline = [],
   CItext = [],
   confidence = 0.90,
-  cumsum = 0,
+  cumsum = 0, height,
   k,
   lowerCount = 0,
   lowerBd = 0,
@@ -52,7 +52,8 @@
 
 var bwidth = 640 - margin.left - margin.right,   //20 to 590
     bheight = 440 + margin.top - margin.bottom;
-var  yht = bheight * .7 - margin.top;          // 250
+    height = bheight;
+var  yht = height * .7 - margin.top;          // 250
 
      //need range of x's to determine x plot axis
  for( ndx = 0; ndx< popSize; ndx++){

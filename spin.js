@@ -27,6 +27,7 @@ var margin = [{ top: 50 }, { right: 20 }, { bottom: 50 }, { left: 20 }],
   spinDiv = d3.select('#spinSVGgoesHere'),
   // spinSmryDiv = d3.select('#spinSmrySVGdiv'),
   pieData = [],
+  resultSlot,
   spinData = [],
   spinCumProb = [], // cumulative probabilities
   spinDuration = 400,
@@ -249,6 +250,13 @@ function spinDivs() {
       .attr('stroke', 'blue')
       .attr('stroke-width', 4)
       .attr('fill', 'blue');
+
+    resultSlot = svgSpin
+        .append('text')
+        .attr('x', 160)
+        .attr('y', 70)
+        .text(" ");
+
 } //end of drawDonut
 
 // -----  Transitions --- //                     TODO: check timing to be sequential
@@ -372,6 +380,8 @@ function spinsTill1() {
   }
 
   showSpinSequence(spinData);
+
+  resultSlot.transition().delay(spinDuration * spinData.length).text(spinData.length);
   //}
 }
 
@@ -424,6 +434,8 @@ function spinsTillAll() {
   if (error !== '10K') {
     showSpinSequence(spinData);
   }
+
+  resultSlot.transition().delay(spinDuration * spinData.length).text(spinData.length);
 }
 
 function showSpinSequence(spinData) {
@@ -441,7 +453,9 @@ function showSpinSequence(spinData) {
     circles.remove();
   }
   if (typeof textLabels !== 'undefined') {
-    textLabels.remove();
+    if(textLabels.length > 0){
+      textLabels.remove();
+    }
   }
   if (typeof arcs !== 'undefined') {
     arcs.remove();
@@ -470,21 +484,26 @@ function showSpinSequence(spinData) {
   //  but hide them with r = 0
   circles = svgSpin.selectAll('g.circle').data(spinData);
   circles
-    .enter()
-    .append('circle')
-    .attr('fill', function(d) {
-      return colors[d.group];
-    })
+    .join('circle')
+    .attr('fill', d => colors[d.group] )
     .attr('cx', function(d) {
       return 93 * Math.cos(((90 - +d.angle * 360) * Math.PI) / 180);
     })
     .attr('cy', function(d) {
       return -93 * Math.sin(((90 - +d.angle * 360) * Math.PI) / 180);
     })
-    .attr('r', 0); // -> 20
-
-  //console.log(spinAngle);
-  //console.log(drawColor);
+    .attr('r', 0) // -> 20
+    .each(function(d, i) {
+        d3.select(this)
+        .transition()
+        // toss out circle
+        .delay(spinDuration + (spinSlideDuration + spinDuration) * i)
+        .duration(spinSlideDuration)
+        //.ease(d3.easeLinear)
+        .attr('cx', xspace(i))
+        .attr('cy', 134)
+        .attr('r', 20);
+    });
 
   textLabels = svgSpin
     .selectAll('g.text')
@@ -499,21 +518,11 @@ function showSpinSequence(spinData) {
       return pieData[d.group].label;
     })
     .style('text-anchor', 'middle')
+    .style('background-color', d => colors[d.group])
     .attr('font-family', 'sans-serif')
     .attr('opacity', 0)
     .attr('font-size', '20px');
 
-  circles.each(function(d, i) {
-    d3.select(this)
-      .transition()
-      // toss out circle
-      .delay(spinDuration + (spinSlideDuration + spinDuration) * i)
-      .duration(spinSlideDuration)
-      .ease(d3.easeLinear)
-      .attr('cx', xspace(i))
-      .attr('cy', +r + 20)
-      .attr('r', 20);
-  });
 
   textLabels.each(function(d, i) {
     // move the selected ball out
@@ -599,33 +608,6 @@ function spins2get1ofEach(reps) {
     //console.log(nDraws[i]);
   }
   return nDraws;
-}
-
-function recursiveSpins(probs) {
-  // to get one of each type, we draw a random geometric RV with prob of success =
-  // total of the not-yet-selected categories.
-  // If only one category is left, we just add that number to the existing number of spins.
-  // Otherwise, we have to 'flip a coin' to see which of the remaining categories was selected.
-  var sumProb = d3.sum(probs), // this needs to be less than 1 for rgeom to work
-    draw,
-    group,
-    nCat = probs.length;
-  //console.log(probs);
-  if (sumProb >= 1.0) {
-    console.log('Error in recursiveDraw: probs sum to one');
-    return NaN;
-  }
-  draw = rgeom(sumProb);
-  if (nCat === 1) {
-    return draw;
-  } else {
-    // randomly select which category appeared on this spin
-    group = sampleWOrep(sequence(0, nCat - 1, 1), 1, probs);
-    // remove the prob of that category from the prob sequence
-    probs.splice(group, 1);
-    // and recurse to get the remaining categories
-    return draw + recursiveSpins(probs);
-  }
 }
 
 function dotChart1(plotData) {

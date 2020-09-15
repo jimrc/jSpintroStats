@@ -201,23 +201,20 @@ function shuffle(arr1) {
 function sampleWOrep(values, nreps) {
   var i,    k,
     len = values.length,
-    ids = [],
-    out = [],
+    ids = repeat(len, len),
     seq1 = shuffle(sequence(0, len, 1));
     nreps = Math.min(nreps, len); // can't draw more than the number of values
   for (i = 0; i < nreps ; i++) {
-    ids.push(seq1[i]);
-    out.push(values[seq1[i]]);
+    ids[i] = seq1[i];
   }
   //console.log(out);
-  // return the values in sampled order and their ids or positions in the original list
-  return [out, ids];
+  // return the positions in the original list or -- if unselected -- a big number
+  return  ids;
 }
 
 function sampleN(values, nreps) {
   // sample nreps with replacement from values assuming equal weights
-  var i,
-    k,
+  var i,   k,
     len = values.length,
     out = [];
 
@@ -231,13 +228,13 @@ function sampleN(values, nreps) {
 
 function sampleWrep(values, nreps, prob) {
   // draw  values  (with replacement) at random using probs as weights
+  // return the sequence of draws
   var cumProb = [],
     nCat = prob.length,
     totalProb = jStat.sum(prob),
     i,
     k,
-    ids = [],
-    out = [];
+    ids = repeat(nCat, nCat);
   stdize = function(x) {
     return x / totalProb;
   };
@@ -250,13 +247,40 @@ function sampleWrep(values, nreps, prob) {
   cumProb.unshift(0);
   //console.log(cumProb);
   for (i = 0; i < nreps; i++) {
-    k = cut(Math.random(), cumProb);
-    out.push(values[k]);
-    ids.push(k);
+    ids[i] = cut(Math.random(), cumProb);
   }
+  ids.length = nreps;
   //console.log(out);
-  // return the values in sampled order and their ids or positions in the original list
-  return [out, ids];
+  // return the positions in the original list
+  return  ids ;
+}
+
+
+function recursiveSpins(probs) {
+  // to get one of each type, we draw a random geometric RV with prob of success =
+  // total of the not-yet-selected categories.
+  // If only one category is left, we just add that number to the existing number of spins.
+  // Otherwise, we have to 'flip a coin' to see which of the remaining categories was selected.
+  var sumProb = d3.sum(probs), // this needs to be less than 1 for rgeom to work
+    draw,
+    group,
+    nCat = probs.length;
+  //console.log(probs);
+  if (sumProb >= 1.0) {
+    console.log('Error in recursiveDraw: probs sum to one');
+    return NaN;
+  }
+  draw = rgeom(sumProb);
+  if (nCat === 1) {
+    return draw;
+  } else {
+    // randomly select which category appeared on this spin
+    group = sampleWOrep(sequence(0, nCat - 1, 1), 1, probs);
+    // remove the prob of that category from the prob sequence
+    probs.splice(group, 1);
+    // and recurse to get the remaining categories
+    return draw + recursiveSpins(probs);
+  }
 }
 
 function inArray(array, value) {
