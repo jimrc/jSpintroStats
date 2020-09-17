@@ -435,7 +435,10 @@ function spinsTillAll() {
     showSpinSequence(spinData);
   }
 
-  resultSlot.transition().delay(spinDuration * spinData.length).text(spinData.length);
+  resultSlot
+    .transition()
+    .delay(spinSlideDuration + spinDuration * spinData.length)
+    .text(spinData.length);
 }
 
 function showSpinSequence(spinData) {
@@ -521,10 +524,8 @@ function showSpinSequence(spinData) {
     .style('background-color', d => colors[d.group])
     .attr('font-family', 'sans-serif')
     .attr('opacity', 0)
-    .attr('font-size', '20px');
-
-
-  textLabels.each(function(d, i) {
+    .attr('font-size', '20px')
+   .each(function(d, i) {
     // move the selected ball out
     d3.select(this)
       .transition()

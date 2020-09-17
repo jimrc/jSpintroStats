@@ -17,8 +17,8 @@ var boxData = [ { "x": w/2 -40,   "y": h/2-2 },  { "x": -w/2 +22,  "y": h/2-2},
     mixCircles =[],
     mixData = [],
     mixDraws=[],
- 		mixDuration = 400,
-    mixSlideDuration = 100,
+ 		mixDuration = 500,
+    mixSlideDuration = 400,
     mixGroups =[],
     mixMatch,
     mixNs = [],
@@ -31,6 +31,7 @@ var boxData = [ { "x": w/2 -40,   "y": h/2-2 },  { "x": -w/2 +22,  "y": h/2-2},
     nCat,
     nMix,
     nDraws,
+    resultSlot,
     spacing =12,
     textLabels = [];
 
@@ -147,6 +148,13 @@ function initialMixState(){
            .attr("stroke", "blue")
            .attr("stroke-width", 2)
            .attr("fill", "white");
+
+      resultSlot = mixSVG
+               .append('text')
+               .attr('x', 200)
+               .attr('y', 150)
+               .attr('font-size', '18px')
+               .text(" ");
 
 	var	k = 0,
 		grdSize = Math.floor(Math.min(w,h)/( mixRadius*2)),
@@ -359,11 +367,16 @@ function mixTill1(){
     }
 	}
 }
-  console.log(nDraws);
+  //console.log(nDraws);
   mixData = mixData.sort(function(a, b) {return (a.order - b.order);} )
   showmixSequence(mixData);
-}
 
+  resultSlot
+      .transition()
+      .delay( mixSlideDuration + mixDuration * mixData.length)
+      .text(nDraws);
+
+}
 
 function mixTillAll(){
   // use for a single mixer sequence to see which balls are sampled until
@@ -445,8 +458,13 @@ function mixTillAll(){
    //console.log(table);
    //console.log(mixData[0], mixData[1]);
    if(error !== "10K"){
-      console.log(nDraws);
+      //console.log(nDraws);
     	showmixSequence(mixData);
+
+      resultSlot
+          .transition()
+          .delay(mixSlideDuration + mixDuration * mixData.length)
+          .text(nDraws);
     }
 }
 
@@ -466,27 +484,28 @@ function showmixSequence(mixData){
          .attr("cx",  d => d.x * mixRadius - w/5 )
          .attr("cy", d => d.y * mixRadius - h/4 )
          .attr("r",  mixRadius )
-         //.attr("text",function(d,i){return mixGroups[mixSeq[i]];})
-         ;//.attr("class", "circle") ;
-
-	  mixDraws //.filter(d => d.selected)
       .each(function(d, i) {
-		    if ( d.selected){
+		    if (d.selected === true){
           turn(i);
-        }
  		    d3.select(this)
+          //.filter(d.selected === true)
 			   .transition()		// move the selected ball to opening
-			   .delay(mixDuration * 2 * (i + 1.1))
-			   .attr("cx",  (d.selected == true) ? d.x2 : d.x )
-			   .attr("cy",  (d.selected == true) ? d.y2 : d.y )
+			   .delay(mixDuration * 2 * (i + 1.2))
+			   .duration(mixSlideDuration)
+			   .attr("cy", (d.selected === true) ? d.y2 : this.cy )
+         //.attr("r",  mixRadius )
+         .transition()		// move the selected ball to opening
+			   .delay( mixSlideDuration)
+			   .duration(mixSlideDuration)
+			   .attr("cx", (d.selected === true) ? d.x2 : this.cx )
          //.attr("r",  mixRadius )
 			   .style("stroke", "black")
-			   .transition()       // move ball over to queue at right
-			   .delay(mixDuration * 2 * (i + 1.53))
+			   .transition()       // move ball up into queue
+			   .delay( mixSlideDuration)
 			   .duration(mixSlideDuration)
 		//  .ease(d3.easeCubicIn)
-			   .attr("cx",  (d.selected == true) ? d.x2 : d.x )
-			  .attr("cy",  (d.selected == true) ? -100 + i * spacing : d.y )
+			   .attr("cx",  (d.selected === true) ? d.x2 : this.cx )
+			   .attr("cy",  (d.selected === true) ? -100 + i * spacing : this.cy )
 		//	  .transition()       // move up to its row
 		 //   .delay( mixDuration * 2 * (i + 1.23) )
 		//	  .duration(mixDuration)
@@ -494,6 +513,7 @@ function showmixSequence(mixData){
 		//	  .attr("cy",  i *spacing - h/2 + mixRadius)
 		//	  .attr("opacity", 1)
 			  .style("stroke", "black");
+      }
 		})
 		if(mixReplace === "no")  {
 			// note:  the number of circles in the box will decrease with each draw.
@@ -509,18 +529,24 @@ function showmixSequence(mixData){
 		  //}
     }
       textLabels = mixSVG
-          .selectAll('text')
+          .selectAll('g.text')
           .data(mixData)
-          .filter(d => (d.selected) )
           .join('text')
-          .attr('x', d => d.x2 -2)
-          .attr('y', (d, i) => (d.selected == true) ? -100 + i * spacing : d.y )
-          .text( d => mixCats[d.group])
+          .filter(d => (d.selected === true) )
+          .attr('x', d => d.x2 - 30)
+          .attr('y', (d, i) => (d.selected === true) ? -97 + i * spacing : d.y )
+          .text( d => mixGroups[d.group])
           .style('text-anchor', 'middle')
           .attr('font-family', 'sans-serif')
-         .attr("opacity",1)
-         .attr("font-size", "16px");
-
+         .attr("opacity",0)
+         .attr("font-size", "16px")
+        .each(function(d, i) {
+           // move the selected ball out
+           d3.select(this)
+             .transition()
+             .delay(mixSlideDuration * 5 + mixDuration * 2*(i + 1.2))
+             .attr('opacity', 1);
+           });
   // mixText.each(function(d,i){
 	// show the label
   //      d3.select(this)
@@ -533,19 +559,18 @@ function showmixSequence(mixData){
 
 }
 
-// Transitions and timers
-
 function turn(j) {// rotate the whole batch of mixCircles
-//mixSVG
-d3.select("#mix_SVG").selectAll("circle")
-.filter( d => !d.selected)
-.transition()
-.delay(mixDuration * (j + (j > 0)* 1.4) *2 )
-.duration(mixDuration )
-.ease(d3.easeCubicOut)
-.attrTween("transform", function(d,i) {
-  return d3.interpolateString("rotate( 0, 0, 0)", "rotate(-720 , 0, 0)");
-});
+  //mixSVG
+  d3.select("#mix_SVG")
+    .selectAll("circle")
+    .filter( d => (this.cx < 200))
+    .transition()
+    .delay(mixDuration * (j + (j > 0)* 1.4) *2 )
+    .duration(mixDuration )
+    .ease(d3.easeCubicOut)
+    .attrTween("transform", function(d,i) {
+      return d3.interpolateString("rotate( 0, 0, 0)", "rotate(-720, 0, 0)");
+    });
 }
 
 function hideShowMix() {
