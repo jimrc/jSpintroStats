@@ -2,10 +2,9 @@
 // Inputs:
 //    category labels and relative ball counts
 //    pick stopping option.
-// TODO:  'get one of each' is not counting first group. like some color index shifted.
-// TODO:  fine tune balls mixing and removal. Too many turns now
-// TODO:  Show labels and # draws needed
-// TODO:  transitions are not sequencing well
+// TODO: with yes-replace balls, too many come out
+// TODO: turn spins all circles.
+// TODO:  make text labels go away when redrawing plot
 var w =  Number(400), // - margin.right - margin.left,
     h = Number(300), // - margin.top - margin.bottom
     ballsInit =  [];
@@ -18,7 +17,7 @@ var boxData = [ { "x": w/2 -40,   "y": h/2-2 },  { "x": -w/2 +22,  "y": h/2-2},
     mixData = [],
     mixDraws=[],
  		mixDuration = 500,
-    mixSlideDuration = 400,
+    mixSlideDuration = 250,
     mixGroups =[],
     mixMatch,
     mixNs = [],
@@ -213,7 +212,7 @@ function initialMixState(){
           x: xSeq[k],   // add this ball to the display list
     			y: ySeq[k],
     			group : i,
-          x2: w/2 +40 ,
+          x2: w/2 + 20 ,
           y2:  h / 2 - 21,
           selected: false,
           order: k++,
@@ -259,7 +258,7 @@ function mixTest(draws) {
 		    .delay( mixDuration * 2 * (i + 1.6) )
 			.duration(mixDuration)
 //			.ease(d3.easeCubicOut)
-			.attr("cy",  i * 2*spacing - h/2 + mixRadius);
+			.attr("cy",  i * 2*spacing - h/4 + mixRadius);
 		if(mixReplace === "no")  {
 		      mixData.splice(mixData.length -1, 1);
 			mixCircles.exit().remove();
@@ -269,43 +268,46 @@ function mixTest(draws) {
 
 function mixNtimes(n){
 	// generate a fixed number of draws and pull them out of the box
-  var  	len = ballsInit.length,
+  var  	k, len = ballsInit.length,
            temp,
           choices = sequence(0, len, 1);
-  nDraws = n;
 	//initialMixState();
   mixReplace =  document.getElementById("mix_Replace").value;
 	nMix =   +document.getElementById("nDraws").value;
+  nDraws = k = nMix;
   mixStopRule = "Fixed";
- 	mixData = ballsInit;
 
-	//check state of replacement. If "no" use sampleWOrep, otherwise use sampleWrep
+  for(i=0; i < len; i++){ // to ensure all are not selected initially
+ 	  mixData[i] = ballsInit[i];
+    mixData[i].selected = false;
+  }
+	//check replacement option. If "no" use sampleWOrep, otherwise use sampleWrep
 	if(mixReplace === "no"){
 		mixSeq = sampleWOrep(choices, nMix);
     for(i=0; i < nMix; i++){
-      temp = mixData[i];
-      mixData[i] = mixData[mixSeq[i]];
-      mixData[i].selected = true;
-      mixData[mixSeq[i]] = temp;
+      mixData[mixSeq[i]].order = i;
+      mixData[mixSeq[i]].selected = true;
     }
+    for(i=0; i < nMix; i++){
+      if(! mixData[i].selected){
+        mixData[i].order = k++;
+      }
+    }
+    mixData = mixData.sort(function(a,b) { return (a.order - b.order);});
 	} else if(mixReplace === "yes"){
 		mixSeq = sampleWrep(choices, nMix,  repeat(1, len));
     for(i=0; i < nMix; i++){
-      temp = mixData[i];
-      mixData[i] = mixData[mixSeq[i]];
+      mixData.splice(i, 0, ballsInit[mixSeq[i]]);
       mixData[i].selected = true;
-      temp.selected = false;
-      mixData.push( temp);       // replace the selected ball with a new unselected one
+      mixData[i].order = i;
+    }
+    for(k= nMix; k < nMix + len; k++){
+        mixData[i].order = k;
     }
 	} else{
 		alert("error in mixReplace");
 	}
-	//console.log(mixData);
-  for(i = nMix; i < mixData.length; i++){
-    mixData[i].order = mixData.length;
-  }
-  mixData = mixData.sort(function(a,b) { return (a.order - b.order);});
-  // TODO:  test this change.  carry it over to other stopping rules
+  //mixData = mixData.sort(function(a,b) { return (a.order - b.order);});
 	showmixSequence(mixData);
 }
 
@@ -333,10 +335,11 @@ function mixTill1(){
       mixData[i].selected = true;
     }
     for(i = nDraws; i < len; i++){
-      mixData[i].order = len;
+      mixData[i].order = i;
     }
 	} else{  // with replacement -- like spinner
-    var possibleStop = len / mixNs[mixMatch] * d3.sum(mixNs), found = false;
+    var possibleStop = Math.floor(len / mixNs[mixMatch] * d3.sum(mixNs)),
+        found = false;
     newDraws = sampleWrep(ballsInit, possibleStop, repeat(1,len));
     for(i=0; i < possibleStop; i++){
       tempDraw = ballsInit[newDraws[i]];
@@ -349,7 +352,7 @@ function mixTill1(){
         break;
       }
 		}
-    if(!found){
+    if(!found){  // do it again
       newDraws = sampleWrep(ballsInit, possibleStop, repeat(1,len));
       for(i=0; i < possibleStop; i++){
         tempDraw = ballsInit[newDraws[i]];
@@ -383,7 +386,7 @@ function mixTillAll(){
   //  all categories have been selected at least once
 	var newNdx =[],
 		error=" ",
-		i = 0, j, k,
+		i = 0, j, k, len = ballsInit.length,
 		ndxs = repeat(-1, mixNCat),
     table = repeat(0, mixNCat);
   mixStopRule = "OneOfEach";
@@ -399,30 +402,28 @@ function mixTillAll(){
     nDraws = d3.max(ndxs) +1;
     for(i = 0; i < nDraws; i++){
       mixData[i].order = i;
+      //mixData.push(mixData[i]);
       mixData[i].selected = true;
     }
-    for(i = nDraws; i < mixData.length; i++){
+    for(i = nDraws; i < len; i++){
       mixData[i].order = i;
       mixData[i].selected = false;
     }
-    console.log(nDraws);
  	} else{    // sampling with replacement --  like the spinner
     mixData = [];
     for(i=0; i < mixNballs; i++){
-      mixData.push(ballsInit[i])
+      mixData.push(ballsInit[i]);
+      mixData[i].selected = false;
     }  // dont know why I can't just assign mixData to be a copy of ballsInit,
        // but if I do, ballsInit grows in length with mixData
     newNdx = sampleWrep(ballsInit, mixNCat, repeat(1, ballsInit.length));
      for(i=0; i < mixNCat; i++){  // must draw at least the number of categories
-       mixData[i] = ballsInit[newNdx[i]];
+       mixData.splice(i,0, ballsInit[newNdx[i]]);
        mixData[i].order = i;
-       // add this ball back into the mix
-       mixData.push(mixData[i])
        mixData[i].selected = true;
        table[ballsInit[newNdx[i]].group] += 1;
      }
      nDraws = mixNCat;
-     console.log("Length 1 of mixData: ", mixData.length)
      //for(j = 0; j < mixNCat; j++){
       //  ndxs[j] = mixData.findIndex(function(d) {return d.group == j;})
      //}
@@ -436,13 +437,11 @@ function mixTillAll(){
         newNdx = sampleWrep(ballsInit, 10, repeat(1,ballsInit.length));
    	   	for(i=0; i<10; i++){
            nDraws++;
-           mixData[nDraws -1] = ballsInit[newNdx[i]];
-           //  now add this ball back into the mix
-           mixData.push(mixData[nDraws -1])
+           mixData.splice(nDraws-1, 0, ballsInit[newNdx[i]]);
            mixData[nDraws -1].order = nDraws;
            mixData[nDraws -1].selected = true;
-            table[mixData[nDraws -1].group] += 1;
-   	        if(d3.min(table) > 0 ){
+           table[mixData[nDraws -1].group] += 1;
+   	       if(d3.min(table) > 0 ){
               showmixSequence(mixData);
               console.log(nDraws);
               return;
@@ -452,8 +451,13 @@ function mixTillAll(){
   			if(nDraws > 9990){
           error="10K";
   				break;
-  				}
+  			}
   		}
+   }
+   console.log(nDraws);
+   for(i = nDraws; i < mixData.length; i++){
+     mixData[i].order = i;
+     mixData[i].selected = false;
    }
    //console.log(table);
    //console.log(mixData[0], mixData[1]);
@@ -471,10 +475,8 @@ function mixTillAll(){
 function showmixSequence(mixData){
   // function to show mixing and extracting balls
 
-	var nDraws = mixData.length, //sampled balls
-	    spacing = (h -40) / (nDraws + 1); //for sampled balls going outside the box
+	var spacing = (h -40) / (nDraws + 1); //for sampled balls going outside the box
 	 //console.log(mixSeq);
-
 	// create new circles for the selected sample.
 	// hide them by setting radius to zero
 	mixDraws = mixSVG.selectAll("circle")
@@ -484,24 +486,25 @@ function showmixSequence(mixData){
          .attr("cx",  d => d.x * mixRadius - w/5 )
          .attr("cy", d => d.y * mixRadius - h/4 )
          .attr("r",  mixRadius )
+      .filter(d => d.selected)
       .each(function(d, i) {
 		    if (d.selected === true){
           turn(i);
- 		    d3.select(this)
+ 		      d3.select(this)
           //.filter(d.selected === true)
 			   .transition()		// move the selected ball to opening
-			   .delay(mixDuration * 2 * (i + 1.2))
-			   .duration(mixSlideDuration)
+			   .delay(mixDuration *( 1 + i) + mixSlideDuration * 3 * i)
+			   .duration(mixSlideDuration/2)
 			   .attr("cy", (d.selected === true) ? d.y2 : this.cy )
          //.attr("r",  mixRadius )
          .transition()		// move the selected ball to opening
-			   .delay( mixSlideDuration)
+			   .delay( mixSlideDuration/2)
 			   .duration(mixSlideDuration)
 			   .attr("cx", (d.selected === true) ? d.x2 : this.cx )
          //.attr("r",  mixRadius )
 			   .style("stroke", "black")
 			   .transition()       // move ball up into queue
-			   .delay( mixSlideDuration)
+			   //.delay( mixSlideDuration)
 			   .duration(mixSlideDuration)
 		//  .ease(d3.easeCubicIn)
 			   .attr("cx",  (d.selected === true) ? d.x2 : this.cx )
@@ -528,12 +531,13 @@ function showmixSequence(mixData){
   		//    ballsInit.splice(mixSeq[i], 1); //remove from the list
 		  //}
     }
+
       textLabels = mixSVG
           .selectAll('g.text')
           .data(mixData)
           .join('text')
           .filter(d => (d.selected === true) )
-          .attr('x', d => d.x2 - 30)
+          .attr('x', d => d.x2 + 30)
           .attr('y', (d, i) => (d.selected === true) ? -97 + i * spacing : d.y )
           .text( d => mixGroups[d.group])
           .style('text-anchor', 'middle')
@@ -544,7 +548,7 @@ function showmixSequence(mixData){
            // move the selected ball out
            d3.select(this)
              .transition()
-             .delay(mixSlideDuration * 5 + mixDuration * 2*(i + 1.2))
+             .delay(mixSlideDuration * 3 + mixDuration * 2*(i + .5))
              .attr('opacity', 1);
            });
   // mixText.each(function(d,i){
@@ -563,14 +567,18 @@ function turn(j) {// rotate the whole batch of mixCircles
   //mixSVG
   d3.select("#mix_SVG")
     .selectAll("circle")
-    .filter( d => (this.cx < 200))
-    .transition()
-    .delay(mixDuration * (j + (j > 0)* 1.4) *2 )
-    .duration(mixDuration )
-    .ease(d3.easeCubicOut)
-    .attrTween("transform", function(d,i) {
-      return d3.interpolateString("rotate( 0, 0, 0)", "rotate(-720, 0, 0)");
-    });
+    .each(function(d, i) {//.filter( d => (d.cx < "200"))
+          d3.select(this)
+          .transition()//.filter(this.cx < 200)
+          .delay( (mixDuration + 3 * mixSlideDuration) * j  )
+          .duration(mixDuration )
+          .ease(d3.easeCubicOut)
+          .attrTween("transform", function(d,i) {
+            var move = (d.selected) ? 0 : -720 ;// -360 - 720 * Math.random();
+            return d3.interpolateString("rotate( 0, 0, 0)",
+             "rotate(" + move +", 0, 0)");
+           })
+      });
 }
 
 function hideShowMix() {
