@@ -28,7 +28,6 @@ var boxData = [ { "x": w/2 -40,   "y": h/2-2 },  { "x": -w/2 +22,  "y": h/2-2},
     mixRepResults = [],
     mixSeq = [],
     mixSVG,
-    mixText = [],
     nCat,
     nMix,
     nDraws,
@@ -193,7 +192,7 @@ function initialMixState(){
 	// get rid of old hanging stuff
 
 
-     mixCircles = mixText =  mixDraws  = ballsInit = [];
+     mixCircles = mixDraws  = ballsInit = [];
     k=0;
     for(i = 0; i < mixNCat; i++){
     	for(j=0; j < mixNs[i]; j++){
@@ -303,7 +302,7 @@ function mixTill1(){
 
   resultSlot
       .transition()
-      .delay( mixSlideDuration + mixDuration * nDraws)
+      .delay( 3 * mixSlideDuration + 2 * mixDuration * nDraws)
       .text(nDraws);
 
 }
@@ -369,7 +368,7 @@ function mixTillAll(){
 
       resultSlot
           .transition()
-          .delay(mixSlideDuration + mixDuration * nDraws)
+          .delay(3 * mixSlideDuration + 2 * mixDuration * nDraws)
           .text(nDraws);
     }
 }
@@ -430,7 +429,7 @@ function showmixSequence(mixData, mixPicks){
           .text( d => mixGroups[d.group])
           .style('text-anchor', 'middle')
           .attr('font-family', 'sans-serif')
-         .attr("opacity",0.3)
+         .attr("opacity",0.0)
          .attr("font-size", "16px")
         .each(function(d, i) {
            // move the selected ball out
