@@ -3,7 +3,7 @@
 //    category labels and relative ball counts
 //    pick stopping option.
 //  TODO: remove inner balls when replace = 'no'
-//  TODO:  too few inner circles for mixtil1 and mixtillall if replace = 'no'
+//  
 
 var w =  Number(400), // - margin.right - margin.left,
     h = Number(300), // - margin.top - margin.bottom
@@ -31,6 +31,7 @@ var boxData = [ { "x": w/2 -40,   "y": h/2-2 },  { "x": -w/2 +22,  "y": h/2-2},
     nCat,
     nMix,
     nDraws,
+    pickNdx,
     resultSlot,
     spacing =12,
     textLabels = [];
@@ -260,7 +261,7 @@ function mixTill1(){
 	// generate a random sample of draws ending with one of the right group
 	var mixStopper =  document.getElementById("mixTil").value,
     	i =0, len = ballsInit.length,
-    	mixLength, newDraws =[],
+    	mixLength,
     	tempDraw;
   mixPicks =[];
   nDraws = 0;
@@ -274,10 +275,16 @@ function mixTill1(){
     document.getElementById("whichType").innerHTML = "Draw until you get a " + mixStopper ;
     //check state of replacement. If "no" just use sampleWOrep, otherwise use sampleWrep
 	if(mixReplace === "no"){
-		mixPicks = shuffle(ballsInit);  // reorder all balls
+    pickNdx = sampleWOrep(ballsInit, len, repeat(1, ballsInit.length));
+    //mixPicks = shuffle(ballsInit);
+    for(i=0; i < len; i++){  // must draw at least the number of categories
+       mixPicks.splice(i,0, ballsInit[pickNdx[i]]);
+     }
+		//mixPicks = shuffle(ballsInit);  // reorder all balls
     nDraws = mixPicks.findIndex(function(d) {return d.group === mixMatch;}) + 1;
     mixPicks.length = nDraws;
-	} else{  // with replacement -- like spinner
+    pickNdx.length = nDraws;
+	} else {                                // sample with replacement -- like spinner
     var prob = jStat.map(mixNs, function(x) {
                   return x / d3.sum(mixNs);    }),
          subset = [], matches =[], last;
@@ -286,15 +293,17 @@ function mixTill1(){
        if (ballsInit[i].group === mixMatch){
          matches.push(i);
        } else {
-         subset.push(ballsInit[i])
+         subset.push(i)
        }
     }
     //console.log(subset);
-    newDraws = sampleWrep(subset, nDraws - 1, repeat(1, subset.length));
+    pickNdx = sampleWrep(subset, nDraws - 1, repeat(1, subset.length));
     for(i=0; i < nDraws -1; i++){
-      mixPicks.push(subset[newDraws[i]]);
+      pickNdx[i] = subset[pickNdx[i]] // go back to numbering of ballsInit
+      mixPicks.push(ballsInit[pickNdx[i]]);
     }
     last = +sampleN(matches, 1);
+    pickNdx[nDraws -1] = last;
     mixPicks.push( ballsInit[last]);
 	}
   //console.log(nDraws);
@@ -310,8 +319,7 @@ function mixTill1(){
 function mixTillAll(){
   // use for a single mixer sequence to see which balls are sampled until
   //  all categories have been selected at least once
-	var newNdx =[],
-		error=" ",
+	var error=" ",
 		i = 0, j, k, len = ballsInit.length,
 		ndxs = repeat(-1, mixNCat),
     table = repeat(0, mixNCat);
@@ -323,34 +331,47 @@ function mixTillAll(){
   document.getElementById("whichType").innerHTML = "Draw until you get one of each. "  ;
   //check state of replacement. If "no" just use shuffle.
 	if(mixReplace === "no"){
-		mixPicks = shuffle(ballsInit);
+    pickNdx = sampleWOrep(ballsInit, len, repeat(1, ballsInit.length));
+		//mixPicks = shuffle(ballsInit);
+    for(i=0; i < len; i++){  // must draw at least the number of categories
+       mixPicks.splice(i,0, ballsInit[pickNdx[i]]);
+     }
     for(j=0; j < mixNCat; j++){
       ndxs[j] = mixPicks.findIndex(function(d) {return (d.group == j);});
     }
     nDraws = d3.max(ndxs) +1;
     mixPicks.length = nDraws;
+    pickNdx.length = nDraws;
  	} else{    // sampling with replacement --  like the spinner
-    newNdx = sampleWrep(ballsInit, mixNCat, repeat(1, ballsInit.length));
+    pickNdx = sampleWrep(ballsInit, mixNCat, repeat(1, ballsInit.length));
      for(i=0; i < mixNCat; i++){  // must draw at least the number of categories
-       mixPicks.splice(i,0, ballsInit[newNdx[i]]);
-       table[ballsInit[newNdx[i]].group] += 1;
+       mixPicks.splice(i,0, ballsInit[pickNdx[i]]);
+       table[ballsInit[pickNdx[i]].group] += 1;
      }
      nDraws = mixNCat;
    	 if(d3.min(table) > 0 ){
        console.log(nDraws);
        showmixSequence(mixData, mixPicks);
+       resultSlot
+           .transition()
+           .delay(3 * mixSlideDuration + 2 * mixDuration * nDraws)
+           .text(nDraws);
        return;
      }
      // keep going to get one of each drawing 10 at a time -- stop if > 10K
      for(k=0; k < 100; k++){
-        newNdx = sampleWrep(ballsInit, 10, repeat(1,ballsInit.length));
+        pickNdx = sampleWrep(ballsInit, 10, repeat(1,ballsInit.length));
    	   	for(i=0; i<10; i++){
-           mixPicks.splice(nDraws, 0, ballsInit[newNdx[i]]);
+           mixPicks.splice(nDraws, 0, ballsInit[pickNdx[i]]);
            table[mixPicks[nDraws ].group] += 1;
            nDraws++;
    	       if(d3.min(table) > 0 ){
               showmixSequence(mixData, mixPicks);
               console.log(nDraws);
+              resultSlot
+                    .transition()
+                    .delay(3 * mixSlideDuration + 2 * mixDuration * nDraws)
+                    .text(nDraws);
               return;
             }
    	  	}
@@ -375,10 +396,8 @@ function mixTillAll(){
 
 function showmixSequence(mixData, mixPicks){
   // function to show mixing and extracting balls
-
+  console.log("mD length: ", mixData.length);
 	var spacing = (h -40) / (nDraws + 1); //for sampled balls going outside the box
-	// create new circles for the selected sample.
-	// hide them by setting radius to zero
 	mixInner = mixSVG.selectAll(".inCircle")
          .data(mixData);
     mixInner.join("circle")
@@ -387,7 +406,8 @@ function showmixSequence(mixData, mixPicks){
          .attr("cx",  d => d.x * mixRadius - w/5 )
          .attr("cy", d => d.y * mixRadius - h/4 )
          .attr("r",  mixRadius );
-
+ 	// create new circles for the selected sample.
+ 	// hide them by setting radius to zero
     mixDraws = mixSVG.selectAll(".outCircle")
         .data(mixPicks);
     mixDraws.join("circle")
@@ -396,7 +416,7 @@ function showmixSequence(mixData, mixPicks){
            .attr("cx",  d => d.x * mixRadius - w/5 )
            .attr("cy", d => d.y * mixRadius - h/4 )
            .attr("r",  1 )
-           .attr("opacity", 0.1)
+           .attr("opacity", 0.0)
        .each( function(d, i){
           turn(i)
  		      d3.select(this)
@@ -444,8 +464,15 @@ function showmixSequence(mixData, mixPicks){
 
 function turn(j) {// rotate the whole batch of mixCircles
   //mixSVG
-  d3.select("#mix_SVG")
-    .selectAll(".inCircle")
+  mixInner = d3.select("#mix_SVG")
+        .selectAll(".inCircle")
+         .data(mixData);
+    mixInner.join("circle")
+        .attr("class", "inCircle")
+         .attr("fill", d => colors[d.group] )
+         .attr("cx",  d => d.x * mixRadius - w/5 )
+         .attr("cy", d => d.y * mixRadius - h/4 )
+         .attr("r",  mixRadius )
     .each(function(d, i) {//.filter( d => (d.cx < "200"))
           d3.select(this)
           .transition()//.filter(this.cx < 200)
