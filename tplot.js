@@ -26,8 +26,9 @@ drawTcurve = function(){
     .ticks(7);
 
   pdftline = d3.line()
-    .x(function(d) { return xtRange(d); })
-    .y(function(d) { return ytRange(jStat.studentt.pdf(d, tdf)); });
+    .x( d =>  xtRange(d) )
+    .y(d =>  ytRange(jStat.studentt.pdf(d, tdf)))
+		;
 
 	if(typeof(tsvg) === "object"){
 	  d3.selectAll("path").remove();
@@ -241,17 +242,14 @@ function filtert( area) {
                       .attr("stroke-width", 2)
                       .attr("fill", "white");
         }
-        var startData = filteredts.map( function(d) { return 0; } );
-        var ydata = filteredts.map(function(d){return jStat.studentt.pdf(d, tdf); });
+        var startData = filteredts.map( d => 0  );
+        var ydata = filteredts.map( d => jStat.studentt.pdf(d, tdf) );
         var area = d3.area()
             //.interpolate("linear")
-            .x( function(d, i ) {
-              return xtRange( filteredts[i] );  // x_coord's don't change
-            })
+            .x( (d, i ) =>  xtRange( filteredts[i] ))  // x_coord's don't change
             .y0(yRange(0))
-            .y1(function(d) {
-              return ytRange(d);    // y_coords will shift from 0 to full value
-            });
+            .y1( d => ytRange(d))    // y_coords will shift from 0 to full value
+            ;
         Tpath = tsvg.append("path")
         .datum(filteredts)
         .attr("fill", 'white')
