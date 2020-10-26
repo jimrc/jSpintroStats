@@ -88,22 +88,6 @@ function closePages() {
   }
 }
 
-var CIrangeslide = rangeslide("#confLvlInpt", {
-  data: confLevels,
-  showLabels: true,
-  startPosition: 0,
-  showTicks: false,
-  dataSource: "value",
-  labelsContent: "key",
-  valueIndicatorContent: "key",
-  thumbWidth: 24,
-  thumbHeight: 24,
-  handlers: {
-    valueChanged: [CLChange]
-  }
-});
-
-
 
 
 function testEstFn(vble) {
@@ -127,6 +111,23 @@ function testEstFn(vble) {
   d3.select("#infSVGplot_svg").remove();
   document.getElementById('inferenceText').style.display = 'none';
   document.getElementById("moreTEsims").style.display = 'none';
+
+
+  var CIrangeslide = rangeslide("#confLvlInpt", {
+    data: confLevels,
+    showLabels: true,
+    startPosition: 0,
+    showTicks: false,
+    dataSource: "value",
+    labelsContent: "key",
+    valueIndicatorContent: "key",
+    thumbWidth: 24,
+    thumbHeight: 24,
+    handlers: {
+      valueChanged: [CLChange]
+    }
+  });
+
 
   switch (vble) {
   case 'cat1': {
@@ -166,6 +167,8 @@ function testEstFn(vble) {
   //block4.innerHTML = divs[4]; // Inf Text
   document.getElementById("moreTEsims").style.display = "none";
 }
+
+
 
 function CLChange(arg) {
   // set colors for dots to illustrate confidence interval
@@ -463,8 +466,8 @@ function demoFn(demo) {
     break; // power  bootstrap sampling regression
   }
   case 'power': {
-    hdr = 'Visual assessment of the power of a T test to find a difference in means.'
-    demoDivs = ["  ", "  ", "  "];
+    hdr = 'Visual assessment of the power of a T test to find a shift in mean.'
+    demoDivs = powerDivs();
     break;
   }
   case 'bootstrap': {
@@ -490,6 +493,56 @@ function demoFn(demo) {
   block1.innerHTML = demoDivs[0];
   block2.innerHTML = demoDivs[1];
   block3.innerHTML = demoDivs[2];
+
+  if(demo === 'power'){
+      var sdrangeslide = rangeslide('#sdInpt', {
+    	       data: sdLevels,
+    	       showLabels: true,
+    	       startPosition: 1,
+    	       showTicks: false,
+    	       dataSource: 'value',
+    	     labelsContent: 'key',
+    	       valueIndicatorContent: 'key',
+    	       thumbWidth: 20,
+    	       thumbHeight: 20,
+    	       handlers: { valueChanged: [sdChange] } });
+
+    var SSrangeslide = rangeslide('#SSInpt', {
+             	       data: nLevels,
+             	       showLabels: true,
+             	       startPosition: 5,
+             	       showTicks: false,
+             	       dataSource: 'value',
+            	     labelsContent: 'key',
+            	       valueIndicatorContent: 'key',
+             	       thumbWidth: 20,
+             	       thumbHeight: 20,
+             	       handlers: { valueChanged: [SSChange] } });
+
+    	var alfarangeslide = rangeslide('#alfaInpt', {
+    	       data: aLevels,
+    	       showLabels: true,
+    	       startPosition: 0.025,
+    	       showTicks: false,
+    	       dataSource: 'value',
+      	     labelsContent: 'key',
+    	       valueIndicatorContent: 'key',
+    	       thumbWidth: 20,
+    	       thumbHeight: 20,
+    	       handlers: { valueChanged: [alfaChange] } });
+
+  var amrangeslide = rangeslide('#altMnInpt', {
+    	       data: mnALevels,
+    	       showLabels: true,
+    	       startPosition: 2,
+    	       showTicks: false,
+    	       dataSource: 'value',
+      	     labelsContent: 'key',
+             valueIndicatorContent: 'key',
+    	       thumbWidth: 20,
+    	       thumbHeight: 20,
+    	       handlers: { valueChanged: [altMnChange] } });
+  }
 }
 
 

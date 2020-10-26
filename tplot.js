@@ -4,7 +4,7 @@ var tchanged = "N",
     probt,
     plusminus = "+/-",
     ptText,
-    tseq = jStat.seq(-5.2, 5.2, 303),
+    tseq = sequence(-5.2, 5.2, 1/30),
     t1,
     t2,
     ttText;
