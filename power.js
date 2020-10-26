@@ -42,10 +42,25 @@ function powerDivs(){
   var div1, div2, div3;
   div1 =
     " 	<p>  The power of a statistical test to detect a change in a mean depends on these four inputs: <br> " +
-    "   <div id='SSInpt' class='w3-container' style='display:block'>	Sample size:</div>"+
-    "   <div id='sdInpt' class='w3-container' style='display:block'>Standard Deviation of the observations:	</div>"+
-    "   <div id='altMnInpt' class='w3-container' style='display:block'>	Alternative Mean:</div>"+
-    "   <div id='alfaInpt' class='w3-container' style='display:block'>	Significance level (&alpha;): </div>"+
+    "   <div id='SSInpt' class='w3-container' style='display:block'>	Sample size:"+
+    "   	<input class='w3-input  w3-cell w3-border w3-mobile w3-padding-large' "+
+    "            style='width:35%;'' type='text' id='nnInput' value='20'"+
+    "						 onchange='SSChange(+this.value)'></div> "+
+    "   <div id='sdInpt' class='w3-container' style='display:block'>"+
+    "           Standard Deviation of the observations:	"+
+    "   	<input class='w3-input  w3-cell w3-border w3-mobile w3-padding-large' "+
+    "            style='width:35%;'' type='text' id='sdInput' value='0.50'"+
+    "						 onchange='sdChange(+this.value)'> </div>"+
+    "   <div id='altMnInpt' class='w3-container' style='display:block'>	"+
+    "           Alternative Mean:"+
+    "   	<input class='w3-input  w3-cell w3-border w3-mobile w3-padding-large' "+
+    "            style='width:35%;'' type='text' id='altMnInput' value='1.0'"+
+    "						 onchange='altMnChange(+ this.value)'></div>"+
+    "   <div id='alfaInpt' class='w3-container' style='display:block'>"+
+    "           	Significance level (&alpha;): "+
+    "   	<input class='w3-input  w3-cell w3-border w3-mobile w3-padding-large' "+
+    "            style='width:35%;'' type='text' id='alfaInpt' value='0.03'"+
+    "						 onchange='alfaChange( +this.value)'></div>"+
       " 	</div> "
 
     div2 = "<div class= 'w3-container w3-mobile' id= 'tPowerPlotGoesHere'>Plot:</div>";
@@ -53,56 +68,57 @@ function powerDivs(){
 return [div1, div2, div3];
 };
 
-if (document.body.contains(document.getElementById('sdInpt') )) {
-  // don't define these until the divs have been built
-  var sdrangeslide = rangeslide('#sdInpt', {
-    	       data: sdLevels,
-    	       showLabels: true,
-    	       startPosition: 1,
-    	       showTicks: false,
-    	       dataSource: 'value',
-    	     labelsContent: 'key',
-    	       valueIndicatorContent: 'key',
-    	       thumbWidth: 20,
-    	       thumbHeight: 20,
-    	       handlers: { valueChanged: [sdChange] } });
-
-    var SSrangeslide = rangeslide('#SSInpt', {
-             	       data: nLevels,
-             	       showLabels: true,
-             	       startPosition: 5,
-             	       showTicks: false,
-             	       dataSource: 'value',
-            	     labelsContent: 'key',
-            	       valueIndicatorContent: 'key',
-             	       thumbWidth: 20,
-             	       thumbHeight: 20,
-             	       handlers: { valueChanged: [SSChange] } });
-
-    	var alfarangeslide = rangeslide('#alfaInpt', {
-    	       data: aLevels,
-    	       showLabels: true,
-    	       startPosition: 6,
-    	       showTicks: false,
-    	       dataSource: 'value',
-      	     labelsContent: 'key',
-    	       valueIndicatorContent: 'key',
-    	       thumbWidth: 20,
-    	       thumbHeight: 20,
-    	       handlers: { valueChanged: [alfaChange] } });
-
-  var amrangeslide = rangeslide('#altMnInpt', {
-    	       data: mnALevels,
-    	       showLabels: true,
-    	       startPosition: 2,
-    	       showTicks: false,
-    	       dataSource: 'value',
-      	     labelsContent: 'key',
-             valueIndicatorContent: 'key',
-    	       thumbWidth: 20,
-    	       thumbHeight: 20,
-    	       handlers: { valueChanged: [altMnChange] } });
-}
+// Not happy with range inputs for these values.  Try text input instead.
+// if (false && document.body.contains(document.getElementById('sdInpt') )) {
+//   // don't define these until the divs have been built
+//   var sdrangeslide = rangeslide('#sdInpt', {
+//     	       data: sdLevels,
+//     	       showLabels: true,
+//     	       startPosition: 1,
+//     	       showTicks: false,
+//     	       dataSource: 'value',
+//     	     labelsContent: 'key',
+//     	       valueIndicatorContent: 'key',
+//     	       thumbWidth: 20,
+//     	       thumbHeight: 20,
+//     	       handlers: { valueChanged: [sdChange] } });
+//
+//     var SSrangeslide = rangeslide('#SSInpt', {
+//              	       data: nLevels,
+//              	       showLabels: true,
+//              	       startPosition: 5,
+//              	       showTicks: false,
+//              	       dataSource: 'value',
+//             	     labelsContent: 'key',
+//             	       valueIndicatorContent: 'key',
+//              	       thumbWidth: 20,
+//              	       thumbHeight: 20,
+//              	       handlers: { valueChanged: [SSChange] } });
+//
+//     	var alfarangeslide = rangeslide('#alfaInpt', {
+//     	       data: aLevels,
+//     	       showLabels: true,
+//     	       startPosition: 6,
+//     	       showTicks: false,
+//     	       dataSource: 'value',
+//       	     labelsContent: 'key',
+//     	       valueIndicatorContent: 'key',
+//     	       thumbWidth: 20,
+//     	       thumbHeight: 20,
+//     	       handlers: { valueChanged: [alfaChange] } });
+//
+//   var amrangeslide = rangeslide('#altMnInpt', {
+//     	       data: mnALevels,
+//     	       showLabels: true,
+//     	       startPosition: 2,
+//     	       showTicks: false,
+//     	       dataSource: 'value',
+//       	     labelsContent: 'key',
+//              valueIndicatorContent: 'key',
+//     	       thumbWidth: 20,
+//     	       thumbHeight: 20,
+//     	       handlers: { valueChanged: [altMnChange] } });
+// }
 
 function alfaChange(arg) {
   if (arg.value) {
