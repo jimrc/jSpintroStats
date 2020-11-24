@@ -9,11 +9,13 @@
 //  Plot the dot. Repeat 100 or more times.
 
 
-var alfa = 0.03, nn = 10, sd = 0.5, muA = 1.0,
+var alfa = 0.03, nn = 10, sd = 0.5, muAlt = 1.0,
      aLevels = sequence(0.01, 0.0901, 0.01).concat(sequence(0.1,0.201,0.05)),
      nLevels = [4, 10, 20, 30, 40, 50],
      sdLevels = [0.1, 0.5, 0.7, 1.0,3,5,7, 9, 11,15,20],
-     mnALevels = sequence(0.0, 8.0, 0.5);
+     mnALevels = sequence(0.0, 8.0, 0.5)
+     reps = 100,
+     sampleMeans = [];
 
 for (i=0; i < aLevels.length; i++){
     aLevels[i]   = { key:aLevels[i].toPrecision(2), value: aLevels[i]};
@@ -41,29 +43,38 @@ function powerDivs(){
   // sets up html page for this demo
   var div1, div2, div3;
   div1 =
-    " 	<p>  The power of a statistical test to detect a change in a mean depends on these four inputs: <br> " +
-    "   <div id='SSInpt' class='w3-container' style='display:block'>	Sample size:"+
-    "   	<input class='w3-input  w3-cell w3-border w3-mobile w3-padding-large' "+
-    "            style='width:35%;'' type='text' id='nnInput' value='20'"+
-    "						 onchange='SSChange(+this.value)'></div> "+
-    "   <div id='sdInpt' class='w3-container' style='display:block'>"+
-    "           Standard Deviation of the observations:	"+
-    "   	<input class='w3-input  w3-cell w3-border w3-mobile w3-padding-large' "+
-    "            style='width:35%;'' type='text' id='sdInput' value='0.50'"+
-    "						 onchange='sdChange(+this.value)'> </div>"+
-    "   <div id='altMnInpt' class='w3-container' style='display:block'>	"+
-    "           Alternative Mean:"+
-    "   	<input class='w3-input  w3-cell w3-border w3-mobile w3-padding-large' "+
-    "            style='width:35%;'' type='text' id='altMnInput' value='1.0'"+
-    "						 onchange='altMnChange(+ this.value)'></div>"+
-    "   <div id='alfaInpt' class='w3-container' style='display:block'>"+
-    "           	Significance level (&alpha;): "+
-    "   	<input class='w3-input  w3-cell w3-border w3-mobile w3-padding-large' "+
-    "            style='width:35%;'' type='text' id='alfaInpt' value='0.03'"+
-    "						 onchange='alfaChange( +this.value)'></div>"+
-      " 	</div> "
+    " <p> This page looks at two tests to evaluate a potential sample mean. <br> " +
+    "  <b>Choose either</b> &nbsp;  <input type='radio' id='boot' name='testType' checked = true value='boot'>"+
+    "  <label for='boot'>Bootstrap Test</label> &nbsp;  <b> OR </b>  &nbsp; "+
+    " <input type='radio' id='tTest' name='testType' value='tTest'>"+
+    "  <label for='tTest'>t-Test</label> <br> "+
+    "  In either case, data will be generated under the null hypothesis assuming "+
+    "    an underlying normal distribution and these four inputs: <br> " +
+    " <table class='w3-container' style='width: 60% border-collapse: collapse'> " +
+    "   <tr class='w3-border'> <td id='SSInpt' class='w3-cell' style='width: 60% display:block'>	Sample size:"+
+    "   	  </td><td><input class='w3-input  w3-cell  w3-mobile w3-padding-large' "+
+    "            style='width:40%' type='text' id='nnInput' value='20'"+
+    "						 onchange='nn = +this.value; powerPlot(0, nn)'> </td></tr> "+
+    "   <tr class='w3-border'> <td id='sdInpt' class='w3-cell' >"+
+    "           Standard Deviation of the observations:	</td>"+
+    "   	<td><input class='w3-input  w3-cell w3-mobile w3-padding-large' "+
+    "            style='width:40%' type='text' id='sdInput' value='0.50'"+
+    "						 onchange='sd= this.value; powerPlot(1, sd)'> </td></tr>"+
+    "   <tr class='w3-border'><td id='altMnInpt' class='w3-cell' style='width: 50%display:block' >	"+
+    "           Alternative Mean: (greater than 0) </td>"+
+    "   	<td><input class='w3-input  w3-cell  w3-mobile w3-padding-large' "+
+    "            style='width:40%' type='text' id='altMnInput' value='1.0'"+
+    "						 onchange='muAlt = +this.value; powerPlot(2, muAlt)'></td></tr>"+
+    "   <tr class='w3-border'><td id='alfaInpt' class='w3-cell' >"+
+    "           	Significance level (&alpha;): </td>"+
+    "   	<td><input class='w3-input  w3-cell  w3-mobile w3-padding-large' "+
+    "            style='width:40%' type='text' id='alfaInpt' value='0.03'"+
+    "						 onchange='alfa = +this.value; powerPlot(3, alfa)'></td></tr>"+
+      "</table> "
 
-    div2 = "<div class= 'w3-container w3-mobile' id= 'tPowerPlotGoesHere'>Plot:</div>";
+    div2 = "<div class= 'w3-container w3-mobile' id= 'tPowerPlotGoesHere'>"+
+    " Each dot in the plot is found by generating new data based on the above inputs"+
+    " and running a one-sided (upper tail) test to see if the true mean is zero.</div>";
     div3 = "<div>     </div> ";
 return [div1, div2, div3];
 };
@@ -126,7 +137,7 @@ function alfaChange(arg) {
   } else {
     alfa = 0.10;
   }
-  powerPlot('alfa', alfa);
+  tpowerPlot('alfa', alfa);
     //alfa, nn, sd, muA
 }
 
@@ -136,16 +147,16 @@ function SSChange(arg) {
   } else {
     nn = 10;
   }
-  powerPlot('nn', nn);
+  tpowerPlot('nn', nn);
 }
 
 function altMnChange(arg) {
   if (arg.value) {
-    muA = +arg.value;
+    muAlt = +arg.value;
   } else {
-    muA = 0;
+    muAlt = 0;
   }
-  powerPlot('muA', muA);
+  tpowerPlot('muAlt', muAlt);
 }
 
 function sdChange(arg) {
@@ -155,16 +166,44 @@ function sdChange(arg) {
     sd = 1;
   }
   //console.log(sd);
-  powerPlot('muA', muA);
+  tpowerPlot('sd', sd);
 }
 
-function powerPlot(attrib, value){
-   // plots the null distribution, then adds alpha level upper critical region
+function tTestFn(sample, twotailed){
+  // takes a sample and runs t test for mean === 0.00
+  // returns upper tail p-value if mean is positive, else lower tail.
+  // twotailed ==true doubles the formatPvalue
+
+  var
+     mn = d3.mean(sample), pvalue,
+     se = Math.sqrt(d3.variance(sample) / nn);
+
+     pvalue = (mn < 0.00)? jStat.studentt.cdf(mn/se , nn -1) : 1 -  jStat.studentt.cdf(mn/se , nn -1);
+    if(twotailed){ pvalue = 2 * pvalue;};
+    return(pvalue);
+}
+
+function powerPlot(sample, reps){
+  // plots the sample means from each of many samples
+  var pValue = [],
+      mean = [],
+      thisSample = [];
+  for (i=0; i < reps; i++){
+    thisSample = jStat.random(reps,nn);
+  }
+}
+
+function tpowerPlot(attrib, value){
+   // plots the null t distribution, then adds alpha level upper critical region
    //  shade in the power under the alternative distribution and print it output
-   // Indicate which variable was most recently changed: alpha, sd, n, or altMnInpt
-   var margin = {top: 10, right: 20, bottom: 30, left: 50},
-    ncp = muA/sd * Math.sqrt( nn),
+   // Indicate which variable was most recently changed: 0=nn, 1 = sd, 2 = muAlt, 3=alpha
+   var bootReps = 500,
+    margin = {top: 10, right: 20, bottom: 30, left: 50},
+    ncp = muAlt/sd * Math.sqrt( nn),
     probt,
+    powerReps = 500,
+    power = 0,
+    results = [],
     tdf = nn -1,
     tseq = sequence(-5.2, 15.2, 1/30),
     tcrit1,
@@ -173,21 +212,34 @@ function powerPlot(attrib, value){
    var t_width = 600 - margin.left - margin.right,
        t_height = 320 - margin.top - margin.bottom;
 
-
-   xtRange = d3.scaleLinear().range([0, t_width]).domain(d3.extent(tseq));
-   ytRange = d3.scaleLinear().range([height, margin.top]).domain([0, jStat.studentt.pdf(0, tdf)]);
-   xtAxis = d3.axisBottom(xtRange)
-        .ticks(10);
-
-    pdftline = d3.line()
-      .x( d =>  xtRange(d) )
-      .y(d =>  ytRange(jStat.studentt.pdf(d, tdf)))
-		;
-
-    noncentraltline = d3.line()
-      .x( d =>  xtRange(d) )
-      .y(d =>  ytRange(jStat.noncentralt.pdf( d -muA/sd, tdf, ncp)))
-		;
+   for(i=0; i < powerReps; i++){
+     var pvalue,
+         sample = jStat.randn(powerReps, nn) ;
+     for(i=0; i < powerReps; i++){
+        for(j=0; j < nn; j++){
+          sample[i][j] = sample[i][j] * sd + muAlt;
+        }
+        results[i] = tTestFn(sample[i], false);
+        if (results[i] <= alfa) {
+           power++;
+        }
+     }
+     console.log("Power: ", power/powerReps);
+   }
+   // xtRange = d3.scaleLinear().range([0, t_width]).domain(d3.extent(tseq));
+   // ytRange = d3.scaleLinear().range([height, margin.top]).domain([0, jStat.studentt.pdf(0, tdf)]);
+   // xtAxis = d3.axisBottom(xtRange)
+   //      .ticks(10);
+   //
+   //  pdftline = d3.line()
+   //    .x( d =>  xtRange(d) )
+   //    .y(d =>  ytRange(jStat.studentt.pdf(d, tdf)))
+		// ;
+   //
+   //  noncentraltline = d3.line()
+   //    .x( d =>  xtRange(d) )
+   //    .y(d =>  ytRange(jStat.noncentralt.pdf( d -muAlt/sd, tdf, ncp)))
+		// ;
 
 
    if(typeof(tpsvg) === "object"){

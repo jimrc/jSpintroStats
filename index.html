@@ -7,9 +7,9 @@
 <link rel="stylesheet" href="./style.css">
 
 <body>
-
-	<!-- Load javascript and data -->
+  <!-- Load javascript and data -->
 	<script src="./HelperPkgs/d3.js"></script>
+	<script src="https://unpkg.com/d3fc"></script>
 	<script src="./HelperPkgs/alertify.min.js"></script>
 	<script src="./costs.js"></script>
 	<script src="./norms.js"></script>
@@ -33,6 +33,7 @@
 	<!-- Local demo js files  -->
 	<script src='spin.js'> </script>
 	<script src="mix.js"></script>
+	<script src="propCIdemo.js"></script>
 	<script src="power.js"></script>
 	<script src="boot.js"></script>
 	<script src="zplot.js"></script>
@@ -60,7 +61,7 @@
 			<button class="w3-button w3-hover-white w3-mobile" onclick="variable = 'cat1'; choosePage('TestEst'); testEstFn('cat1')">
 				Test/Estimate
 			</button>
-			<button class="w3-button w3-hover-white w3-mobile" onclick="choosePage('Demo'); demoFn( 'CIdemo') ">
+			<button class="w3-button w3-hover-white w3-mobile" onclick="choosePage('Demo'); demoFn( 'propCIdemo') ">
 				CI Demo
 			</button>
 			<button class="w3-button w3-hover-white w3-mobile" onclick="choosePage('Demo'); demoFn( 'lurkingC1')">
@@ -227,7 +228,7 @@
 				<div id="confLvlInpt" class="w3-container" style="display:none">
 					Choose confidence level:
 				</div>
-				<script>
+			 <script>
 					var CIrangeslide = rangeslide("#confLvlInpt", {
 						data: confLevels,
 						showLabels: true,

@@ -123,8 +123,8 @@ function summarizeDiff() {
     c1q1SumPlot= document.getElementById("C1Q1SumSVG")
 		x1 = [];
 		x2 = [];
-		document.getElementById("C1Q1Results").style.display = "none";
-		document.getElementById("C1Q1Output").style.display = "none";
+	//document.getElementById("C1Q1Results").style.display = "none";
+	//	document.getElementById("C1Q1Output").style.display = "none";
 	//} else{
     //c1q1SumPlot= document.getElementById("C1Q1SumSVG")
   //}
@@ -197,6 +197,7 @@ function summarizeDiff() {
 	// display next step: select inference
 
     c1q1SumPlot.style.display = "block";
+    c1q1CIinteract = function(d){return d.x;};
     c1q1SumPlot = dbl_histodot(x, c1q1Groups, c1q1Keys, c1q1SumPlot, c1q1CIinteract);
 
 }

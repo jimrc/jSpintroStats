@@ -105,7 +105,7 @@
     document.getElementById("moreTEsims").style.display = 'block';
     hyperGeom = hypergeomPMF(total1, total2, cat2N11 + cat2N12);
     // ^ gives possible values and probabilities of each for the hypergeometric
-  	sampleC21 = sampleWrep(hyperGeom[0],nreps, hyperGeom[1])[0].sort(function(a, b) {return a - b;});
+  	sampleC21 = sampleWrep(hyperGeom[0],nreps, hyperGeom[1]).sort(function(a, b) {return a - b;});
   	sC2Len = sampleC21.length;
   	for ( i = 0; i < sC2Len; i++) {
   		sampleC22[i] =  cat2N11 + cat2N12 - sampleC21[i];

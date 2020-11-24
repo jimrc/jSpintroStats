@@ -226,5 +226,5 @@ function summarizeMu1() {
     document.getElementById('q1WhichDot').style.display = 'none';
   }
 
-  discreteChart(q1Values, q1SmrySVG, q1SumInteract);
+  discreteChart(q1Values, q1SmrySVG);
 }

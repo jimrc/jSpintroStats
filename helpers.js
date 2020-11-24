@@ -652,7 +652,7 @@ function mouseoutFunction(d, i) {
   chart_group.select("g.tooltip_group").remove();
 }
 
-function discreteChart(sample, svgObject, interactFunction) {
+function discreteChart(sample, svgObject){ //, interactFunction ) {
   // stacks dots up creating integer y values (1, 2, 3,...) for each unique x value
   // builds a d3 svg plot in the svg object which will respond to a mouse-click by calling
   //  interactFunction on that point
@@ -771,8 +771,8 @@ function discreteChart(sample, svgObject, interactFunction) {
     .style("fill", function(d) {
       return d.color;
     })
-    .style("fill-opacity", 0.6)
-    .on("click", interactFunction);
+    .style("fill-opacity", 0.6);
+    //  .on("click", interactFunction);
   return [Dots, sample];
 } // end of discreteChart
 
@@ -1140,7 +1140,7 @@ function xyChart() {
   //TODO:
   // yaxis has no labels, xaxis is at top instead of bottom,
   // need update function to transition axes
-  // data update not working for plot, but consolelog prints it fine
+  // data update not working for plot, but console.log prints it fine
   var data = [],
     width = 200,
     height = 200,
