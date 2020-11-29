@@ -27,14 +27,22 @@ function propCIDivs(){
     "    where <b>p</b> is known, we can repeat the process and get another interval, and another and another...."+
     "   <br> By changing inputs, you will see that these methods may succeed or fail to include the true value."+
     "   <br> Higher confidence comes with a price -- longer intervals which are less useful. "+
-    "    The 'Confidence Level' is the proportion of all such intervals which capture the true value." +
+    "    The 'Confidence Level' is the proportion of all such intervals which capture "+
+    "    the true value in the long run." +
     " <table class='w3-container' style='width: 60% border-collapse: collapse'> " +
     "   <tr class='w3-border'> "+
-      " <td id='truePInpt' class='w3-cell' style='width: 60% display:block'>	True Proportion:"+
-    "   	  </td><td><input class='w3-input  w3-cell  w3-mobile w3-padding-large' "+
+    "   <tr class='w3-border'> <td id='confInpt' class='w3-cell' >"+
+    "           Number of intervals to create: 	</td>"+
+    "   	<td><input class='w3-input  w3-cell w3-mobile w3-padding-large' "+
+    "            style='width:40%' type='text' id='nRepsInput' value='10'"+
+    "						 onchange='nn= +this.value; pCIPlot(nn)'> </td></tr>"+
+    "     <td id='truePInpt' class='w3-cell' style='width: 60% display:block'>"+
+    "	           True Proportion: </td>" +
+    "   	<td><input class='w3-input  w3-cell  w3-mobile w3-padding-large' "+
     "            style='width:40%' type='text' id='trueProp' value=0.45"+
     "						 onchange='trueP = +this.value; pCIPlot(nn)'> </td></tr> "+
-    "   <tr class='w3-border'> <td id='nSpinsInpt' class='w3-cell' >"+
+    "   <tr class='w3-border'> "+
+    "     <td id='nSpinsInpt' class='w3-cell' >"+
     "           Number of spins:	</td>"+
     "   	<td><input class='w3-input  w3-cell w3-mobile w3-padding-large' "+
     "            style='width:40%' type='text' id='nSpinsInput' value='20'"+
@@ -43,7 +51,8 @@ function propCIDivs(){
     "           Confidence Level % (between 50 and 100):	</td>"+
     "   	<td><input class='w3-input  w3-cell w3-mobile w3-padding-large' "+
     "            style='width:40%' type='text' id='clInput' value='90'"+
-    "						 onchange='confLvl= +this.value; if(confLvl<100 && confLvl > 50){changeCL(confLvl)};'> </td></tr>"+
+    "            onchange='confLvl= +this.value; changeCL(confLvl)'>"+
+    "     </td></tr>"+
       "</table> "
 
     div2 = "<div id = 'propCIPlotGoesHere'> </div>";
@@ -52,7 +61,11 @@ return [div1, div2, div3];
 };
 
 function changeCL(cl){
-  var  alfa = (100 - confLvl)/200, countr = 0,
+  if(confLvl >= 100 || confLvl < 50){
+    alert('Enter a number less than 100 and greater than 50');
+    return;
+  };
+  let  alfa = (100 - confLvl)/200, countr = 0,
        z = 5;
   const nreps = ciDemoLines.length;
 
