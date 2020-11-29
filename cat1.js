@@ -55,7 +55,7 @@ var
     if (typeof cat1Bars === "function") {
       cat1Bars.data([cat1Phat]);
     } else {
-      cat1Bars = propBarChart()
+      cat1Bars = propBarChart(c1Data, "Proportion "+ cat1Label1)
         .data([cat1Phat])
         .height(100);
       d3.select("#cat1SummarySVGgoesHere").call(cat1Bars);

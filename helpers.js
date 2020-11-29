@@ -815,7 +815,7 @@ function ciColor(resample) {
   return color;
 }
 
-function propBarChart(data) {
+function propBarChart(data, xLabel) {
   // updatable chart to show proportion bars
   //TODO:  add text labels (y axis?) for multiple bars
   // thanks to Rob Moore https://www.toptal.com/d3-js/towards-reusable-d3-js-charts
@@ -826,7 +826,7 @@ function propBarChart(data) {
   //var updateData;
 
   var barPadding = 1,
-    margin = 10;
+    margin = 25;
   var xScale = d3
     .scaleLinear()
     .range([0, width - 2 * margin])
@@ -862,21 +862,32 @@ function propBarChart(data) {
         .attr("width", function(d) {
           return xScale(d.prop);
         });
-       bars.selectAll("text")
+      var bartext = svg.selectAll("text")
            .data(data)
            .enter()
            .append("text")
            .text(d => d.label)
-           .attr("x", d => xScale(d.prop/2))
+           .attr("x", margin/2 )
            .attr("y",function(d, i) {
-                return i * barSpacing;
+                return i * barSpacing + barSpacing/2;
               })
            .attr("font-family" , "sans-serif")
            .attr("font-size" , "11px")
-           .attr("fill" , "white")
+           .attr("fill" , "black")
           .attr("text-anchor", "middle");
 
       var xAxis = d3.axisBottom(xScale).ticks(5);
+
+      svg
+        .append("text")
+        .attr("x", xScale(0.5) + margin )
+        .attr("y",  height - 10 )
+        .style("text-anchor", "middle")
+        .text(xLabel)
+        .attr("font-family" , "sans-serif")
+        .attr("font-size" , "11px")
+        .attr("fill" , "black")
+        .attr("text-anchor", "middle");
 
       svg
         .append("g")
@@ -887,7 +898,9 @@ function propBarChart(data) {
         )
         .call(xAxis);
 
-       bars.select("text").raise();
+
+
+       bartext.select("text").raise();
       // update functions
       updateWidth = function() {
         //xScale.range([0, width-margin]);
@@ -903,6 +916,7 @@ function propBarChart(data) {
           .duration(1000)
           .attr("width", width);
       };
+
 
       updateHeight = function() {
         barSpacing = height / (data.length + 1);

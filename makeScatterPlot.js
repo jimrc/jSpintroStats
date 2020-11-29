@@ -42,7 +42,7 @@ function makeScatterPlot(data, plot, xlabel, shortXlabel, ylabel, addLine) {
   chart_group.data(data);
 
   data_extent = {
-    max: {
+    max: {                  // assumes positive x and y values
       x: d3.max(x) * 1.01,
       y: d3.max(y) * 1.01
     },

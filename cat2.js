@@ -12,17 +12,17 @@
     "           <th>Labels:</th>"+
     "           <th>"+
     "             <input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat2LabelPop1' "+
-    "               placeholder='Group A'>"+
+    "               placeholder='Group A'  onchange='cat2LabelPop1 = this.value; renewC2()'>"+
     "           </th>"+
     "           <th>"+
     "             <input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat2LabelPop2'"+
-    "                placeholder='Group B'>"+
+    "                placeholder='Group B'  onchange='cat2LabelPop2 = this.value; renewC2()'>"+
     "           </th>"+
     "         </tr>"+
     "         <tr>"+
     "           <td>"+
     "             <input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat2LabelOut1' "+
-    "                        placeholder='Success'>"+
+    "                        placeholder='Success'  onchange='cat2LabelOut1 = this.value; renewC2()'>"+
     "           </td>"+
     "           <td>"+
     "           <input class='w3-input  w3-mobile w3-pale-yellow' type='text' id='cat2N11' "+
@@ -36,7 +36,7 @@
     "         <tr>"+
     "           <td>"+
     "             <input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat2LabelOut2'"+
-    "              placeholder='Failure'>"+
+    "              placeholder='Failure'  onchange='cat2LabelOut2 = this.value; renewC2()'>"+
     "           </td>"+
     "           <td>"+
     "             <input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat2N21'"+
@@ -210,7 +210,7 @@ function summarizeP2() {
 	if(typeof(chartC2) ==='function'){
 		chartC2.data([cat2Phat1,cat2Phat2])
 	} else{
-		chartC2 = propBarChart(c2Data).height(140);
+		chartC2 = propBarChart(c2Data, "Proportion "+ cat2LabelOut1).height(140);
 		d3.select('#cat2SummarySVGgoesHere').call(chartC2);
     }
 
