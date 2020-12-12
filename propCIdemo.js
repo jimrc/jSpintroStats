@@ -25,8 +25,8 @@ function propCIDivs(){
     "    then it intersects the vertical line at <b>p</b>."+
     "   <br> When analyzing data (real world), we only build a single confidence interval, but in this fantasy land"+
     "    where <b>p</b> is known, we can repeat the process and get another interval, and another and another...."+
-    "   <br> By changing inputs, you will see that these methods may succeed or fail to include the true value."+
-    "   <br> Higher confidence comes with a price -- longer intervals which are less useful. "+
+    "   <br> By changing inputs, you will see that an interval might include the true value or it might not."+
+    "   <br> Setting a higher confidence has a price: it lengthens intervals making them less informative. "+
     "    The 'Confidence Level' is the proportion of all such intervals which capture "+
     "    the true value in the long run." +
     " <table class='w3-container' style='width: 60% border-collapse: collapse'> " +
@@ -116,6 +116,7 @@ function changeCL(cl){
 function pCIPlot(nreps){
   // takes binomial samples and creates a normal-based confidence interval
   // for each.  Plots each interval to show if the true value is included.
+  // TODO: consider adding options for bootstrap intervals and Wilson's plus 4'
   var  alfa = (100 - confLvl)/200, countr = 0,
      sample = rbinom(nSpins, trueP, nreps),
      z = 5;
@@ -129,10 +130,19 @@ function pCIPlot(nreps){
      //console.log("multiplier:", z);
    }
    for(i =0; i< nreps; i++){
-      phat = sample[i]/nSpins;
-      hwidth = z * Math.sqrt(phat *(1-phat) / nSpins);
-      ciDemoLines[i] = {center: phat, y: i, lower: Math.max(0, phat - hwidth),
-        upper: Math.min(1, phat + hwidth), color: 0 }
+      if(sample[i] === 0){
+        // use 'rule of 3' since variance will be zero
+        ciDemoLines[i] = {center: 0, y: i, lower: 0,
+          upper: -Math.log(2 * alfa)/nSpins, color: 0 }
+      } else if(sample[i] === nSpins){
+        ciDemoLines[i] = {center: 1, y: i, lower: 1  + Math.log(2 * alfa)/nSpins ,
+          upper: 1, color: 0 }
+      } else {
+        phat = sample[i]/nSpins;
+        hwidth = z * Math.sqrt(phat *(1-phat) / nSpins);
+        ciDemoLines[i] = {center: phat, y: i, lower: Math.max(0, phat - hwidth),
+          upper: Math.min(1, phat + hwidth), color: 0 }
+      }
       if (ciDemoLines[i].lower <= trueP && ciDemoLines[i].upper >= trueP ){
           ciDemoLines[i].color = 1 ;
           countr++;

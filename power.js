@@ -189,7 +189,7 @@ function powerPlot(sample, reps){
       mean = [],
       thisSample = [];
   for (i=0; i < reps; i++){
-    thisSample = jStat.random(reps,nn);
+    thisSample = jStat.randn(reps,nn);
   }
 }
 

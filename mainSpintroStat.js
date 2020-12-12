@@ -463,7 +463,7 @@ function demoFn(demo) {
   }
   case 'lurkingC1': {
     hdr = 'Demo of the effects of a categorical lurking variable on proportion estimates.'
-    demoDivs = ["  ", "  ", "  "];
+    demoDivs = lurkingC1Divs();
     break;
   }
   case 'lurkingQ1': {
