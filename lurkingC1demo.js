@@ -1,69 +1,77 @@
 // javascript function to demonstrate the meaning of 'confidence' in
 // a Confidence Interval
-
+// TODO: changing either of the last 2 inputs removes interval lines
+//        changing Conf level brings them back. Is z value missing?
 
 var  ciDemoLines = [],  ciOutput,
-  confLvl = 90, nn = 40, nSpins = 20, trueP = 0.45,
+  confLvl = 90, nn = 40, nSpins = 20, trueP = 0.75,
      ciColors = ["red", "steelblue"], hwidth,
+     lurkingP = 0.5, // survival rate for lurking group
+     lurkingProp = 0.25, // size of lurking group in population
    nLevels = [4, 10, 20, 30, 40, 50], phat, pHats,
    pwidth = 400, pheight = 300, pCIs = [],
    margin = {top: 10, right: 20, bottom: 30, left: 50},
-   observdCL, psvg, radius = 6,
+   observdCL, plsvg, radius = 6,
    xpRange, ypRange;
 
 
-function propCIDivs(){
+function lurkingC1Divs(){
   // sets up html page for this demo
   var div1, div2, div3;
   div1 =
-    " <p> On this page we pretend that we know the true proportion, <b>p</b>. <br> " +
-    "   We generate random data using a spinner with probability <b>p</b> "+
-    "   of getting an '<b>a</b>' and probability <b>1 - p</b> of getting a '<b>z</b>'."+
-    "    Then we estimate <b>p</b> to see how well our methods perform."+
-    "   <br>A confidence interval estimate 'succeeds' if the interval contains the true <b>p</b> "+
-    "    in which case it intersects the vertical line at <b>p</b>."+
-    "   <br> When analyzing data (real world), we only build a single confidence interval, but in this fantasy land"+
-    "    where <b>p</b> is known, we can repeat the process and get another interval, and another and another...."+
-    "   <br> By changing inputs, you will see that an interval might include the true value or it might not."+
-    "   <br> Setting a higher confidence has a price: it lengthens intervals making them less informative. "+
-    "    The 'Confidence Level' is the proportion of all such intervals which capture "+
-    "    the true value in the long run." +
+    " <p> Suppose that we care about a variable which takes two values." +
+    " For example, we follow people for five years and record survival as 'lived' or 'died'."+
+    " Other variables have an effect on survival, for example: did they smoke?."+
+    " It makes sense that smokers might have a different survival rate than non-smokers."+
+    " What might happen to our estimate of the proportion surviving if we didn't record people's smoking status?"+
+    " <br>In that case 'smoking' is a lurking variable."+
     " <table class='w3-container' style='width: 60% border-collapse: collapse'> " +
     "   <tr class='w3-border'> "+
-    "   <tr class='w3-border'>r' style='width: 60% border-collapse: collapse'> " +
     "   <tr class='w3-border'> "+
-    "      <td id='confInpt' class='w3-cell' >"+
+    "          <td id='confInpt' class='w3-cell' >"+
     "           Number of intervals to create: 	</td>"+
-    "   	<td><input class='w3-input  w3-cell w3-mobile w3-padding-large' "+
-    "            style='width:40%' type='text' id='nRepsInput' value='10'"+
-    "						 onchange='nn= +this.value; pCIPlot(nn)'> </td></tr>"+
-    "   <tr class='w3-border'> "+
-    "     <td class='w3-cell' style='width: 60% display:block'>"+
-    "	           True Proportion: </td>" +
-    "   	<td><input class='w3-input  w3-cell  w3-mobile w3-padding-large' "+
-    "            style='width:40%' type='text' id='truePInpt' value=0.45"+
-    "						 onchange='trueP = +this.value; pCIPlot(nn)'> </td></tr> "+
-    "   <tr class='w3-border'> "+
-    "     <td  class='w3-cell' >"+
-    "           Number of spins (sample size):	</td>"+
-    "   	<td><input class='w3-input  w3-cell w3-mobile w3-padding-large' "+
-    "            style='width:40%' type='text' id='nSpinsInpt' value='20'"+
-    "						 onchange='nSpins= +this.value; pCIPlot(nn)'> </td></tr>"+
-    "   <tr class='w3-border'> "+
-    "         <td class='w3-cell' >"+
-    "           Confidence Level % (between 50 and 100):	</td>"+
     "   	     <td><input class='w3-input  w3-cell w3-mobile w3-padding-large' "+
+    "            style='width:40%' type='text' id='nRepsInpt' value='10'"+
+    "						 onchange='nn= +this.value; pLCIPlot(nn)'> </td></tr>"+
+    "     <tr class='w3-border'>"+
+    "          <td  class='w3-cell' style='width: 60% display:block'>"+
+    "	           General survival rate: </td>" +
+    "   	     <td><input class='w3-input  w3-cell  w3-mobile w3-padding-large' "+
+    "            style='width:40%' type='text' id='truePInpt' value=0.75"+
+    "						 onchange='trueP = +this.value; pLCIPlot(nn)'> </td></tr> "+
+    "   <tr class='w3-border'> "+
+    "         <td  class='w3-cell' >"+
+    "           Sample Size:	</td>"+
+    "        	<td><input class='w3-input  w3-cell w3-mobile w3-padding-large' "+
+    "            style='width:40%' type='text' id='nSpinsInpt' value='20'"+
+    "						 onchange='nSpins= +this.value; pLCIPlot(nn)'> </td></tr>"+
+    "   <tr class='w3-border'> <td id='confInpt' class='w3-cell' >"+
+    "           Confidence Level % (between 50 and 100):	</td>"+
+    "   	    <td><input class='w3-input  w3-cell w3-mobile w3-padding-large' "+
     "            style='width:40%' type='text' id='clInpt' value='90'"+
-    "            onchange='confLvl= +this.value; changeCL(confLvl)'>"+
+    "            onchange='confLvl= +this.value; changeLCL(confLvl)'>"+
+    "          </td></tr>"+
+    "   <tr class='w3-border'> <td id='confInpt' class='w3-cell' >"+
+    "           Smokers survival rate:	</td>"+
+    "   	    <td><input class='w3-input  w3-cell w3-mobile w3-padding-large' "+
+    "            style='width:40%' type='text' id='lurkingPInpt' value='0.50'"+
+    "            onchange='lurkingP= +this.value; pLCIPlot(nn)'>"+
+    "     </td></tr>"+
+    "   <tr class='w3-border'> <td id='confInpt' class='w3-cell' >"+
+    "           Proportion of smokers:	</td>"+
+    "   	<td><input class='w3-input  w3-cell w3-mobile w3-padding-large' "+
+    "            style='width:40%' type='text' id='lurkingPropInpt' value='0.25'"+
+    "            onchange='lurkingProp= +this.value; pLCIPlot(nn)'>"+
     "     </td></tr>"+
       "</table> "
 
-    div2 = "<div id = 'propCIPlotGoesHere'> </div>";
-    div3 = "<div id = 'ciDemoResults' > Results    </div> ";
+    div2 = "<div id = 'lurkC1PlotGoesHere'> </div>";
+    div3 = "<div id = 'lurkC1DemoResults' > Results    </div> ";
 return [div1, div2, div3];
 };
 
-function changeCL(cl){
+function changeLCL(cl){
+  // assumes only confidence level has changed
   if(confLvl >= 100 || confLvl < 50){
     alert('Enter a number less than 100 and greater than 50');
     return;
@@ -75,7 +83,7 @@ function changeCL(cl){
   if (alfa > 0.0000001){
      z = jStat.normal.inv(1.0 - alfa, 0 , 1);
    }
-  if(typeof(psvg) === "object"){
+  if(typeof(plsvg) === "object"){
     //check to see if intervals already exist.  If if so, change widths
     for(i = 0; i < nreps; i++){
       phat = ciDemoLines[i].center ;
@@ -87,7 +95,7 @@ function changeCL(cl){
           countr++;
       }
     }
-    pCIs = psvg.selectAll("line")
+    pCIs = plsvg.selectAll("line")
               .data(ciDemoLines)
               .join("line")
               .attr("class","line")
@@ -98,7 +106,7 @@ function changeCL(cl){
                .attr("stroke", d => ciColors[d.color])
                .attr("stroke-width", 2);
 
-         psvg.append("line")
+         plsvg.append("line")
               .attr("x1", d => xpRange(trueP))
               .attr("x2", d => xpRange(trueP))
               .attr("y1", 0)
@@ -106,32 +114,34 @@ function changeCL(cl){
               .style("stroke-width",2)
               .style("stroke","lightblue");
 
-       document.getElementById('ciDemoResults').innerHTML =
+       document.getElementById('lurkC1DemoResults').innerHTML =
+         "Bias: " + (d3.mean(ciDemoLines, d => d.center) - trueP).toPrecision(3) + "<br>"+
         "Observed " +  countr + " blue and " + (nreps - countr) +" red intervals. "+
         "Coverage: " +  Math.round(countr / nreps * 1000)/10 + "%";
 
   } else {
-    pCIPlot(nn);
+    pLCIPlot(nn);
   }
 
 }
 
-function pCIPlot(nreps){
+function pLCIPlot(nreps){
   // takes binomial samples and creates a normal-based confidence interval
   // for each.  Plots each interval to show if the true value is included.
   // TODO: consider adding options for bootstrap intervals and Wilson's plus 4'
   var  alfa = (100 - confLvl)/200, countr = 0,
-     sample = rbinom(nSpins, trueP, nreps),
+     sample , nLurkers,  lurkSample ,
      z = 5;
-  var  alfa = (100 - confLvl)/200, countr = 0,
-        sample ,
-        z = 5;
-        // make sure other inputs are current
-        nSpins = +document.getElementById("nSpinsInpt").value;
-        trueP = +document.getElementById("truePInpt").value;
-        confLvl = +document.getElementById("clInpt").value;
-        //  draw samples
-        sample = rbinom(nSpins, trueP, nreps);
+     // make sure other inputs are current
+     nSpins = +document.getElementById("nSpinsInpt").value;
+     trueP = +document.getElementById("truePInpt").value;
+     lurkingProp = +document.getElementById("lurkingPropInpt").value;
+     lurkingP = +document.getElementById("lurkingPInpt").value;
+     confLvl = +document.getElementById("clInpt").value;
+     //  draw samples
+     sample = rbinom(nSpins, trueP, nreps);
+     nLurkers = rbinom(nSpins, lurkingProp, nreps);
+     lurkSample = rbinom(nSpins, lurkingP, nreps);
 
      xpRange = d3.scaleLinear().range([margin.left, pwidth + margin.left]).domain([0,1.01]);
      ypRange = d3.scaleLinear().range([pheight, margin.top]).domain([0, nreps * radius]);
@@ -142,6 +152,8 @@ function pCIPlot(nreps){
      //console.log("multiplier:", z);
    }
    for(i =0; i< nreps; i++){
+      // replace some of the 'regular' sample with lurkers
+      sample[i] = ( lurkSample[i] * nLurkers[i] + sample[i] * (nSpins - nLurkers[i]))/nSpins;
       if(sample[i] === 0){
         // use 'rule of 3' since variance will be zero
         ciDemoLines[i] = {center: 0, y: i, lower: 0,
@@ -161,10 +173,10 @@ function pCIPlot(nreps){
         }
         //console.log(ciDemoLines[i]);
    }
-   if(typeof(psvg) === "object"){
+   if(typeof(plsvg) === "object"){
 	    d3.selectAll("path").remove();
 	   } else{
-  	   psvg = d3.select("#propCIPlotGoesHere")
+  	   plsvg = d3.select("#lurkC1PlotGoesHere")
         .append("svg")
         .attr("width",  pwidth + margin.left + margin.right)
         .attr("height", pheight + margin.top + margin.bottom)
@@ -173,7 +185,7 @@ function pCIPlot(nreps){
               "translate(" + margin.left + "," + margin.top + ")");
       }
 
-   pHats = psvg.selectAll("circle")
+   pHats = plsvg.selectAll("circle")
              .data(ciDemoLines);
    pHats.join("circle")
             .attr("class", "circle")
@@ -182,7 +194,7 @@ function pCIPlot(nreps){
              .attr("cx",  d => xpRange(d.center) )
              .attr("cy", d => ypRange(d.y* radius)  )
              .attr("r",  d => radius );
-   pCIs = psvg.selectAll("line")
+   pCIs = plsvg.selectAll("line")
              .data(ciDemoLines);
    pCIs.join("line")
              .attr("class","line")
@@ -193,7 +205,7 @@ function pCIPlot(nreps){
               .attr("stroke", d => ciColors[d.color])
               .attr("stroke-width", 2);
 
-      psvg.append("line")
+      plsvg.append("line")
                .attr("x1", d => xpRange(trueP))
                .attr("x2", d => xpRange(trueP))
                .attr("y1", 0)
@@ -201,12 +213,13 @@ function pCIPlot(nreps){
                .style("stroke-width",2)
                .style("stroke","lightblue");
 
-           psvg.append("g")			// Add the X Axis
+           plsvg.append("g")			// Add the X Axis
                .attr("class", "x axis")
                .attr("transform", "translate(0 ," + (pheight + margin.top) + ")")
                .call(xpAxis);
      // update Results
-      document.getElementById('ciDemoResults').innerHTML =
-      "Observed " +  countr + " blue and " + (nreps - countr) +" red intervals. "+
-      "Coverage: " + Math.round(countr / nreps * 1000)/10 + "%";
+     document.getElementById('lurkC1DemoResults').innerHTML =
+         "Bias: " + (d3.mean(ciDemoLines, d => d.center) - trueP).toPrecision(3) + "<br>"+
+        "Observed " +  countr + " blue and " + (nreps - countr) +" red intervals. "+
+        "Coverage: " +  Math.round(countr / nreps * 1000)/10 + "%";
  }
