@@ -1,46 +1,46 @@
-<!DOCTYPE html>
+<!DOCTYPE html lang="en"  manifest="jsSpin.appcache">
 <title lang="en">SpIntro-Stat</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="w3.css">
-<link rel="stylesheet" href="./rangeslide.css">
+<link rel="stylesheet" href="./rangeslide.min.css">
 <link rel="stylesheet" href="./style.css">
 
 <body>
   <!-- Load javascript and data -->
-	<script src="./d3.js"></script>
-	<script src="./costs.js"></script>
-	<script src="./norms.js"></script>
+	<script src="./d3.min.js"></script>
+	<script src="./costs.min.js"></script>
+	<script src="./norms.min.js"></script>
 	<!-- Load code from others
 	<script src="./HelperPkgs/alertify.min.js"></script>
 	<script src="HelperPkgs/papaparse.min.js"></script>
 	<script src="https://unpkg.com/d3fc"></script>
   -->
-	<script src="./jstat.js"></script>
-	<script src="./rangeslide.js"></script>
-	<script src="./hyperGeom.js"> </script>
-	<script src="./mainSpintroStat.js"></script>
+	<script src="./jstat.min.js"></script>
+	<script src="./rangeslide.min.js"></script>
+	<script src="./hyperGeom.min.js"> </script>
+	<script src="./mainSpintroStat.min.js"></script>
 
 	<!-- Local js files  -->
-	<script src="helpers.js"></script>
-	<script src="cat1.js"></script>
-	<script src="cat2.js"></script>
-	<script src="quant1.js"></script>
-	<script src="quant2.js"></script>
-	<script src="c1q1.js"> </script>
-	<script src='data/C1Q1Data.js'></script>
-	<script src='data/quant2Data.js'></script>
+	<script src="helpers.min.js"></script>
+	<script src="cat1.min.js"></script>
+	<script src="cat2.min.js"></script>
+	<script src="quant1.min.js"></script>
+	<script src="quant2.min.js"></script>
+	<script src="c1q1.min.js"> </script>
+	<script src='data/C1Q1Data.min.js'></script>
+	<script src='data/quant2Data.min.js'></script>
 	<!-- Local demo js files  -->
-	<script src='spin.js'> </script>
-	<script src="mix.js"></script>
-	<script src="propCIdemo.js"></script>
-	<script src="lurkingC1demo.js"></script>
-	<script src="power.js"></script>
-	<script src="boot.js"></script>
-	<script src="zplot.js"></script>
-	<script src="tplot.js"></script>
+	<script src='spin.min.js'> </script>
+	<script src="mix.min.js"></script>
+	<script src="propCIdemo.min.js"></script>
+	<script src="lurkingC1demo.min.js"></script>
+	<script src="power.min.js"></script>
+	<script src="boot.min.js"></script>
+	<script src="zplot.min.js"></script>
+	<script src="tplot.min.js"></script>
 	<!--  From riptutorial -->
-	<script src="makeScatterPlot.js"></script>
+	<script src="makeScatterPlot.min.js"></script>
 	<!--
 	######################################
 	Sidebar Menu Navigator
@@ -175,10 +175,25 @@
 				<h1> SpIntro Stats </h1>
 			</div>
 			<div class="w3-container w3-cell">
-				<img src="gradeSpinner4.png" alt="Spinner_Wheel" width="80">
+				<img src="images/gradeSpinner4.png" alt="Spinner_Wheel" width="80">
 			</div>
 		</div>
+<script>
 
+  // Don't register the service worker
+  // until the page has fully loaded
+  window.addEventListener('load', () => {
+    // Is service worker available?
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').then(() => {
+        console.log('Service worker registered!');
+      }).catch((error) => {
+        console.warn('Error registering service worker:');
+        console.warn(error);
+      });
+    }
+  });
+</script>
 
 
 

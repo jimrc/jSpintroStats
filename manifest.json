@@ -1,0 +1,30 @@
+{
+  "short_name": "jsSpin",
+  "name": "SpIntro-Stat",
+  "icons": [
+    {
+      "src": "gradeSpinner4-192px.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "gradeSpinner4-512px.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "id": "/?source=pwa",
+  "start_url": "/?source=pwa",
+  "background_color": "#3367D6",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#3367D6",
+  "shortcuts": [
+    {
+      "name": "SpIntro-Stat",
+      "short_name": "js_Spin",
+      "description": "Tools for Intro Stat using spinners",
+      "url": "/today?source=pwa",
+    }
+  ]
+}
