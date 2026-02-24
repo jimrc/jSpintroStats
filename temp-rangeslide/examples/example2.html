@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<html>
+<head>
+    <title>Rangeslide.js - demo</title>
+	<meta name="author" content="your name" />
+	<meta name="description" content="" />
+	
+	<link rel="stylesheet" href="example.css" type="text/css" />
+	<link rel="stylesheet" href="../dist/rangeslide.css" type="text/css" />
+</head>
+<body>
+	<div class="sliders">
+		<div class="example">
+			<div>
+				Choose a Confidence Level:
+			</div>
+			<div id="rangeslide2" style = "width = 40%" ></div>
+		</div>
+	</div>
+<script src="../dist/rangeslide.js"></script>
+<script>
+	var data1 = [
+		{ key: "80%", value: "0.80" },
+		{ key: "90%", value: "0.90" },
+		{ key: "95%", value: "0.95" },
+		{ key: "99%", value: "0.99" }
+	];
+    
+	function onChange(arg) {
+		var presenter = document.getElementById("presenter");
+		presenter.innerHTML = "<b>#" + arg.key + ":</b> " + arg.value;
+		console.log(arg.key)
+	}
+	
+	var rangeslide2 = rangeslide("#rangeslide2", {
+		data: data1,
+		showLabels: true,
+		startPosition: 0,
+		showTicks: false,
+        dataSource: "value",
+        labelsContent: "key",
+        valueIndicatorContent: "key",
+		thumbWidth: 24,
+		thumbHeight: 24,
+		handlers: {
+			"valueChanged": [onChange]
+		}
+	});
+	
+</script>
+</body>
+</html>

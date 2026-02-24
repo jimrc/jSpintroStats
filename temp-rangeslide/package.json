@@ -1,0 +1,32 @@
+{
+  "name": "rangeslide.js",
+  "version": "0.13.0",
+  "description": "Lightweight customizable range slider with labels (but without jQuery)",
+  "main": "dist/js/rangeslide.js",
+  "scripts": {},
+  "keywords": [
+    "slide input",
+    "sliding input",
+    "labels",
+    "range input",
+    "range slider",
+    "ticks range input",
+    "ticks range slider",
+    "range slider with labels"
+  ],
+  "author": "karenpommeroy <mkarpins@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/karenpommeroy/rangeslide.js"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-clean": "^1.0.0",
+    "grunt-contrib-cssmin": "^2.2.0",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-uglify": "^3.0.1",
+    "grunt-umd": "^2.4.0"
+  },
+  "dependencies": {}
+}

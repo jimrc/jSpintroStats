@@ -1,0 +1,529 @@
+<!DOCTYPE html lang="en"  manifest="jsSpin.appcache">
+<title lang="en">SpIntro-Stat</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="w3.css">
+<link rel="stylesheet" href="./rangeslide.css">
+<link rel="stylesheet" href="./style.css">
+
+<body>
+  <!-- Load javascript and data -->
+	<script src="./AppState.js"></script>
+	<script src="./d3.js"></script>
+	<script src="./costs.js"></script>
+	<script src="./norms.js"></script>
+	<!-- Load code from others
+	<script src="./HelperPkgs/alertify.min.js"></script>
+	<script src="HelperPkgs/papaparse.min.js"></script>
+	<script src="https://unpkg.com/d3fc"></script>
+  -->
+	<script src="./jstat.js"></script>
+	<script src="./rangeslide.js"></script>
+	<script src="./hyperGeom.js"> </script>
+	<script src="./mainSpintroStat.js"></script>
+
+	<!-- Local js files  -->
+	<script src="helpers.js"></script>
+	<script src="cat1.js"></script>
+	<script src="cat2.js"></script>
+	<script src="quant1.js"></script>
+	<script src="quant2.js"></script>
+	<script src="c1q1.js"> </script>
+	<script src='data/C1Q1Data.js'></script>
+	<script src='data/quant2Data.js'></script>
+	<!-- Local demo js files  -->
+	<script src='spin.js'> </script>
+	<script src="mix.js"></script>
+	<script src="propCIdemo.js"></script>
+	<script src="lurkingC1demo.js"></script>
+	<script src="power.js"></script>
+	<script src="boot.js"></script>
+	<script src="zplot.js"></script>
+	<script src="tplot.js"></script>
+	<!--  From riptutorial -->
+	<script src="makeScatterPlot.js"></script>
+	<!--
+	######################################
+	Sidebar Menu Navigator
+	###################################### -->
+
+	<div class="w3-sidebar w3-bar-block w3-card-2 w3-animate-left" style="display:none" id="mySidebar">
+		<button class="w3-bar-item w3-button w3-large" onclick="w3Close()">
+			Close &times;
+		</button>
+		<div class="w3-bar-item w3-button  w3-blue w3-hover-blue w3-mobile">
+			Variable Type:
+		</div>
+
+		<!--     #################  One Categorical #################### -->
+		<button class="w3-button  w3-hover-white w3-mobile" onclick="actionsFunc('cat1Actions')">
+			1 Cat <i class="fa fa-caret-down"></i>
+		</button>
+		<div id="cat1Actions" class="w3-dropdown-content w3-hide w3-light-blue w3-card-4">
+			<button class="w3-button w3-hover-white w3-mobile" onclick="AppState.variable = 'cat1'; choosePage('TestEst'); testEstFn('cat1')">
+				Test/Estimate
+			</button>
+			<button class="w3-button w3-hover-white w3-mobile" onclick="choosePage('Demo'); demoFn( 'propCIdemo') ">
+				CI Demo
+			</button>
+			<button class="w3-button w3-hover-white w3-mobile" onclick="choosePage('Demo'); demoFn( 'lurkingC1')">
+				Lurking Demo
+			</button>
+			<button class="w3-button w3-hover-white w3-mobile" onclick="choosePage('Demo'); demoFn( 'Spinner')">
+				Spinner
+			</button>
+			<button class="w3-button w3-hover-white w3-mobile" onclick="choosePage('Demo'); demoFn( 'Mixer')">
+				Mixer
+			</button>
+			<button class="w3-button w3-hover-white w3-mobile" onclick="choosePage('ZTable');">
+				Normal Prob's
+			</button>
+		</div>
+
+		<!--             One Quantitative  ########### -->
+		<button class="w3-button  w3-hover-white w3-mobile" onclick="actionsFunc('quant1Actions')">
+			1 Quant <i class="fa fa-caret-down"></i>
+		</button>
+		<div id="quant1Actions" class="w3-dropdown-content w3-hide w3-light-blue w3-card-4">
+			<button class=" w3-button w3-hover-white w3-mobile" onclick="AppState.variable = 'quant1'; choosePage('TestEst'); testEstFn('quant1')">
+				Test/Estimate
+			</button>
+			<button class=" w3-button w3-hover-white w3-mobile" onclick="choosePage('Demo'); demoFn( 'bootstrap')">
+				Bootstrap Demo
+			</button>
+			<button class=" w3-button w3-hover-white w3-mobile" onclick="choosePage('Demo'); demoFn( 'sampling') ">
+				Sampling Demo
+			</button>
+			<button class=" w3-button w3-hover-white w3-mobile" onclick="choosePage('Demo'); demoFn( 'lurkingQ1')">
+				Lurking Demo
+			</button>
+			<button class=" w3-button w3-hover-white w3-mobile" onclick="choosePage('Demo'); demoFn( 'power') ">
+				Power
+			</button>
+			<button class=" w3-button w3-hover-white w3-mobile" onclick="choosePage('Ttable');">
+				T Prob's
+			</button>
+		</div>
+
+		<!--             Two Categorical ########################-->
+		<button class="w3-button  w3-hover-white w3-mobile" onclick="actionsFunc('cat2Actions')">
+			2 Cat <i class="fa fa-caret-down"></i>
+		</button>
+		<div id="cat2Actions" class="w3-dropdown-content w3-hide w3-light-blue w3-card-4">
+			<button class=" w3-button w3-hover-white w3-mobile" onclick="AppState.variable = 'cat2'; choosePage('TestEst'); testEstFn('cat2')">
+				Test/Estimate
+			</button>
+			<button class=" w3-button w3-hover-white w3-mobile" onclick=" choosePage('ZTable');">
+				Normal Prob's
+			</button>
+		</div>
+
+		<!--             Two Quantitative  ##############  -->
+		<button class="w3-button  w3-hover-white w3-mobile" onclick="actionsFunc('quant2Actions')">
+			2 Quant <i class="fa fa-caret-down"></i>
+		</button>
+		<div id="quant2Actions" class="w3-dropdown-content w3-hide w3-light-blue w3-card-4">
+			<button class=" w3-button w3-hover-white w3-mobile" onclick="AppState.variable = 'quant2'; choosePage('TestEst'); testEstFn('quant2') ">
+				Test/Estimate
+			</button>
+			<button class=" w3-button w3-hover-white w3-mobile" onclick=" choosePage('Demo'); demoFn( 'regression');">
+				Regression Demo
+			</button>
+			<button class=" w3-button w3-hover-white w3-mobile" onclick="choosePage('Ttable'); ">
+				T Prob's
+			</button>
+		</div>
+
+		<!--             One Categorical AND One Quantitative  ################ -->
+		<button class="w3-button  w3-hover-white w3-mobile" onclick="actionsFunc('cat1quant1Actions')">
+			1 Cat, 1 Quant <i class="fa fa-caret-down"></i>
+		</button>
+		<div id="cat1quant1Actions" class="w3-dropdown-content w3-hide w3-light-blue w3-card-4">
+			<button class=" w3-button w3-hover-white w3-mobile" onclick="AppState.variable = 'c1q1'; choosePage('TestEst'); testEstFn('c1q1'); ">
+				Test/Estimate
+			</button>
+			<button class=" w3-button w3-hover-white w3-mobile" onclick="choosePage('Ttable');">
+				T Prob's
+			</button>
+		</div>
+
+		<!--             More Info Button  ############ -->
+
+		<button class="w3-bar-item w3-button w3-light-blue w3-hover-light-blue w3-mobile" onclick="openVble('Info')">
+			About
+		</button>
+	</div>
+
+	<!--
+	********************************************
+	              End of Sidebar Menu
+
+
+	          Now start
+	*********************************************
+	Main Page
+	*********************************************
+	-->
+
+	<!--    Header  -->
+
+	<div class="w3-main" id="main">
+		<div class="w3-cell-row w3-indigo">
+			<button class="w3-button w3-cell w3-indigo w3-large" onclick="w3Open(); closePages()">
+				&#9776;
+			</button>
+			<div class="w3-container  w3-cell ">
+				<h1> SpIntro Stats </h1>
+			</div>
+			<div class="w3-container w3-cell">
+				<img src="images/gradeSpinner4.png" alt="Spinner_Wheel" width="80">
+			</div>
+		</div>
+<script>
+
+  // Don't register the service worker
+  // until the page has fully loaded
+  window.addEventListener('load', () => {
+    // Is service worker available?
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').then(() => {
+        console.log('Service worker registered!');
+      }).catch((error) => {
+        console.warn('Error registering service worker:');
+        console.warn(error);
+      });
+    }
+  });
+</script>
+
+
+
+
+		<!-- **************************************************
+				MAIN BODY
+				there are 5 page types
+	*****************************************************************
+
+	1) Test or Estimate:
+	-->
+		<div id="TestEst" class="w3-container Page" style="display:none">
+			<h4 id="testEstHeader"> Test/Estimate </h4>
+			<div id="dataIn" class="w3-container" style="display:none">
+			</div>
+			<div id="dataSummary" class="w3-container" style="display:none width: 425px">
+			</div>
+			<div class='w3-container w3-mobile' id='inferenceChoices' style="display:none">
+				Either
+				<button id='Estimate' class='w3-button w3-pale-blue w3-medium w3-round-xlarge' onclick='inference = "estimate";
+					document.getElementById("inferenceInputs").style.display = "block";
+					document.getElementById("testInpt").style.display = "none";
+					document.getElementById("confLvlInpt").style.display = "block";
+				 	document.getElementById("inferenceText").style.display = "none" ;
+						if(!d3.select("#infSVGplot_svg").empty()){
+						  d3.select("#infSVGplot_svg").selectAll(".infSVGplot_scatter_group").remove();
+				  	};
+					document.getElementById("moreTEsims").style.display = "block";
+					moreCI(100, false)'>
+					&nbsp; Estimate the true value.
+				</button>
+				&nbsp; OR &nbsp;
+				<button id='Test' class='w3-button w3-pale-blue w3-medium w3-round-xlarge' onclick='inference = "test" ;
+ 					  document.getElementById("inferenceInputs").style.display = "block";
+				 		document.getElementById("testInpt").style.display = "block";
+				 		document.getElementById("confLvlInpt").style.display = "none" ;
+				 		document.getElementById("inferenceText").style.display = "none" ;
+						if(!d3.select("#infSVGplot_svg").empty()){
+						  d3.select("#infSVGplot_svg").selectAll(".infSVGplot_scatter_group").remove();
+						}
+						document.getElementById("infSVGplot_svg").style.display = "none";
+						document.getElementById("moreTEsims").style.display = "none";
+						'>
+					&nbsp; Test for a particular value.
+				</button>
+			</div>
+			<div id="inferenceInputs" class="w3-container" style="display:none">
+				<div id="confLvlInpt" class="w3-container" style="display:none">
+					Choose confidence level:
+				</div>
+			 <script>
+					var CIrangeslide = rangeslide("#confLvlInpt", {
+						data: confLevels,
+						showLabels: true,
+						startPosition: 0,
+						showTicks: false,
+						dataSource: "value",
+						labelsContent: "key",
+						valueIndicatorContent: "key",
+						thumbWidth: 20,
+						thumbHeight: 20,
+						handlers: {
+							valueChanged: [CLChange]
+						}
+					});
+				</script>
+				<div id="testInpt" class="w3-container" style="display:none">
+					Test:
+				</div>
+			</div>
+			<div id="infSVGplot" class="w3-container" style="display: block">
+			</div>
+			<div id="inferenceText" class="w3-container" style="display:none">
+
+
+			</div>
+			<div id="moreTEsims" class="w3-container" style="display:none">
+				<div class="w3-cell-row">
+					<div class='w3-cell  w3-mobile' style='width: 20%'>
+						Add
+					</div>
+					<div class='w3-cell  w3-mobile' style='width: 20%'>
+						<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='morePoints' placeholder='0' onclick='if(inference === "test"){moreTests(this.value, true)} else {moreCI(this.value, true)}'
+							onchange='if(inference === "test"){moreTests(this.value, true)} else {moreCI(this.value, true)}'>
+					</div>
+					<div class='w3-cell  w3-mobile' style='width: 80%'>
+						simulated samples
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<!-- 2)  run a Demo -->
+
+		<div id="Demo" class="w3-container Page" style="display:none">
+			<h4 id="demoHeader"> Demonstration </h4>
+			<div id="demoDiv1">
+			</div>
+			<div id="demoDiv2">
+			</div>
+			<div id="demoDiv3">
+			</div>
+		</div>
+
+		<!-- 3) Info -- About spintroStats -->
+
+		<div id="Info" class="w3-container Page" style="display:none" onclick="this.style.display='none'">
+			<h3>What Is SpIntro Stats? </h3>
+			<p>
+				SpIntro Stats is an open project to provide a set of simulation web apps for introductory statistics.
+				'Spin' in the title refers to the methods we begin with: spinners, card shuffles, mixing balls in contrast to the classical emphasis on probability axioms.
+				Tests are based on permutation/randomization distributions and confidence intervals are derived via bootstrapping.
+				<br>
+				This software is intended to demonstrate the concepts underlying statistical analysis.
+				It is not, in itself, a statistical analysis package.
+				We hope users find it useful, but no explicit or implicit warrantee is made for accuracy of results.
+				<br>
+				For our discussion group see <a href='https://groups.google.com/forum/#!forum/spintro-stats'> the spintro-stats </a> google group
+				and our code is available as a <a href='https://github.com/jimrc/jSpintroStats'> github repository </a>
+			</p>
+			Click to return.
+		</div>
+
+
+		<!-- 4)  a probability Z  Table  -->
+		<div id="ZTable" class="w3-container Page" style="display:none">
+			<h4 id="probzTableHeader"> Standard Normal Probabilities </h4>
+			<div id="ztableInputs" class="w3-container" style="display:none">
+
+				<h3>Compute cutoffs or probabilities. &nbsp; &nbsp; &nbsp; &nbsp;
+					<button onclick="document.getElementById('zModal').style.display='block'" class="w3-button w3-blue w3-medium w3-round-xlarge">
+						Click for more information
+					</button></h3>
+
+				<div id="zModal" class="w3-modal">
+					<div class="w3-modal-content">
+						<div class="w3-container">
+							<span onclick="document.getElementById('zModal').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+							<div id="zModalText" onclick="document.getElementById('zModal').style.display='none'">
+								<p>
+									Input a probability between 0 and 1 to get back a cutoff Z score.
+								</p>
+								<p>
+									Input a Z score (positive or negative) to get back a probability (area under the curve).
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<br>
+				<div class="w3-form w3-cell-row w3-mobile" id="Zinputs">
+					<div class="w3-cell w3-mobile">
+						Probability: &nbsp; &nbsp;
+						<br>
+						<input class="w3-input w3-cell w3-border w3-mobile w3-margin-left w3-padding-large"
+						       style="width:25%; float:left;" type="text" id="pInput" value=""
+									 onchange="changed = 'P';if(typeof(Zsvg) !== 'object'){drawZplot()}">
+					</div>
+					<div class="w3-cell w3-mobile">
+						OR &nbsp; &nbsp;
+					</div>
+					<div class="w3-cell w3-mobile">
+						Standardized Value:
+						<br>
+						<input class="w3-input  w3-cell w3-border w3-mobile w3-padding-large"
+						style="width:25%;" type="text" id="zInput" value=""
+						onchange=" changed = 'Z'; if(typeof(Zsvg) !== 'object'){drawZplot()} ">
+			 </div>
+		 </div>
+		 <br>
+	  </div>
+	  <div id = "zPlot" class="w3-container" style="display:none">
+						<h3> Fill in Probability or Z-score, then click the desired area below:</h3>
+						<div class="w3-container w3-mobile" id="zPlotGoesHere"></div>
+					</div>
+				</div>
+
+				<!-- 5)  a probability T  Table  -->
+				<div id="Ttable" class="w3-container Page" style="display:none">
+
+					<h3>Compute cutoffs or probabilities. &nbsp; &nbsp; &nbsp; &nbsp;
+						<button onclick="document.getElementById('tinfoModal').style.display='block'" class="w3-button w3-blue w3-medium w3-round-xlarge">
+							Click for more information
+						</button></h3>
+
+					<div id="tinfoModal" class="w3-modal">
+						<div class="w3-modal-content">
+							<div class="w3-container" onclick="document.getElementById('tinfoModal').style.display='none'">
+								<span onclick="document.getElementById('tinfoModal').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+								<P>
+									There is a different distribution for each "degrees of freedom" value, so we have to set this first.
+								</P>
+								<p>
+									Then input a probability between 0 and 1 to get back a cutoff t score.
+								</p>
+								<p>
+									Or input a t score (positive or negative) to get back a probability (area under the curve).
+								</p>
+							</div>
+						</div>
+					</div>
+					<br>
+
+					<div class="w3-form w3-cell-row w3-mobile" id="t1inputs">
+						<div class="w3-cell w3-mobile">
+							<div>
+								First enter
+								<br>
+								Degrees of Freedom:
+							</div>
+							<input class="w3-input w3-border w3-mobile" style="width:20%; float:left;"
+							       type="text" id="dfT" value="" onchange="drawTcurve()">
+
+						</div>
+						<div class="w3-cell w3-mobile">
+							Probability: &nbsp; &nbsp;
+							<br>
+							<input class="w3-input w3-cell w3-border w3-mobile w3-margin-left w3-padding-large"
+							   style="width:35%; float:left;" type="text" id="ptInput" value=""
+								 onchange="tchanged = 'P'; ">
+
+						</div>
+						<div class="w3-cell w3-mobile">
+							Standardized Value:
+							<br>
+							<input class="w3-input  w3-cell w3-border w3-mobile w3-padding-large"
+							   style="width:35%;" type="text" id="tInput" value=""
+								 onchange=" tchanged = 'T'; ">
+						</div>
+					</div>
+					<br>
+					<h3> Then fill in Probability or t-score, and click the desired area below:</h3>
+					<div class="w3-container w3-mobile" id="tPlotGoesHere"></div>
+
+				</div>
+
+				<!--  End of 5 new page formats --
+   Below are the old-style pages   Keep them until they are incorporated
+ -->
+
+				<!-- ######-  One Quantitative Actions
+	2) Bootstrap Demo
+	Works, but I'd like to reduce the code for the many resamples buttons using a button builder function.
+	That displays OK, but doesn't create active buttons.
+	-->
+
+				<div id="BootDemo" class="w3-container Page" style="display:none">
+					<div class=w3-container>
+						<form class="w3-cell w3-card">
+							<h4>Confidence Level</h4>
+							<div class="w3-bar">
+								<input class="w3-radio" type="radio" name="conf" value="80%" onClick="confidence = .80; drawCI(BootCount);">
+								<label>80%</label>
+								<input class="w3-radio" type="radio" name="conf" value="90%" onClick="confidence = .90; drawCI(BootCount);" checked="checked">
+								<label>90%</label>
+								<input class="w3-radio" type="radio" name="conf" value="95%" onClick="confidence = .95; drawCI(BootCount);">
+								<label>95%</label>
+								<input class="w3-radio" type="radio" name="conf" value="99%" onClick="confidence = .99; drawCI(BootCount);">
+								<label>99%</label>
+							</div>
+						</form>
+						<div class="w3-btn w3-cell"></div>
+						<form class="w3-cell w3-card">
+							<h4>Sample Size:</h4>
+							<div class="w3-bar">
+								<input class="w3-radio" value=4 type="radio" name="nnn" onClick="sampSize = 4; newSample();" />
+								<label>4</label>
+								<input class="w3-radio" value=8 type="radio" name="nnn" onClick="sampSize = 8; newSample();" checked="checked" />
+								<label>8</label>
+								<input class="w3-radio" value=16 type="radio" name="nnn" onClick="sampSize = 16; newSample();" />
+								<label>16</label>
+							</div>
+						</form>
+						<div class="w3-btn w3-cell"></div>
+						<form class="w3-cell" name="restart">
+							<input name="restartButton" type="w3-btn" value="New Sample " style='width: 50%' onClick="newSample()">
+						</form>
+					</div>
+
+				</div>
+
+				<!-- ######-  One Quantitative Actions
+	3) Sampling Demo
+	text box entry
+	count # words and length of each
+	sample 10 words and find mean length
+	repeat and plot/summarize results
+	-->
+
+				<div id="SamplingDemo" class="w3-container Page" style="display:none">
+					<div class=w3-container>
+						<h3>Demo of sampling</h3>
+						<span onclick="openVble('SamplingDemo')" class="w3-button w3-large w3-display-bottomright">Back</span>
+					</div>
+				</div>
+
+				<!-- ######-  One Quantitative Actions
+	4) Lurking Demo for quantitative variables
+	ToDo:
+	everything
+	-->
+
+				<div id="LurkingDemoQ1" class="w3-container Page" style="display:none">
+					<div class=w3-container>
+						<h3>Demo of a quantitative lurking variable</h3>
+						<span onclick="openVble('LurkingDemoQ1')" class="w3-button w3-large w3-display-bottomright">Back</span>
+					</div>
+				</div>
+
+			<!-- ######-  Two Quantitative Actions
+	2) Demo of least squares regression
+	choose or input data
+	allow line to be dragged around
+	compute and display SSE
+	-->
+
+			<div id='RegressionDemo' class='w3-container Page' style='display:none'>
+				<div class=w3-container>
+					<h3>Demo: How Least Squares Regression coefficients are special </h3>
+				</div>
+				<span onclick='openVble('RegressionDemo')' class='w3-button w3-large w3-display-bottomright'>Back</span>
+
+			</div>
+
+		</div>
+	</div>
+	</div>
+
+</body>
+
+</html>

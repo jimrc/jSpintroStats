@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<widget xmlns   = "http://www.w3.org/ns/widgets"
+    xmlns:gap   = "http://phonegap.com/ns/1.0"
+    id          = "org.spintroStats.example"
+    versionCode = "10"
+    version     = "1.0.0" >
+
+<!-- versionCode is optional and Android only -->
+
+  <name>Spintro Stats</name>
+
+  <description>
+      Tools for Intro Statistics
+  </description>
+
+  <author href="http://spintrostats.org" email="help@spintrostats.org">
+      Jim Robison-Cox
+  </author>
+
+</widget>

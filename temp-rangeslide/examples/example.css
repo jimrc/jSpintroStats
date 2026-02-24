@@ -1,0 +1,13 @@
+html, body {
+	font-family: 'Open Sans', sans-serif;
+}
+
+.sliders {
+	width: 65%;
+	display: inline-block;
+}
+
+
+#rangeslide6 {
+	width: 70px;
+}
