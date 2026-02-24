@@ -148,9 +148,7 @@ function resample1C4Test(nreps) {
       return a - b;
     });
   var sC1Len = sampleC1.length;
-  for (i = 0; i < sC1Len; i++) {
-    sampleC1[i] *= 1 / total;
-  }
+  sampleC1 = sampleC1.map(val => val * (1 / total));
   return sampleC1;
 }
 
@@ -165,9 +163,6 @@ function resample1C4CI(nreps) {
   AppState.resampleC1 = rbinom(total, AppState.cat1Phat, nreps).sort(function(a, b) {
     return a - b;
   });
-  var sC1Len = AppState.resampleC1.length;
-  for (i = 0; i < sC1Len; i++) {
-    AppState.resampleC1[i] *= 1 / total;
-  }
+  AppState.resampleC1 = AppState.resampleC1.map(val => val * (1 / total));
   return AppState.resampleC1;
 }

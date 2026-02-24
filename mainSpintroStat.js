@@ -229,9 +229,7 @@ function moreCI(nreps, concat) {
     default: {}
     };
     //combine with old sims
-    for (i = 0; i < nreps; i++) {
-      AppState.resample4CI.push(newSample[i]);
-    }
+    AppState.resample4CI = [...AppState.resample4CI, ...newSample];
     // sort
     AppState.resample4CI = AppState.resample4CI.sort(function (a, b) {
       return a - b;
@@ -240,9 +238,9 @@ function moreCI(nreps, concat) {
     sLen = AppState.resample4CI.length;
     tempColors = ciColor(AppState.resample4CI);
     AppState.CIData = stackDots(AppState.resample4CI);
-    for (i = 0; i < sLen; i++) {
-      AppState.CIData[i].color = AppState.circleColors[tempColors[i]];
-    }
+    AppState.CIData.forEach((item, i) => {
+      item.color = AppState.circleColors[tempColors[i]];
+    });
     if (!d3.select("#infSVGplot_svg").empty()) {
       d3.select("#infSVGplot_svg").remove();
     }
@@ -314,9 +312,7 @@ function moreTests(nreps, concat) {
     default: {}
   };
   //combine with old sims
-  for (i = 0; i < nreps; i++) {
-    AppState.sample4Test.push(newSample[i]);
-  }
+  AppState.sample4Test = [...AppState.sample4Test, ...newSample];
 }
 // sort
 AppState.sample4Test = AppState.sample4Test.sort(function (a, b) {

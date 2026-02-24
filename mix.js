@@ -249,10 +249,10 @@ function mixNtimes(n){
 	} else{
 		alert("error in mixReplace");
 	}
-  for(i=0; i < nMix; i++){
-    mixPicks.push(ballsInit[pickNdx[i]]);
-    mixData[pickNdx[i]].selected = true;
-  }
+  mixPicks = pickNdx.slice(0, nMix).map(idx => {
+    mixData[idx].selected = true;
+    return ballsInit[idx];
+  });
 	showmixSequence(mixData, mixPicks);
 }
 
@@ -298,15 +298,15 @@ function mixTill1(){
     }
     //console.log(subset);
     pickNdx = sampleWrep(subset, nDraws - 1, repeat(1, subset.length));
-    for(i=0; i < nDraws -1; i++){
-      pickNdx[i] = subset[pickNdx[i]] // go back to numbering of ballsInit
-      mixPicks.push(ballsInit[pickNdx[i]]);
-      mixData[pickNdx[i]].selected = true;
-    }
+    pickNdx = pickNdx.slice(0, nDraws - 1).map(idx => subset[idx]);
+    mixPicks = pickNdx.map(idx => {
+      mixData[idx].selected = true;
+      return ballsInit[idx];
+    });
     last = +sampleN(matches, 1);
-    pickNdx[nDraws -1] = last;
-    mixPicks.push( ballsInit[last]);
-    mixData[pickNdx[nDraws - 1]].selected = true;
+    pickNdx[nDraws - 1] = last;
+    mixPicks.push(ballsInit[last]);
+    mixData[last].selected = true;
 	}
   //console.log(nDraws);
   showmixSequence(mixData,  mixPicks);
@@ -573,9 +573,7 @@ function mixRepeat(times){
       // track number of draws needed
       thisProb = mixNs[mixMatch]/ total;
       if(mixReplace === "yes"){
-        for (i = 0; i < times; i++) {
-          mixRepResults.push(rgeom(thisProb));
-        };
+        mixRepResults = mixRepResults.concat([...Array(times)].map(() => rgeom(thisProb)));
       } else {
         // using simulation here is messy. Instead am going to compute probs
         // and sample from true distribution
@@ -586,9 +584,7 @@ function mixRepeat(times){
         }
         //console.log(probs);
         draws = sampleWrep(sequence(1, others + 1.1, 1), times, probs);
-        for (i = 0; i < times; i++) {
-          mixRepResults.push(draws[i] + 1);
-        };
+        mixRepResults = mixRepResults.concat(draws.map(d => d + 1));
         //console.log(mixRepResults);
       }
       break;
@@ -599,19 +595,14 @@ function mixRepeat(times){
       if(mixReplace === "yes"){
        	mixRepResults = mixRepResults.concat(draws2get1ofEach(times));
       } else{
-        for(j=0; j < times; j++){
-          mixData = [];
-          mixSeq = sampleWOrep(ballsInit, total);
-          for(i=0; i < total; i++){
-            mixData[i] = ballsInit[mixSeq[i]];
-          }
-          for(i=0; i < mixNCat;i++){
-            ndxs[i] = mixData.findIndex(function(d) {return d.group === i;})
-          }
-          //console.log(ndxs);
-          max = d3.max(ndxs) + 1;
-          mixRepResults.push(max);
-        }
+        mixRepResults = mixRepResults.concat([...Array(times)].map(() => {
+          const mixSeq = sampleWOrep(ballsInit, total);
+          const localMixData = mixSeq.map(idx => ballsInit[idx]);
+          const ndxs = [...Array(mixNCat)].map((_, i) => 
+            localMixData.findIndex(d => d.group === i)
+          );
+          return d3.max(ndxs) + 1;
+        }));
       }
       break;
     }

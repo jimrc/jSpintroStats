@@ -106,12 +106,9 @@ function resample1Q4Test(nreps) {
       AppState.nullValue = +document.getElementById('q1trueMu').value;
       AppState.q1N = AppState.q1Values.length;
       document.getElementById("moreTEsims").style.display = 'block';
-      var shift = AppState.q1Xbar - AppState.nullValue, resampleq1 = [];
-      var q1Shifted = [];
-      for (i = 0; i < AppState.q1N; i++) {
-        q1Shifted[i] = AppState.q1Values[i] - shift;
-      }
-      resampleq1 = resample1Mean(q1Shifted, nreps).sort(function(a, b) {
+      var shift = AppState.q1Xbar - AppState.nullValue;
+      var q1Shifted = AppState.q1Values.map(val => val - shift);
+      const resampleq1 = resample1Mean(q1Shifted, nreps).sort(function(a, b) {
           return a - b;
         });
       return resampleq1;
@@ -140,9 +137,7 @@ function summarizeMu1() {
   AppState.q1Values = document.getElementById('q1Values').value.split(',');
   document.getElementById("q1Summary").style.display = "block";
   AppState.q1N = AppState.q1Values.length;
-  for (i = 0; i < AppState.q1N; i++) {
-    AppState.q1Values[i] = +AppState.q1Values[i];  // convert to numeric
-  }
+  AppState.q1Values = AppState.q1Values.map(val => +val);  // convert to numeric
 
   AppState.observed = AppState.q1Xbar = d3.mean(AppState.q1Values);
   AppState.q1SD = d3.deviation(AppState.q1Values);

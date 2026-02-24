@@ -75,16 +75,13 @@ function changeCL(cl){
    }
   if(typeof(psvg) === "object"){
     //check to see if intervals already exist.  If if so, change widths
-    for(i = 0; i < nreps; i++){
-      phat = ciDemoLines[i].center ;
-      hwidth = z * Math.sqrt(phat *(1-phat) / nSpins);
+    ciDemoLines.forEach((line, i) => {
+      const phat = line.center;
+      const hwidth = z * Math.sqrt(phat * (1 - phat) / nSpins);
       ciDemoLines[i] = {center: phat, y: i, lower: Math.max(0, phat - hwidth),
-        upper: Math.min(1, phat + hwidth), color: 0 }
-      if (ciDemoLines[i].lower <= trueP && ciDemoLines[i].upper >= trueP ){
-          ciDemoLines[i].color = 1 ;
-          countr++;
-      }
-    }
+        upper: Math.min(1, phat + hwidth), color: (phat - hwidth <= trueP && phat + hwidth >= trueP) ? 1 : 0};
+      if (ciDemoLines[i].color === 1) countr++;
+    });
     pCIs = psvg.selectAll("line")
               .data(ciDemoLines)
               .join("line")
@@ -138,26 +135,27 @@ function pCIPlot(nreps){
      z = jStat.normal.inv(1.0 - alfa, 0 , 1);
      //console.log("multiplier:", z);
    }
-   for(i =0; i< nreps; i++){
-      if(sample[i] === 0){
+   sample.forEach((val, i) => {
+      let ciLine;
+      if (val === 0) {
         // use 'rule of 3' since variance will be zero
-        ciDemoLines[i] = {center: 0, y: i, lower: 0,
-          upper: -Math.log(2 * alfa)/nSpins, color: 0 }
-      } else if(sample[i] === nSpins){
-        ciDemoLines[i] = {center: 1, y: i, lower: 1  + Math.log(2 * alfa)/nSpins ,
-          upper: 1, color: 0 }
+        ciLine = {center: 0, y: i, lower: 0,
+          upper: -Math.log(2 * alfa) / nSpins, color: 0};
+      } else if (val === nSpins) {
+        ciLine = {center: 1, y: i, lower: 1 + Math.log(2 * alfa) / nSpins,
+          upper: 1, color: 0};
       } else {
-        phat = sample[i]/nSpins;
-        hwidth = z * Math.sqrt(phat *(1-phat) / nSpins);
-        ciDemoLines[i] = {center: phat, y: i, lower: Math.max(0, phat - hwidth),
-          upper: Math.min(1, phat + hwidth), color: 0 }
+        const phat = val / nSpins;
+        const hwidth = z * Math.sqrt(phat * (1 - phat) / nSpins);
+        ciLine = {center: phat, y: i, lower: Math.max(0, phat - hwidth),
+          upper: Math.min(1, phat + hwidth), color: 0};
       }
-      if (ciDemoLines[i].lower <= trueP && ciDemoLines[i].upper >= trueP ){
-          ciDemoLines[i].color = 1 ;
-          countr++;
-        }
-        //console.log(ciDemoLines[i]);
-   }
+      if (ciLine.lower <= trueP && ciLine.upper >= trueP) {
+        ciLine.color = 1;
+        countr++;
+      }
+      ciDemoLines[i] = ciLine;
+   });
    if(typeof(psvg) === "object"){
 	    d3.selectAll("path").remove();
 	   } else{
