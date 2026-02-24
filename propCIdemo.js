@@ -14,51 +14,10 @@ let ciOutput, confLvl = CONFIG.DEFAULTS.defaultConfidenceLevelPercent, nn = CONF
 
 function propCIDivs(){
   // sets up html page for this demo
-  var div1, div2, div3;
-  div1 =
-    " <p> On this page we pretend that we know the true proportion, <b>p</b>. <br> " +
-    "   We generate random data using a spinner with probability <b>p</b> "+
-    "   of getting an '<b>a</b>' and probability <b>1 - p</b> of getting a '<b>z</b>'."+
-    "    Then we estimate <b>p</b> to see how well our methods perform."+
-    "   <br>A confidence interval estimate 'succeeds' if the interval contains the true <b>p</b> "+
-    "    in which case it intersects the vertical line at <b>p</b>."+
-    "   <br> When analyzing data (real world), we only build a single confidence interval, but in this fantasy land"+
-    "    where <b>p</b> is known, we can repeat the process and get another interval, and another and another...."+
-    "   <br> By changing inputs, you will see that an interval might include the true value or it might not."+
-    "   <br> Setting a higher confidence has a price: it lengthens intervals making them less informative. "+
-    "    The 'Confidence Level' is the proportion of all such intervals which capture "+
-    "    the true value in the long run." +
-    " <table class='w3-container' style='width: 60% border-collapse: collapse'> " +
-    "   <tr class='w3-border' style='width: 60% border-collapse: collapse'> " +
-    "      <td  class='w3-cell' style='width: 60% display:block'>"+
-    "           Number of intervals to create: 	</td>"+
-    "   	<td><input class='w3-input  w3-cell w3-mobile w3-padding-large' "+
-    "            style='width:40%' type='text' id='nRepsInput' value='10'"+
-    "						 onchange='nn= +this.value; pCIPlot(nn)'> </td>"+
-    "   </tr> <tr class='w3-border'> "+
-    "     <td class='w3-cell' style='width: 60% display:block'>"+
-    "	           True Proportion: </td>" +
-    "   	<td><input class='w3-input  w3-cell  w3-mobile w3-padding-large' "+
-    "            style='width:40%' type='text' id='truePInpt' value=0.45"+
-    "						 onchange='trueP = +this.value; pCIPlot(nn)'> </td></tr> "+
-    "   <tr class='w3-border'> "+
-    "     <td  class='w3-cell' >"+
-    "           Number of spins (sample size):	</td>"+
-    "   	<td><input class='w3-input  w3-cell w3-mobile w3-padding-large' "+
-    "            style='width:40%' type='text' id='nSpinsInpt' value='20'"+
-    "						 onchange='nSpins= +this.value; pCIPlot(nn)'> </td></tr>"+
-    "   <tr class='w3-border'> "+
-    "         <td class='w3-cell' >"+
-    "           Confidence Level % (between 50 and 100):	</td>"+
-    "   	     <td><input class='w3-input  w3-cell w3-mobile w3-padding-large' "+
-    "            style='width:40%' type='text' id='clInpt' value='90'"+
-    "            onchange='confLvl= +this.value; changeCL(confLvl)'>"+
-    "     </td></tr>"+
-      "</table> "
-
-    div2 = "<div id = 'propCIPlotGoesHere'> </div>";
-    div3 = "<div id = 'ciDemoResults' > Results    </div> ";
-return [div1, div2, div3];
+  const div1 = TEMPLATES.propCIDemoExplanation() + TEMPLATES.propCIDemoInputs();
+  const div2 = TEMPLATES.plotPlaceholder('propCIPlotGoesHere');
+  const div3 = TEMPLATES.resultsPlaceholder('ciDemoResults');
+  return [div1, div2, div3];
 };
 
 function changeCL(cl){

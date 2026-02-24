@@ -47,63 +47,11 @@
 
 function c1TestEstimate(){
   let dIn, dSumm, infText, testInpts;
-  dIn =
-  `<div class='w3-cell-row w3-mobile'>
-     <div class='w3-cell' style='width:40%'>
-       <h4> Enter Data</h4>
-       <table class='w3-table w3-border'>
-         <tr> <th>Label</th> <th>Count</th></tr>
-         <tr> <td>	<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat1Label1'
-           placeholder='Success' ></td>
-           <td><input class='w3-input  w3-mobile w3-pale-yellow' type='text' id='cat1N1'
-             placeholder=' '   onchange= 'renewC1()'>  </td>  </tr>
-         <tr> 	<td>	<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat1Label2'
-           placeholder='Failure' ></td>	
-           <td><input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat1N2'
-             placeholder=' '  onchange= 'renewC1()'> 	</td></tr> <tr></tr>
-       </table>	&nbsp; &nbsp;
-     </div>        	&nbsp; &nbsp; 				&nbsp; &nbsp;
-     <div class='w3-cell' style='width:2%'> </div>
-     <div class='w3-cell' style='width:45%; display:block'>
-       <button onclick = 'summarizeP1()'>   &nbsp &nbsp  Summary</button>
-       <div class='w3-container w3-cell w3-mobile' id='cat1SummaryText' style='display:none'>
-         p&#770; =
-         &nbsp; &nbsp;
-         se(p&#770;) =
-       </div>
-       <div class='w3-container w3-cell w3-mobile' id='cat1SummarySVGgoesHere'> </div>
-       <br>
-     </div>  </div>`;
+  dIn = TEMPLATES.cat1DataInput();
   dSumm = " ";
   //  		<!--  Inputs for each inference  (before plotting)  -->
 
-  testInpts=
-  `<div class='w3-cell-row w3-mobile'>
-    <div class='w3-cell  w3-mobile' style='width: 55%'>
-      &nbsp; &nbsp; &nbsp; Test: Is the true proportion = &nbsp;
-    </div>
-    <div class='w3-cell  w3-mobile' style='width: 35%'>
-      <input class='w3-input w3-card w3-mobile w3-pale-yellow' type='text' id='cat1Null'
-        placeholder='0.625' 	onchange= 'nullValue = this.value; changeNullC1();' 
-      ></input>
-     </div>
-   </div>
-   <div id='c1TestDirection' class='w3-cell-row w3-mobile' >
-     <div class='w3-cell' >
-       Stronger evidence is a proportion
-     </div>
-     <div class='w3-cell'>
-       <select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow'  onchange='testDirection = this.value; if(sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>
-         <option value='lower'>Less Than or =</option>
-         <option value='both' selected>As or More Extreme Than</option>
-         <option value='upper'>Greater Than or =</option>
-       </select>
-     </div>
-     <div class='w3-cell' style='width: 30%'>
-       &nbsp;	&nbsp; 	p&#770; (from above)
-     </div>
-   </div>
- </div>`;
+  testInpts = TEMPLATES.cat1TestInputs();
 
   infText = " ";
 

@@ -34,79 +34,10 @@ let colors = [],
 
 function mixerDivs(){
   // sets up html page for this demo
-  let div1, div2, div3;
-  div1 =
-    " 	<p>	Setup: In the first box, type labels separated by commas. " +
-    " 		In the second box, type a number of balls for each label, again, separated by commas.	</p> " +
-    " 	<div class=' w3-cell-row w3-mobile' id='mixInputs'> " +
-    " 		<div class='w3-cell w3-mobile' style='width:30%'> " +
-    " 			Labels: " +
-    " 			<input class='w3-input w3-border w3-mobile w3-pale-yellow' type='text' id='mixCats'  " +
-    "       style='display:block' onchange='restartMix();' > " +
-    " 		</div> " +
-    " 		<div class='w3-cell w3-mobile'></div> " +
-    " 		<div class='w3-cell w3-mobile' style='width:30%'> " +
-    " 			Numbers of balls: " +
-    " 			<input class='w3-input w3-border w3-mobile w3-pale-yellow' type='text' id='mixNs'  " +
-    "       style='display:block' onchange='restartMix();' > " +
-    " 		</div> " +
-    " 		<div class='w3-cell w3-mobile' style='width:40%'> " +
-    " 			Replace drawn balls? " +
-    " 			<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='mix_Replace' onblur = 'restartMix(); initialMixState()'> " +
-    " 				<option value='yes'>Yes</option> " +
-    " 				<option value='no'>No</option> " +
-    " 			</select> " +
-    " 		</div> " +
-    " 	</div> "
-
-    div2 = " 	Stop after: " +
-    " 	<div class='w3-cell-row w3-mobile' id='mixStops'> " +
-    " 		<div class='w3-cell w3-mobile' style='width:30%'> " +
-    " 			<input class='w3-input w3-border w3-mobile w3-pale-blue ' type='text' id='nDraws'  " +
-    "       placeholder='This many draws:' onchange='restartMix(); mixNtimes(this.value)' style='display:block'> " +
-    " 		</div> " +
-    " 		&nbsp; or&nbsp; " +
-    " 		<div class='w3-cell w3-mobile' style='width:30%'> " +
-    "  			<input class='w3-input w3-border w3-mobile w3-pale-blue ' type='text' id='mixTil'  " +
-    "       placeholder='Getting one of this type: ' onchange='restartMix(); mixTill1();' style='display:block'> " +
-    " 		</div> &nbsp; or &nbsp; " +
-    " 		<div class='w3-cell w3-mobile' style='width:30%'> " +
-    " 			<button id='mixAllButton' onclick='restartMix(); mixTillAll()' class='w3-button w3-pale-blue w3-medium  " +
-    "       w3-round-xlarge'> " +
-    " 				&nbsp;  Getting one of EACH type. " +
-    " 			</button> " +
-    " 		</div> " +
-    " 	</div> " +
-    " 	<br> " +
-    " 	<div class='w3-cell-row w3-mobile' style='display:block'> " +
-    " 		<div class='w3-container w3-cell w3-mobile' id='mixSVGgoesHere' style = 'width = 550px'> </div>" +
-    " 		<div class='w3-cell w3-mobile'> " +
-    " 			<button onclick='hideShowMix()' class='w3-button w3-pale-green w3-medium w3-round-xlarge'> " +
-    " 				&nbsp; Hide / Show " +
-    " 			</button>  <br>" +
-    "      <div class='w3-cell w3-mobile' id = 'whichType'> </div>  "
-    " 	</div> " ;
-    div3 =
-    "<div id='repeatMixer' class='w3-container' style='display:none'>" +
-			"	<div class='w3-cell-row'>" +
-      "	  	<div class='w3-cell  w3-mobile' style='width: 20%'>  Show results of &nbsp;" +
-			"     </div>"  +
-			"		<div class='w3-cell  w3-mobile' style='width: 20%'>" +
-			" 			<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='moreMixPoints' " +
-      "          placeholder='0' onclick='mixRepeat(this.value); dotChart2(mixRepResults );'" +
-			" 				 onchange='mixRepeat(this.value); dotChart2(mixRepResults );'>" +
-			" 		</div>" +
-			" 		<div class='w3-cell  w3-mobile' style='width: 80%'>" +
-			" 		&nbsp; (more)	trials" +
-			" 		</div>" +
-    " 	</div> " +
-			" </div>" +
-    "<div class='w3-container w3-cell w3-mobile' id='mixSmrySVGdiv'> " +
-    "</div> " +
-    "<div class='w3-container w3-mobile' id='mixSmryCount'> " +
-    "</div> " +
-  "</div> ";
-return [div1, div2, div3];
+  const div1 = TEMPLATES.mixSetup();
+  const div2 = TEMPLATES.mixStopConditions() + TEMPLATES.mixVisualArea();
+  const div3 = TEMPLATES.mixRepeatTrials();
+  return [div1, div2, div3];
 };
 
 

@@ -4,79 +4,12 @@
 
 function q1TestEstimate(){
     let dIn, dSumm, infText, testInpts, intervalInpts;
-    dIn =
-    " <div class='w3-container' id='quant1DataIn-Summary'>"+
-		" 	  <div class='w3-cell-row w3-mobile'>"+
-		" 		  <div class='w3-cell' style='width:60%'>"+
-		" 			  <h4> Enter Data</h4>"+
-   	" 				<table class='w3-table w3-border'>"+
-		" 				<tr>"+
-		" 					<th>Label</th>"+
-		" 					<th>Separate values with commas</th>"+
-		" 				</tr>"+
-		" 				<tr>"+
-		" 					<td>"+
-		" 						<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='q1Label' "+
-    "      placeholder='y'>"+
-		" 					</td>"+
-		" 					<td>"+
-		" 						<input class='w3-input  w3-mobile w3-pale-yellow' type='text' id='q1Values'"+
-		" 						  onchange = 'q1DataChange();' >"+
-		" 					</td>"+
-		" 				</tr>"+
-		" 			</table>"+
-		" 		</div>"+
-		" 		<div class='w3-cell'> &nbsp;"+
-		" 			<button onclick = 'summarizeMu1()'>  &nbsp; &nbsp; Summary</button>"+
-		" 		  <div class='w3-cell' style=' display:block' id='q1Summary'>"+
-		" 			  <div class='w3-container w3-cell w3-mobile' id='q1SummaryText' style='width:70%'>"+
-		" 			  </div>"+
-	  " 				<div class='w3-container w3-cell w3-mobile' id='q1SummarySVGgoesHere'>"+
-		"   				<svg id='q1SmrySVG' height=160 width=300></svg>"+
-		" 	  		</div>"+
-		" 		  	<div class='w3-container w3-modal w3-mobile'>"+
-		" 			  	<div class='w3-modal-content w3-card-4' id='q1SelectedSampleA' style=' display:none'>"+
-		" 				  </div>"+
-		" 			  </div>"+
-		" 		  </div>"+
-		" 		</div>"+
-		" 	</div> "+
-		" </div>";
-      dSumm =
-    	" 				<div class='w3-container w3-cell w3-mobile' id='q1Summary' style='display:none'>" +
-    	" 				</div>"
-    intervalInpts= "Estimate Mean";
-    testInpts =
-    "<div> <br> </div>" +
-    "<div class='w3-cell-row w3-mobile' style = 'text-align: left'>" +
-    "  			<div class='w3-cell' style='width:250px'>"+
-    "  				Test: Is the true mean = &nbsp;"+
-    "  			</div>"+
-    "  			<div class='w3-cell' style='width: 30%'>"+
-    "  				 <input class='w3-input w3-card w3-mobile w3-pale-yellow' type='text' id='q1trueMu'"+
-    "             placeholder='0.0' 	onchange= 'AppState.nullValue = +this.value; changeNullQ1();' "+
-    "  			   </input>"+
-    "       </div>" +
-    "   </div>" +
-    "<div> <br> </div>" +
-    " <div class='w3-cell-row w3-mobile'>" +
-     "    <div class='w3-cell' style='width: 250px' >	Stronger evidence is a mean 	</div>" +
-  		" 	<div class='w3-cell' style='width: 30%'>" +
-  		"		  <select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='q1testDirection' " +
-     	"  onmouseup ='AppState.testDirection = this.value; if(AppState.sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>" +
-  	  "  onselect  ='AppState.testDirection = this.value; if(AppState.sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>" +
-      "         <option value='lower'>Less Than or =</option>" +
-  		"			    <option value='both' selected >As or More Extreme Than</option>" +
-  		"			    <option value='upper'>Greater Than or =</option>" +
-      "     </select>" +
-  		"	  </div>" +
-  		"	  <div class='w3-cell' style='width: 40%' id='q1ObsdMean'>" +
-      "		  &nbsp;&nbsp; the observed mean = " + AppState.observed +
-    "     </div>" +
-  	"	</div>" ;
+    dIn = TEMPLATES.q1DataInput();
+    dSumm = " ";
+    intervalInpts = "Estimate Mean";
+    testInpts = TEMPLATES.q1TestInputs();
 
-    infText =
-  		" <div>  </div>" ;
+    infText = TEMPLATES.empty();
 
       return [dIn, dSumm,  testInpts, infText];
   }
