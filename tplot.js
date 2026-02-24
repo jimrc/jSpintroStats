@@ -2,18 +2,18 @@
 
 var tchanged = "N",
 	ndx,
-	margin = {top: 10, right: 20, bottom: 30, left: 50},
+	margin = CONFIG.UI.tplotMargin,
     probt,
-    plusminus = "+/-",
+    plusminus = CONFIG.LABELS.plusMinus,
     ptText,
-    tseq = sequence(-5.2, 5.2, 1/30),
+    tseq = sequence(CONFIG.TPLOT.sequenceMin, CONFIG.TPLOT.sequenceMax, CONFIG.TPLOT.sequenceStep),
     t1,
     t2,
     ttText;
 
 
-var t_width = 540 - margin.left - margin.right,
-    t_height = 320 - margin.top - margin.bottom;
+var t_width = CONFIG.UI.tplotWidth - margin.left - margin.right,
+    t_height = CONFIG.UI.tplotHeight - margin.top - margin.bottom;
 
 
  //ytAxis = d3.svg.axis().scale(ytRange)
@@ -25,8 +25,7 @@ drawTcurve = function(){
   xtRange = d3.scaleLinear().range([0, t_width]).domain(d3.extent(tseq));
   ytRange = d3.scaleLinear().range([height, margin.top]).domain([0, jStat.studentt.pdf(0, tdf)]);
  xtAxis = d3.axisBottom(xtRange)
-    .ticks(7);
-
+    .ticks(CONFIG.UI.tplotTicksX);
   pdftline = d3.line()
     .x( d =>  xtRange(d) )
     .y(d =>  ytRange(jStat.studentt.pdf(d, tdf)))

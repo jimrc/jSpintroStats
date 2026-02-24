@@ -145,7 +145,7 @@ function CLChange(arg) {
   if (arg.value) {
     AppState.cnfLvl = +arg.value;
   } else {
-    AppState.cnfLvl = 0.80
+    AppState.cnfLvl = CONFIG.DEFAULTS.defaultConfidence;
   }
   var sLen = AppState.resample4CI.length,
     tempColors = [];
@@ -287,7 +287,7 @@ function moreTests(nreps, concat) {
     }
     case 'cat2': {
       newSample = resample2C4Test(nreps);
-      AppState.nullValue = 0.0;
+      AppState.nullValue = CONFIG.DEFAULTS.defaultNullValue;
       AppState.observed = AppState.difference;
       AppState.xLabel = "Differences in proportions from resamples under the null ";
       AppState.xLab = "Phat1 - Phat2 ";
@@ -295,7 +295,7 @@ function moreTests(nreps, concat) {
     }
     case 'c1q1': {
       newSample = resample1C1Q4Test(nreps);
-      AppState.nullValue = 0.0;
+      AppState.nullValue = CONFIG.DEFAULTS.defaultNullValue;
       AppState.observed = AppState.diff;
       AppState.xLabel = "Differences in means from resamples under the null ";
       AppState.xLab = "Resampled Mean1 - Mean2 ";
@@ -305,7 +305,7 @@ function moreTests(nreps, concat) {
       newSample = resampleSlope4Test(q2Values, nreps);
       AppState.xLabel = "Slopes from resampled data under the null ";
       AppState.xLab = "Resampled Slope";
-      AppState.nullValue = 0.0;
+      AppState.nullValue = CONFIG.DEFAULTS.defaultNullValue;
       AppState.observed = AppState.slope;
       break;
     }

@@ -3,12 +3,12 @@
 // All global state is now managed through AppState namespace
 
 const ciDemoLines = [];
-let ciOutput, confLvl = 90, nn = 40, nSpins = 20, trueP = 0.45,
-     ciColors = ["red", "steelblue"], hwidth,
-   nLevels = [4, 10, 20, 30, 40, 50], phat, pHats,
-   pwidth = 400, pheight = 300, pCIs = [],
-   margin = {top: 10, right: 20, bottom: 30, left: 50},
-   observdCL, psvg, radius = 6,
+let ciOutput, confLvl = CONFIG.DEFAULTS.defaultConfidenceLevelPercent, nn = CONFIG.DEFAULTS.defaultSampleSize, nSpins = CONFIG.DEFAULTS.defaultNumSpins, trueP = CONFIG.DEFAULTS.defaultTrueP,
+     ciColors = CONFIG.COLORS.propCIColors, hwidth,
+   nLevels = CONFIG.DEFAULTS.nLevels, phat, pHats,
+   pwidth = CONFIG.UI.propCIWidth, pheight = CONFIG.UI.propCIHeight, pCIs = [],
+   margin = CONFIG.UI.propCIMargin,
+   observdCL, psvg, radius = CONFIG.UI.propCIRadius,
    xpRange, ypRange;
 
 
@@ -62,7 +62,7 @@ return [div1, div2, div3];
 };
 
 function changeCL(cl){
-  if(confLvl >= 100 || confLvl < 50){
+  if(confLvl >= CONFIG.VALIDATION.confidenceLevelMax || confLvl < CONFIG.VALIDATION.confidenceLevelMin){
     alert('Enter a number less than 100 and greater than 50');
     return;
   };
@@ -70,7 +70,7 @@ function changeCL(cl){
        z = 5;
   const nreps = ciDemoLines.length;
 
-  if (alfa > 0.0000001){
+  if (alfa > CONFIG.VALIDATION.alphaThreshold){
      z = jStat.normal.inv(1.0 - alfa, 0 , 1);
    }
   if(typeof(psvg) === "object"){
@@ -128,7 +128,7 @@ function pCIPlot(nreps){
      ypRange = d3.scaleLinear().range([pheight, margin.top]).domain([0, nreps * radius]);
 
      xpAxis = d3.axisBottom(xpRange) .ticks(8);
-   if (alfa > 0.0000001){
+   if (alfa > CONFIG.VALIDATION.alphaThreshold){
      z = jStat.normal.inv(1.0 - alfa, 0 , 1);
      //console.log("multiplier:", z);
    }

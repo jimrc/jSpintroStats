@@ -3,26 +3,24 @@
 
 // Note: Local variables below should reference AppState where needed
 
-var w =  Number(400), // - margin.right - margin.left,
-    h = Number(300); // - margin.top - margin.bottom
-const ballsInit =  [];
-const boxData = [ { "x": w/2 -40,   "y": h/2-2 },  { "x": -w/2 +22,  "y": h/2-2},
-                  { "x": -w/2+22,  "y": -h/+2}, { "x":w/2 -40 ,  "y": -h/2+2},
-                  { "x": w/2 -40,  "y": h/2 - 40}];
+const w = CONFIG.UI.mixBoxWidth;
+const h = CONFIG.UI.mixBoxHeight;
+const ballsInit = [];
+const boxData = CONFIG.BOX.getBoxData(w, h);
 let colors = [],
     hideMix = false,
-    mixCircles =[],
+    mixCircles = [],
     mixData = [],
-    mixDraws=[],
- 		mixDuration = 500,
-    mixSlideDuration = 250,
-    mixGroups =[],
+    mixDraws = [],
+    mixDuration = CONFIG.UI.mixDuration,
+    mixSlideDuration = CONFIG.UI.mixSlideDuration,
+    mixGroups = [],
     mixInner = [],
     mixMatch,
     mixNs = [],
-    mixPicks =[],
+    mixPicks = [],
     mixStopRule,
-    mixRadius = 10,
+    mixRadius = CONFIG.UI.mixRadius,
     mixRepResults = [],
     mixSeq = [],
     mixSVG,
@@ -31,7 +29,7 @@ let colors = [],
     nDraws,
     pickNdx,
     resultSlot,
-    spacing =12,
+    spacing = CONFIG.UI.mixSpacing,
     textLabels = [];
 
 function mixerDivs(){
