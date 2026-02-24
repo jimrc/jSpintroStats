@@ -46,7 +46,7 @@
   }
 
 function c1TestEstimate(){
-  var dIn, dSumm, infText, testInpts;
+  let dIn, dSumm, infText, testInpts;
   dIn =
   `<div class='w3-cell-row w3-mobile'>
      <div class='w3-cell' style='width:40%'>
@@ -143,11 +143,11 @@ function resample1C4Test(nreps) {
   AppState.cat1N2 = +document.getElementById("cat1N2").value;
   document.getElementById("moreTEsims").style.display = 'block';
 
-  var sC1Len,    total = AppState.cat1N1 + AppState.cat1N2;
-  var sampleC1 = rbinom(total, AppState.nullValue, nreps).sort(function(a, b) {
+  const total = AppState.cat1N1 + AppState.cat1N2;
+  const sampleC1 = rbinom(total, AppState.nullValue, nreps).sort(function(a, b) {
       return a - b;
     });
-  var sC1Len = sampleC1.length;
+  const sC1Len = sampleC1.length;
   sampleC1 = sampleC1.map(val => val * (1 / total));
   return sampleC1;
 }
@@ -159,7 +159,7 @@ function resample1C4CI(nreps) {
   AppState.cat1N2 = +document.getElementById("cat1N2").value;
   document.getElementById("moreTEsims").style.display = 'block';
 
-  var sC1Len,    total = AppState.cat1N1 + AppState.cat1N2;
+  const total = AppState.cat1N1 + AppState.cat1N2;
   AppState.resampleC1 = rbinom(total, AppState.cat1Phat, nreps).sort(function(a, b) {
     return a - b;
   });

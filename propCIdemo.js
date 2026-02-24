@@ -2,8 +2,8 @@
 // a Confidence Interval
 // All global state is now managed through AppState namespace
 
-var  ciDemoLines = [],  ciOutput,
-  confLvl = 90, nn = 40, nSpins = 20, trueP = 0.45,
+const ciDemoLines = [];
+let ciOutput, confLvl = 90, nn = 40, nSpins = 20, trueP = 0.45,
      ciColors = ["red", "steelblue"], hwidth,
    nLevels = [4, 10, 20, 30, 40, 50], phat, pHats,
    pwidth = 400, pheight = 300, pCIs = [],
@@ -114,16 +114,13 @@ function pCIPlot(nreps){
   // takes binomial samples and creates a normal-based confidence interval
   // for each.  Plots each interval to show if the true value is included.
   // TODO: consider adding options for bootstrap intervals and Wilson's plus 4'
-  var  alfa = (100 - confLvl)/200, countr = 0,
+  let alfa = (100 - confLvl)/200, countr = 0,
      sample = rbinom(nSpins, trueP, nreps),
      z = 5;
-  var  alfa = (100 - confLvl)/200, countr = 0,
-        sample ,
-        z = 5;
-        // make sure other inputs are current
-        nSpins = +document.getElementById("nSpinsInpt").value;
-        trueP = +document.getElementById("truePInpt").value;
-        confLvl = +document.getElementById("clInpt").value;
+  // make sure other inputs are current
+  nSpins = +document.getElementById("nSpinsInpt").value;
+  trueP = +document.getElementById("truePInpt").value;
+  confLvl = +document.getElementById("clInpt").value;
         //  draw samples
         sample = rbinom(nSpins, trueP, nreps);
 

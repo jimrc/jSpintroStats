@@ -3,7 +3,7 @@
 
 
 function q1TestEstimate(){
-    var dIn, dSumm, infText, testInpts;
+    let dIn, dSumm, infText, testInpts, intervalInpts;
     dIn =
     " <div class='w3-container' id='quant1DataIn-Summary'>"+
 		" 	  <div class='w3-cell-row w3-mobile'>"+
@@ -106,8 +106,8 @@ function resample1Q4Test(nreps) {
       AppState.nullValue = +document.getElementById('q1trueMu').value;
       AppState.q1N = AppState.q1Values.length;
       document.getElementById("moreTEsims").style.display = 'block';
-      var shift = AppState.q1Xbar - AppState.nullValue;
-      var q1Shifted = AppState.q1Values.map(val => val - shift);
+      const shift = AppState.q1Xbar - AppState.nullValue;
+      const q1Shifted = AppState.q1Values.map(val => val - shift);
       const resampleq1 = resample1Mean(q1Shifted, nreps).sort(function(a, b) {
           return a - b;
         });
@@ -116,7 +116,7 @@ function resample1Q4Test(nreps) {
 
 function resample1Q4CI(nreps) {
       //function to generate random resamples and compute means
-      var resampleq1 = resample1Mean(AppState.q1Values, nreps).sort(function(a, b) {
+      const resampleq1 = resample1Mean(AppState.q1Values, nreps).sort(function(a, b) {
           return a - b;
         });
       document.getElementById("moreTEsims").style.display = 'block';
@@ -127,7 +127,7 @@ function resample1Q4CI(nreps) {
 
 function summarizeMu1() {
   // builds summary table and dot plot for 1 quantitative variable
-  var margin = 30,
+  const margin = 30,
     barHeight = 20,
     colors = [],
     w = 300,
@@ -142,7 +142,7 @@ function summarizeMu1() {
   AppState.observed = AppState.q1Xbar = d3.mean(AppState.q1Values);
   AppState.q1SD = d3.deviation(AppState.q1Values);
   AppState.q1SEXbar = AppState.q1SD / Math.sqrt(AppState.q1N);
-  var q1Summ = document.getElementById('q1SummaryText');
+  const q1Summ = document.getElementById('q1SummaryText');
   AppState.q1Data = [
     { label: 'Xbar', xx: AppState.q1Xbar },
     { label: 'SE', xx: AppState.q1SEXbar },

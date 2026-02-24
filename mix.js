@@ -4,12 +4,12 @@
 // Note: Local variables below should reference AppState where needed
 
 var w =  Number(400), // - margin.right - margin.left,
-    h = Number(300), // - margin.top - margin.bottom
-    ballsInit =  [];
-var boxData = [ { "x": w/2 -40,   "y": h/2-2 },  { "x": -w/2 +22,  "y": h/2-2},
+    h = Number(300); // - margin.top - margin.bottom
+const ballsInit =  [];
+const boxData = [ { "x": w/2 -40,   "y": h/2-2 },  { "x": -w/2 +22,  "y": h/2-2},
                   { "x": -w/2+22,  "y": -h/+2}, { "x":w/2 -40 ,  "y": -h/2+2},
-                  { "x": w/2 -40,  "y": h/2 - 40}],
-    colors = [],
+                  { "x": w/2 -40,  "y": h/2 - 40}];
+let colors = [],
     hideMix = false,
     mixCircles =[],
     mixData = [],
@@ -36,7 +36,7 @@ var boxData = [ { "x": w/2 -40,   "y": h/2-2 },  { "x": -w/2 +22,  "y": h/2-2},
 
 function mixerDivs(){
   // sets up html page for this demo
-  var div1, div2, div3;
+  let div1, div2, div3;
   div1 =
     " 	<p>	Setup: In the first box, type labels separated by commas. " +
     " 		In the second box, type a number of balls for each label, again, separated by commas.	</p> " +
