@@ -90,29 +90,15 @@ function initialMixState(){
 		grdSize = Math.floor(Math.min(w,h)/( mixRadius*2)),
 		xyvalues = sequence(0, grdSize, 1); // integer values for a lattice
 
-    mixGroups =  document.getElementById("mixCats").value.split(","); // labels of each group
-    mixNs =   jStat.map(document.getElementById("mixNs").value.split(","), Number); // ball counts
-    mixNCat = mixGroups.length;  // number of categories
+    const mixData = VALIDATION.validateMixData();
+    if (!mixData) return; // Validation failed, error already shown
 
-    if(d3.min(mixNs) < 1){
-    	alert("Must have a positive number of balls for each label.");
-    }
-
-    if(mixNCat < 2){
-    	alert("Must have more than one label.");
-    }
-
-    // force group length to = length of ball counts
-    if( mixNCat > mixNs.length){
-    	mixGroups.length = mixNCat = mixNs.length;
-    } else if(mixNs.length < mixNCat){
-    	mixNs.length = mixNCat;
-    }
-    mixNballs = d3.sum(mixNs);
+    mixGroups = mixData.labels;
+    mixNs = mixData.counts;
+    mixNCat = mixGroups.length;  // number of categories    mixNballs = d3.sum(mixNs);
 
     for ( i=0; i < mixNCat; i++)  {
-    	colors[i] = d3.hcl(30 + i * 330/mixNCat , 50, 80, 0.8);
-	  }
+    	colors[i] = d3.hcl(30 + i * 330/mixNCat , 50, 80, 0.8);	  }
 
     var xSeq = sampleWrep(xyvalues, mixNballs, repeat(1, xyvalues.length)),
 	   	ySeq = sampleWrep(xyvalues, mixNballs, repeat(1, xyvalues.length));

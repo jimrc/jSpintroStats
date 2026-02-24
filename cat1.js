@@ -3,12 +3,15 @@
 
   function summarizeP1() {
     // builds summary table and plot for 1 categorical variable
+    const data = VALIDATION.validateCat1Data();
+    if (!data) return; // Validation failed, error already shown
+
     var colors = [];
 
-    AppState.cat1Label1 = document.getElementById("cat1Label1").value;
-    AppState.cat1Label2 = document.getElementById("cat1Label2").value;
-    AppState.cat1N1 = +document.getElementById("cat1N1").value;
-    AppState.cat1N2 = +document.getElementById("cat1N2").value;
+    AppState.cat1Label1 = data.label1;
+    AppState.cat1Label2 = data.label2;
+    AppState.cat1N1 = data.n1;
+    AppState.cat1N2 = data.n2;
     AppState.proportion = AppState.cat1Phat = AppState.cat1N1 / (AppState.cat1N1 + AppState.cat1N2);
     AppState.cat1Summ = document.getElementById("cat1SummaryText");
     document.getElementById("cat1SummarySVGgoesHere").style.display = "block";
@@ -84,11 +87,14 @@ function changeNullC1 (){
 
 function resample1C4Test(nreps) {
   //function to test 'Is the true proportion  = some value?' for 'success/failure' data
-  // Gather Inputs:
-  AppState.cat1Label1 = document.getElementById("cat1Label1").value;
-  AppState.cat1Label2 = document.getElementById("cat1Label2").value;
-  AppState.cat1N1 = +document.getElementById("cat1N1").value;
-  AppState.cat1N2 = +document.getElementById("cat1N2").value;
+  // Gather and validate inputs:
+  const data = VALIDATION.validateCat1Data();
+  if (!data) return []; // Validation failed, error already shown
+
+  AppState.cat1Label1 = data.label1;
+  AppState.cat1Label2 = data.label2;
+  AppState.cat1N1 = data.n1;
+  AppState.cat1N2 = data.n2;
   document.getElementById("moreTEsims").style.display = 'block';
 
   const total = AppState.cat1N1 + AppState.cat1N2;

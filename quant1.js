@@ -60,17 +60,19 @@ function resample1Q4CI(nreps) {
 
 function summarizeMu1() {
   // builds summary table and dot plot for 1 quantitative variable
+  const data = VALIDATION.validateQ1Data();
+  if (!data) return; // Validation failed, error already shown
+
   const margin = 30,
     barHeight = 20,
     colors = [],
     w = 300,
     h = 60;
 
-  AppState.q1Label = document.getElementById('q1Label').value;
-  AppState.q1Values = document.getElementById('q1Values').value.split(',');
+  AppState.q1Label = data.label;
+  AppState.q1Values = data.values;
   document.getElementById("q1Summary").style.display = "block";
   AppState.q1N = AppState.q1Values.length;
-  AppState.q1Values = AppState.q1Values.map(val => +val);  // convert to numeric
 
   AppState.observed = AppState.q1Xbar = d3.mean(AppState.q1Values);
   AppState.q1SD = d3.deviation(AppState.q1Values);
