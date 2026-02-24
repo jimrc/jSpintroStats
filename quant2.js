@@ -4,45 +4,15 @@
 function q2TestEstimate(){
   // function to modify the generic test-estimate page to suit 2 quantitative variables
   var dIn, dSumm, infText, testInpts;
-  dIn =
-  	" 			<div class='w3-cell' style='width:50%'>" +
-  	" 				<h4> Choose Data: </h4>" +
-  	" 				<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='quant2DataName'" +
-  	" 				   onselect ='q2DataChange()'  onmouseup='q2DataChange()'>" +
-  	" 					<option value='shuttle' selected>Shuttle</option>" +
-  	" 					<option value='women'>Women rate men</option>" +
-  	" 					<option value='men'>Men rate women</option>" +
-  	" 					<option value='dental'>Dental distance</option>" +
-  	" 					<option value='other'>Other</option>" +
-  	" 				</select>" +
-  	" 			</div>"
-    dSumm =
+  dIn = TEMPLATES.q2DataInput();
+  dSumm =
     "	<div class='flex-container' style='display:flex; wrap:nowrap;' >"+
 		"		  <div  id='Q2SumText' style='width:300px; display: none'>"	+
 		"		  </div>"	+
 		"				<svg id='Q2SumSVG' height='400px' width='400px'></svg>"	+
 		"	</div>"	;
-  testInpts =
-    "<div class='w3-cell-row w3-mobile' style = 'text-align: left'>" +
-    "  			<div class='w3-cell' style='width:250px'>"+
-    "  				Test: Is the true slope zero?"+
-    "  			</div>"+
-    "   </div>" +	"<div class='w3-cell' >	Stronger evidence is a slope 	</div>" +
-		"	<div class='w3-cell' style='width: 30%'>" +
-		"		<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='q2testDirection' " +
-   	"  onmouseup='testDirection = this.value; if(sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>" +
-	  "  onselect='testDirection = this.value; if(sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>" +
-			"		<option value='lower'>Less Than or =</option>" +
-		"			<option value='both' selected>As or More Extreme Than</option>" +
-		"			<option value='upper'>Greater Than or =</option>" +
-		"		</select>" +
-		"	</div>" +
-		"	<div class='w3-cell' style='width: 30%' id='q2ObsdSlope'>" +
-    "		&nbsp;&nbsp; observed &beta;&#770;<sub>1</sub> =  value above" +
-		"	</div>" ;
-
-
-    infText =
+  testInpts = TEMPLATES.q2TestInputs();
+  infText =
   		" <div id='quant2Output' style='display:none'>" +
   		" </div>" ;
 
@@ -51,7 +21,8 @@ function q2TestEstimate(){
 
 
   function q2DataChange(){
-       sample4Test = sample4CI = [];
+       AppState.sample4Test = [];
+       AppState.sample4CI = [];
        document.getElementById('infSVGplot').style.display = 'none'
        document.getElementById('inferenceText').style.display = 'none'
        document.getElementById("confLvlInpt").style.display = 'none'
@@ -76,10 +47,20 @@ function summarizeSlope() {
    document.getElementById("dataSummary").style.display = 'block';
    document.getElementById("inferenceInputs").style.display = 'block';
    document.getElementById("inferenceText").innerHTML = ' ';
-   document.getElementById("moreTEsims").style.display = 'none';
-   document.getElementById("testInpt").style.display = 'none';
-   document.getElementById("confLvlInpt").style.display = 'none';
    d3.select("#infSVGplot_svg").remove();
+   
+// Show DOM controls for estimate/test (confLvlInpt hidden until user clicks Estimate)
+	DOM.setState({
+	  inferenceInputs: 'show',
+	  moreTEsims: 'hide',
+	  testInpt: 'hide',
+	  confLvlInpt: 'hide'
+   });
+   
+   // Initialize AppState for estimation
+   AppState.nullValue = 0;
+   AppState.inference = "estimate";
+   
   q2RawData =
     q2DataName === "shuttle"    ? shuttle
       : q2DataName === "women"  ? womenJudgingMen
@@ -95,7 +76,7 @@ function summarizeSlope() {
       x.push(+q2RawData[i][q2Keys[0]]);
       y.push(+q2RawData[i][q2Keys[1]]);
       coVar += x[i] * y[i]; // add up cross product
-      q2Values.push({ x: x[i], y: y[i], color: circleColors[0] });
+      q2Values.push({ x: x[i], y: y[i], color: AppState.circleColors[0] });
     }
     xbar = d3.mean(x);
     xVar = d3.variance(x);

@@ -16,20 +16,12 @@ function q1TestEstimate(){
 
 function q1DataChange(){
      AppState.sample4Test = AppState.sample4CI = [];
-     document.getElementById("q1Summary").style.display = 'none'
-     document.getElementById('infSVGplot').style.display = 'none'
-     document.getElementById('inferenceText').style.display = 'none'
-     document.getElementById("confLvlInpt").style.display = 'none'
-     document.getElementById("testInpt").style.display = 'none'
-     document.getElementById("moreTEsims").style.display = 'none'
+     Utilities.resetQuant1UI();
 }
 
 function changeNullQ1 (){
       //function to remove outdated info and Plot
-      AppState.sample4Test = AppState.testData = [];
-       document.getElementById("infSVGplot").style.display = 'none';
-       document.getElementById("moreTEsims").style.display = 'none';
-       document.getElementById("inferenceText").style.display = 'none';
+      Utilities.clearAnalysis(['infSVGplot', 'moreTEsims', 'inferenceText']);
     };
 
 
@@ -71,12 +63,24 @@ function summarizeMu1() {
 
   AppState.q1Label = data.label;
   AppState.q1Values = data.values;
-  document.getElementById("q1Summary").style.display = "block";
   AppState.q1N = AppState.q1Values.length;
 
   AppState.observed = AppState.q1Xbar = d3.mean(AppState.q1Values);
   AppState.q1SD = d3.deviation(AppState.q1Values);
-  AppState.q1SEXbar = AppState.q1SD / Math.sqrt(AppState.q1N);
+  AppState.q1SEXbar = Utilities.calculateMeanSE(AppState.q1SD, AppState.q1N);
+  
+  // Show the choice between CI and Test (confLvlInpt hidden until user clicks Estimate)
+  DOM.setState({
+    inferenceInputs: 'show',
+    moreTEsims: 'hide',
+    testInpt: 'hide',
+    confLvlInpt: 'hide'
+  });
+  d3.select("#infSVGplot_svg").remove();
+  AppState.nullValue = AppState.q1Xbar;  // Initialize null value to observed mean
+  AppState.inference = "estimate";  // Initialize to estimate mode
+  
+  document.getElementById("q1Summary").style.display = "block";
   const q1Summ = document.getElementById('q1SummaryText');
   AppState.q1Data = [
     { label: 'Xbar', xx: AppState.q1Xbar },

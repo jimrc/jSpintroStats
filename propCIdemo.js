@@ -36,7 +36,7 @@ function changeCL(cl){
     //check to see if intervals already exist.  If if so, change widths
     ciDemoLines.forEach((line, i) => {
       const phat = line.center;
-      const hwidth = z * Math.sqrt(phat * (1 - phat) / nSpins);
+      const hwidth = Utilities.calculateProportionCIHalfWidth(z, phat, nSpins);
       ciDemoLines[i] = {center: phat, y: i, lower: Math.max(0, phat - hwidth),
         upper: Math.min(1, phat + hwidth), color: (phat - hwidth <= trueP && phat + hwidth >= trueP) ? 1 : 0};
       if (ciDemoLines[i].color === 1) countr++;
@@ -102,7 +102,7 @@ function pCIPlot(nreps){
           upper: 1, color: 0};
       } else {
         const phat = val / nSpins;
-        const hwidth = z * Math.sqrt(phat * (1 - phat) / nSpins);
+        const hwidth = Utilities.calculateProportionCIHalfWidth(z, phat, nSpins);
         ciLine = {center: phat, y: i, lower: Math.max(0, phat - hwidth),
           upper: Math.min(1, phat + hwidth), color: 0};
       }

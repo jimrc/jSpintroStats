@@ -13,27 +13,30 @@
     AppState.cat1N1 = data.n1;
     AppState.cat1N2 = data.n2;
     AppState.proportion = AppState.cat1Phat = AppState.cat1N1 / (AppState.cat1N1 + AppState.cat1N2);
-    AppState.cat1Summ = document.getElementById("cat1SummaryText");
-    document.getElementById("cat1SummarySVGgoesHere").style.display = "block";
+    AppState.cat1Summ = DOM.getElement("cat1SummaryText");
+    DOM.show('cat1SummarySVGgoesHere');
 
-       document.getElementById("inferenceInputs").style.display = 'block';
-       document.getElementById("inferenceText").innerHTML = ' ';
-       document.getElementById("moreTEsims").style.display = 'none';
-       document.getElementById("testInpt").style.display = 'none';
-       document.getElementById("confLvlInpt").style.display = 'none';
-       d3.select("#infSVGplot_svg").remove();
+    // Show the choice between CI and Test
+    DOM.setState({
+      inferenceInputs: 'show',
+      moreTEsims: 'hide',
+      testInpt: 'show',
+      confLvlInpt: 'hide'
+    });
+    d3.select("#infSVGplot_svg").remove();
 
     AppState.resampleC1 = [];
     AppState.sampleC1 = [];
+    AppState.nullValue = 0.5;  // Initialize null value
 
     AppState.cat1Summ.innerHTML =
-      `p&#770; =  ${AppState.cat1Phat.toPrecision(4)} <br> se(p&#770) = ${(Math.sqrt(AppState.cat1Phat * (1 - AppState.cat1Phat) / (AppState.cat1N1 + AppState.cat1N2))).toPrecision(3)}`;
+      `p&#770; =  ${AppState.cat1Phat.toPrecision(4)} <br> se(p&#770) = ${(Utilities.calculateProportionSE(AppState.cat1Phat, AppState.cat1N1 + AppState.cat1N2)).toPrecision(3)}`;
     AppState.cat1Summ.style = "display: block";
 
     AppState.c1Data = [
       {
         label: AppState.cat1Label1,
-        xx: AppState.cat1Phat
+        prop: AppState.cat1Phat
       }
     ];
 
@@ -67,20 +70,12 @@ function c1TestEstimate(){
 function renewC1 (){
       //function to remove outdated info and Plot
       AppState.sample4CI = AppState.resample4CI = AppState.testData = AppState.CIData = [];
-       document.getElementById('cat1SummaryText').style.display = 'none';
- 			 document.getElementById('cat1SummarySVGgoesHere').style.display =  'none';
-       document.getElementById("moreTEsims").style.display = 'none';
-       document.getElementById("inferenceText").style.display = 'none';
-       document.getElementById("inferenceInputs").style.display = 'none';
-       document.getElementById("infSVGplot").style.display = 'none';
+      DOM.hide(['cat1SummaryText', 'cat1SummarySVGgoesHere', 'moreTEsims', 'inferenceText', 'inferenceInputs', 'infSVGplot']);
     };
 
 function changeNullC1 (){
       //function to remove outdated info and Plot
-      AppState.sample4Test = AppState.testData = [];
-       document.getElementById("infSVGplot").style.display = 'none';
-       document.getElementById("moreTEsims").style.display = 'none';
-       document.getElementById("inferenceText").style.display = 'none';
+      Utilities.clearAnalysis(['infSVGplot', 'moreTEsims', 'inferenceText']);
     };
 
 

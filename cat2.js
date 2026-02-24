@@ -2,95 +2,10 @@
 // All global state is now managed through AppState namespace
 
   function c2TestEstimate(){
-    var dIn,  dSumm, testInpts, infText;
-    dIn =
-    " <div class='w3-container' id='cat2DataIn-Summary'> "+
-    "   <div class='w3-cell-row w3-mobile'>"+
-    "     <div class='w3-cell' style='width:50%'>"+
-    "       <h4> Enter Data as counts, then click [Summary]. </h4>"+
-    "       <table class='w3-table w3-border'>"+
-    "         <tr>"+
-    "           <th>Labels:</th>"+
-    "           <th>"+
-    "             <input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat2LabelPop1' "+
-    "               placeholder='Group A'  onchange='AppState.cat2Label1 = this.value; renewC2()'>"+
-    "           </th>"+
-    "           <th>"+
-    "             <input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat2LabelPop2'"+
-    "                placeholder='Group B'  onchange='cat2LabelPop2 = this.value; renewC2()'>"+
-    "           </th>"+
-    "         </tr>"+
-    "         <tr>"+
-    "           <td>"+
-    "             <input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat2LabelOut1' "+
-    "                        placeholder='Success'  onchange='cat2LabelOut1 = this.value; renewC2()'>"+
-    "           </td>"+
-    "           <td>"+
-    "           <input class='w3-input  w3-mobile w3-pale-yellow' type='text' id='cat2N11' "+
-    "           placeholder='1' onchange='renewC2()'>"+
-    "           </td>"+
-    "           <td>"+
-    "             <input class='w3-input  w3-mobile w3-pale-yellow' type='text' id='cat2N12'"+
-    "              placeholder='1' onchange='renewC2()'>"+
-    "           </td>"+
-    "         </tr>"+
-    "         <tr>"+
-    "           <td>"+
-    "             <input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat2LabelOut2'"+
-    "              placeholder='Failure'  onchange='cat2LabelOut2 = this.value; renewC2()'>"+
-    "           </td>"+
-    "           <td>"+
-    "             <input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat2N21'"+
-    "              placeholder='1' onchange='renewC2()'>"+
-    "           </td>"+
-    "           <td>"+
-    "             <input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat2N22' "+
-    "             placeholder='1' onchange='renewC2()'>"+
-    "           </td>"+
-    "         </tr>"+
-    "       </table>"+
-    "     </div>"+
-    "     &nbsp;&nbsp;"+
-    "     <div class='w3-cell' style='display:block'>"+
-    "         <button id='cat2RawSumm' class='w3-button w3-pale-blue w3-medium w3-round-xlarge'"+
-    "           onclick =	'CIdata = testData = []; summarizeP2(); '> "+
-    "            &nbsp; &nbsp;Summary"+
-    "            </button>"+
-    "       <div class='w3-container w3-cell w3-mobile' id='cat2SummarySVGgoesHere' "+
-    "       style = 'display:none'></div>"+
-    "       <div class='w3-container w3-cell w3-mobile' id='cat2SummaryText' "+
-    "       style='width:310px; display:none'></div>"+
-    "     </div>"+
-    "   </div>"+
-    "   <br>"+
-    " </div>";
+    var dIn, dSumm, testInpts, infText;
+    dIn = TEMPLATES.cat2DataInput();
     dSumm = " ";
-
-      testInpts=
-      "<div class='w3-cell-row w3-mobile'>" +
-      "  			<div class='w3-cell  w3-mobile' style='width: 55%'>"+
-      "  				&nbsp; &nbsp; &nbsp; Test H <sub>0</sub>: The true proportions are equal."+
-      "  			  </div>"+
-      "   </div>" +
-      "  	<div id='c2TestDirection' class='w3-cell-row w3-mobile' >"+
-      "  				<div class='w3-cell' >"+
-      "  					Stronger evidence is a difference in proportions"+
-      "  				</div>"+
-      "  				<div class='w3-cell'>"+
-    	"		<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow'  " +
-      "  onchange='testDirection = this.value; nullValue = 0.0; if(sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>" +
-      "  						<option value='lower'>Less Than or =</option>"+
-      "  						<option value='both' selected>As or More Extreme Than</option>"+
-      "  						<option value='upper'>Greater Than or =</option>"+
-      "  					</select>"+
-      "  				</div>"+
-      "  			<div class='w3-cell' id='cat2ObsdDiff'>"+
-      "  			  &nbsp;&nbsp;"+
-      "  			  the p&#770;<sub>1</sub> - p&#770;<sub>2</sub> observed above."+
-      "  			</div>"+
-      " 		</div>"+
-      " </div>";
-
+    testInpts = TEMPLATES.cat2TestInputs();
     infText = " ";
 
     return [dIn, dSumm, testInpts, infText];
@@ -137,12 +52,7 @@
   function renewC2 (){
         //function to remove outdated info and Plot
         sample4CI = resample4CI = testData = CIData = [];
-         document.getElementById('cat2SummaryText').style.display = 'none';
-   			 document.getElementById('cat2SummarySVGgoesHere').style.display =  'none';
-         document.getElementById("moreTEsims").style.display = 'none';
-         document.getElementById("inferenceText").style.display = 'none';
-         document.getElementById("inferenceInputs").style.display = 'none';
-         document.getElementById("infSVGplot").style.display = 'none';
+        Utilities.resetCat1UI();
       };
 
 // Inputs:
@@ -179,15 +89,34 @@ function summarizeP2() {
 	    w = 180,
 	    h = 60;
 
-	cat2LabelOut1 = document.getElementById("cat2LabelOut1").value;
-	cat2LabelOut2 = document.getElementById("cat2LabelOut2").value;
-	cat2LabelPop1 = document.getElementById("cat2LabelPop1").value;
-	cat2LabelPop2 = document.getElementById("cat2LabelPop2").value;
+	// Initialize AppState with labels
+	AppState.cat2Label1 = document.getElementById("cat2LabelPop1").value || "Group A";
+	AppState.cat2Label2 = document.getElementById("cat2LabelPop2").value || "Group B";
+	AppState.cat2LabelOut1 = document.getElementById("cat2LabelOut1").value || "Success";
+	AppState.cat2LabelOut2 = document.getElementById("cat2LabelOut2").value || "Failure";
+	
+	cat2LabelOut1 = AppState.cat2LabelOut1;
+	cat2LabelOut2 = AppState.cat2LabelOut2;
+	cat2LabelPop1 = AppState.cat2Label1;
+	cat2LabelPop2 = AppState.cat2Label2;
 	cat2N11 = +document.getElementById("cat2N11").value;
 	cat2N12 = +document.getElementById("cat2N12").value;
 	cat2N21 = +document.getElementById("cat2N21").value;
 	cat2N22 = +document.getElementById("cat2N22").value;
 	total1 = cat2N11 + cat2N21;
+	
+	// Show inference controls and initialize state (confLvlInpt hidden until user clicks Estimate)
+	d3.select("#infSVGplot_svg").remove();
+	DOM.setState({
+		inferenceInputs: 'show',
+		moreTEsims: 'hide',
+		testInpt: 'hide',
+		confLvlInpt: 'hide'
+	});
+	
+	// Initialize AppState for estimation
+	AppState.nullValue = 0;
+	AppState.inference = "estimate";
 	total2 = cat2N12 + cat2N22;
 	cat2Phat1 = cat2N11 / total1;
 	cat2Phat2 = cat2N12 / total2;

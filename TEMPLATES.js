@@ -43,32 +43,241 @@ const TEMPLATES = {
    * Creates form for hypothesis test parameters
    */
   cat1TestInputs: () => {
-    return `<div class='w3-cell-row w3-mobile'>
-    <div class='w3-cell  w3-mobile' style='width: 55%'>
-      &nbsp; &nbsp; &nbsp; Test: Is the true proportion = &nbsp;
+    return `<div class='w3-cell-row w3-mobile' style='margin-bottom: 15px;'>
+    <div class='w3-cell w3-mobile' style='width: 48%'>
+      <button class='w3-button w3-blue w3-round' onclick='AppState.inference = "estimate"; document.getElementById("testInpt").style.display = "none"; document.getElementById("confLvlInpt").style.display = "block";'>Estimate Proportion (CI)</button>
     </div>
-    <div class='w3-cell  w3-mobile' style='width: 35%'>
-      <input class='w3-input w3-card w3-mobile w3-pale-yellow' type='text' id='cat1Null'
-        placeholder='0.625' 	onchange= 'nullValue = this.value; changeNullC1();' 
-      ></input>
-     </div>
+    <div class='w3-cell w3-mobile' style='width: 4%'></div>
+    <div class='w3-cell w3-mobile' style='width: 48%'>
+      <button class='w3-button w3-lightblue w3-round' onclick='AppState.inference = "test"; document.getElementById("confLvlInpt").style.display = "none"; document.getElementById("testInpt").style.display = "block";'>Test Proportion</button>
+    </div>
    </div>
-   <div id='c1TestDirection' class='w3-cell-row w3-mobile' >
-     <div class='w3-cell' >
-       Stronger evidence is a proportion
+   <div id='cat1TestInputsDiv' style='display:none'>
+    <div class='w3-cell-row w3-mobile'>
+      <div class='w3-cell  w3-mobile' style='width: 55%'>
+        &nbsp; &nbsp; &nbsp; Test: Is the true proportion = &nbsp;
+      </div>
+      <div class='w3-cell  w3-mobile' style='width: 35%'>
+        <input class='w3-input w3-card w3-mobile w3-pale-yellow' type='text' id='cat1Null'
+          placeholder='0.625' 	onchange= 'AppState.nullValue = +this.value; changeNullC1();' 
+        ></input>
+       </div>
      </div>
-     <div class='w3-cell'>
-       <select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow'  onchange='testDirection = this.value; if(sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>
-         <option value='lower'>Less Than or =</option>
-         <option value='both' selected>As or More Extreme Than</option>
-         <option value='upper'>Greater Than or =</option>
-       </select>
+     <div id='c1TestDirection' class='w3-cell-row w3-mobile' >
+       <div class='w3-cell' >
+         Stronger evidence is a proportion
+       </div>
+       <div class='w3-cell'>
+         <select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow'  onchange='AppState.testDirection = this.value; if(AppState.sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>
+           <option value='lower'>Less Than or =</option>
+           <option value='both' selected>As or More Extreme Than</option>
+           <option value='upper'>Greater Than or =</option>
+         </select>
+       </div>
+       <div class='w3-cell' style='width: 30%'>
+         &nbsp;	&nbsp; 	p&#770; (from above)
+       </div>
      </div>
-     <div class='w3-cell' style='width: 30%'>
-       &nbsp;	&nbsp; 	p&#770; (from above)
+     <div class='w3-cell-row w3-mobile' style='margin-top: 10px;'>
+       <button class='w3-button w3-blue w3-round' onclick='AppState.inference = "test"; moreTests(100, false)'>Get Test Samples (100)</button>
      </div>
    </div>
  </div>`;
+  },
+
+  /**
+   * Category 2-variable data input template
+   * Creates form for entering two-group categorical data
+   */
+  cat2DataInput: () => {
+    return `<div class='w3-container' id='cat2DataIn-Summary'>
+    <div class='w3-cell-row w3-mobile'>
+      <div class='w3-cell' style='width:50%'>
+        <h4> Enter Data as counts, then click [Summary]. </h4>
+        <table class='w3-table w3-border'>
+          <tr>
+            <th>Labels:</th>
+            <th>
+              <input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat2LabelPop1' 
+                placeholder='Group A'  onchange='AppState.cat2Label1 = this.value; renewC2()'>
+            </th>
+            <th>
+              <input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat2LabelPop2'
+                 placeholder='Group B'  onchange='AppState.cat2Label2 = this.value; renewC2()'>
+            </th>
+          </tr>
+          <tr>
+            <td>
+              <input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat2LabelOut1' 
+                         placeholder='Success'  onchange='AppState.cat2LabelOut1 = this.value; renewC2()'>
+            </td>
+            <td>
+            <input class='w3-input  w3-mobile w3-pale-yellow' type='text' id='cat2N11' 
+            placeholder='1' onchange='renewC2()'>
+            </td>
+            <td>
+              <input class='w3-input  w3-mobile w3-pale-yellow' type='text' id='cat2N12'
+               placeholder='1' onchange='renewC2()'>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat2LabelOut2'
+               placeholder='Failure'  onchange='AppState.cat2LabelOut2 = this.value; renewC2()'>
+            </td>
+            <td>
+              <input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat2N21'
+               placeholder='1' onchange='renewC2()'>
+            </td>
+            <td>
+              <input class='w3-input w3-mobile w3-pale-yellow' type='text' id='cat2N22' 
+              placeholder='1' onchange='renewC2()'>
+            </td>
+          </tr>
+        </table>
+      </div>
+      &nbsp;&nbsp;
+      <div class='w3-cell' style='display:block'>
+          <button id='cat2RawSumm' class='w3-button w3-pale-blue w3-medium w3-round-xlarge'
+            onclick='AppState.sample4CI = []; AppState.testData = []; summarizeP2(); '> 
+             &nbsp; &nbsp;Summary
+             </button>
+        <div class='w3-container w3-cell w3-mobile' id='cat2SummarySVGgoesHere' 
+        style = 'display:none'></div>
+        <div class='w3-container w3-cell w3-mobile' id='cat2SummaryText' 
+        style='width:310px; display:none'></div>
+      </div>
+    </div>
+    <br>
+  </div>`;
+  },
+
+  /**
+   * Quantitative 2-variable data selection dropdown
+   * Choose from built-in datasets
+   */
+  q2DataInput: () => {
+    return `<div class='w3-cell' style='width:50%'>
+      <h4> Choose Data: </h4>
+      <select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='quant2DataName'
+         onselect='q2DataChange()' onmouseup='q2DataChange()'>
+        <option value='shuttle' selected>Shuttle</option>
+        <option value='women'>Women rate men</option>
+        <option value='men'>Men rate women</option>
+        <option value='dental'>Dental distance</option>
+        <option value='other'>Other</option>
+      </select>
+    </div>`;
+  },
+
+  /**
+   * Categorical 1 + Quantitative 1 data input template
+   * Choose from difference in means datasets
+   */
+  c1q1DataInput: () => {
+    return `<div class='w3-container' id='C1Q1DataIn-Summary'>
+    <div class='w3-cell-row w3-mobile' id='C1Q1Data'>
+      <div class='w3-cell' style='width:20%'>
+        <h4> Choose Data</h4>
+      </div>
+      <select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='C1Q1DataName'
+        onselect='c1q1DataChange()' onmouseup='c1q1DataChange()'>
+        <option value='SATprep' selected>SAT prep</option>
+        <option value='smoker'>Smoking - Birthweight</option>
+        <option value='music1'>Music vs Silence</option>
+        <option value='REDAvsCntrl'>REDA vs Control</option>
+        <option value='REDvsREDA'>RED vs REDA</option>
+        <option value='other'>Other</option>
+      </select>
+      <div class='w3-cell'></div>
+    </div>
+  </div>`;
+  },
+
+  /**
+   * Category 1 + Quant 1 test inputs template
+   * Choice buttons between estimate and test modes with test direction selector
+   */
+  c1q1TestInputs: () => {
+    return `<div class='w3-row-padding w3-margin-bottom' id='inferenceInputs'>
+    <button class='w3-button w3-blue w3-round' onclick='AppState.inference = "estimate"; DOM.setState({testInpt: "hide", confLvlInpt: "show"}); d3.select("#infSVGplot_svg").remove();'>
+      Estimate Difference (CI)
+    </button>
+    <button class='w3-button w3-lightblue w3-round' onclick='AppState.inference = "test"; DOM.setState({testInpt: "show", confLvlInpt: "hide"}); d3.select("#infSVGplot_svg").remove();'>
+      Test Difference
+    </button>
+  </div>
+  <div id='testInpt' style='display:none'>
+    <div><br></div>
+    <div class='w3-cell-row w3-mobile' style = 'text-align: left'>
+      <div class='w3-cell' style='width:250px'>
+        Test: Are the two means equal?
+      </div>
+    </div>
+    <div><br></div>
+    <div class='w3-cell-row w3-mobile'>
+      <div class='w3-cell' style='width: 250px'>
+        Stronger evidence is a difference
+      </div>
+      <div class='w3-cell' style='width: 30%'>
+        <select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='c1q1testDirection'
+          onmouseup='AppState.testDirection = this.value; if(AppState.sample4Test && AppState.sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>
+          <option value='lower'>Less Than or =</option>
+          <option value='both' selected>As or More Extreme Than</option>
+          <option value='upper'>Greater Than or =</option>
+        </select>
+      </div>
+      <div class='w3-cell' style='width: 40%' id='c1q1Obsd'>
+        &nbsp;&nbsp; the observed difference = value above
+      </div>
+    </div>
+    <button class='w3-button w3-blue w3-round' onclick='AppState.inference = "test"; moreTests(100, false)'>
+      Get Test Samples (100)
+    </button>
+  </div>`;
+  },
+
+  /**
+   * Quantitative 1-variable data input template
+   * Creates form for entering quantitative data with label and values
+   */
+  q1DataInput: () => {
+    return `<div class='w3-container' id='quant1DataIn-Summary'>
+		<div class='w3-cell-row w3-mobile'>
+			<div class='w3-cell' style='width:60%'>
+				<h4> Enter Data</h4>
+				<table class='w3-table w3-border'>
+					<tr>
+						<th>Label</th>
+						<th>Separate values with commas</th>
+					</tr>
+					<tr>
+						<td>
+							<input class='w3-input w3-mobile w3-pale-yellow' type='text' id='q1Label' placeholder='y'>
+						</td>
+						<td>
+							<input class='w3-input  w3-mobile w3-pale-yellow' type='text' id='q1Values'
+							  onchange = 'q1DataChange();' >
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class='w3-cell'> &nbsp;
+				<button onclick = 'summarizeMu1()'>  &nbsp; &nbsp; Summary</button>
+				<div class='w3-cell' style=' display:block' id='q1Summary'>
+					<div class='w3-container w3-cell w3-mobile' id='q1SummaryText' style='width:70%'>
+					</div>
+					<div class='w3-container w3-cell w3-mobile' id='q1SummarySVGgoesHere'>
+						<svg id='q1SmrySVG' height=160 width=300></svg>
+					</div>
+					<div class='w3-container w3-modal w3-mobile'>
+						<div class='w3-modal-content w3-card-4' id='q1SelectedSampleA' style=' display:none'>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>`;
   },
 
   /**
@@ -119,31 +328,45 @@ const TEMPLATES = {
    * Creates form for hypothesis test on mean
    */
   q1TestInputs: () => {
-    return `<div> <br> </div>
-<div class='w3-cell-row w3-mobile' style = 'text-align: left'>
-  	<div class='w3-cell' style='width:250px'>
-  		Test: Is the true mean = &nbsp;
-  	</div>
-  	<div class='w3-cell' style='width: 30%'>
-  		<input class='w3-input w3-card w3-mobile w3-pale-yellow' type='text' id='q1trueMu'
-             placeholder='0.0' 	onchange= 'AppState.nullValue = +this.value; changeNullQ1();' >
-       </div>
-</div>
-<div> <br> </div>
-<div class='w3-cell-row w3-mobile'>
-    <div class='w3-cell' style='width: 250px' >	Stronger evidence is a mean 	</div>
-	<div class='w3-cell' style='width: 30%'>
-		<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='q1testDirection' 
-         onmouseup ='AppState.testDirection = this.value; if(AppState.sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>
-          <option value='lower'>Less Than or =</option>
-			<option value='both' selected >As or More Extreme Than</option>
-			<option value='upper'>Greater Than or =</option>
-        </select>
-	</div>
-	<div class='w3-cell' style='width: 40%' id='q1ObsdMean'>
-      &nbsp;&nbsp; the observed mean = 0
+    return `<div class='w3-cell-row w3-mobile' style='margin-bottom: 15px;'>
+    <div class='w3-cell w3-mobile' style='width: 48%'>
+      <button class='w3-button w3-blue w3-round' onclick='AppState.inference = "estimate"; document.getElementById("testInpt").style.display = "none"; document.getElementById("confLvlInpt").style.display = "block";'>Estimate Mean (CI)</button>
     </div>
-</div>`;
+    <div class='w3-cell w3-mobile' style='width: 4%'></div>
+    <div class='w3-cell w3-mobile' style='width: 48%'>
+      <button class='w3-button w3-lightblue w3-round' onclick='AppState.inference = "test"; document.getElementById("confLvlInpt").style.display = "none"; document.getElementById("testInpt").style.display = "block";'>Test Mean</button>
+    </div>
+   </div>
+   <div id='q1TestInputsDiv' style='display:none'>
+    <div> <br> </div>
+    <div class='w3-cell-row w3-mobile' style = 'text-align: left'>
+      	<div class='w3-cell' style='width:250px'>
+      		Test: Is the true mean = &nbsp;
+      	</div>
+      	<div class='w3-cell' style='width: 30%'>
+      		<input class='w3-input w3-card w3-mobile w3-pale-yellow' type='text' id='q1trueMu'
+                 placeholder='0.0' 	onchange= 'AppState.nullValue = +this.value; changeNullQ1();' >
+             </div>
+    </div>
+    <div> <br> </div>
+    <div class='w3-cell-row w3-mobile'>
+        <div class='w3-cell' style='width: 250px' >	Stronger evidence is a mean 	</div>
+    	<div class='w3-cell' style='width: 30%'>
+    		<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='q1testDirection' 
+             onmouseup ='AppState.testDirection = this.value; if(AppState.sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>
+              <option value='lower'>Less Than or =</option>
+    			<option value='both' selected >As or More Extreme Than</option>
+    			<option value='upper'>Greater Than or =</option>
+            </select>
+    	</div>
+    	<div class='w3-cell' style='width: 40%' id='q1ObsdMean'>
+          &nbsp;&nbsp; the observed mean = 0
+        </div>
+    </div>
+    <div class='w3-cell-row w3-mobile' style='margin-top: 10px;'>
+      <button class='w3-button w3-blue w3-round' onclick='AppState.inference = "test"; moreTests(100, false)'>Get Test Samples (100)</button>
+    </div>
+   </div>`;
   },
 
   /**
@@ -281,8 +504,87 @@ const TEMPLATES = {
  	</div>`;
   },
 
+  /**   * Category 2-variable test inputs template
+   * Creates form for testing difference in proportions
+   */
+  cat2TestInputs: () => {
+    return `<div class='w3-cell-row w3-mobile' style='margin-bottom: 15px;'>
+    <div class='w3-cell w3-mobile' style='width: 48%'>
+      <button class='w3-button w3-blue w3-round' onclick='AppState.inference = "estimate"; document.getElementById("testInpt").style.display = "none"; document.getElementById("confLvlInpt").style.display = "block";'>Estimate Difference (CI)</button>
+    </div>
+    <div class='w3-cell w3-mobile' style='width: 4%'></div>
+    <div class='w3-cell w3-mobile' style='width: 48%'>
+      <button class='w3-button w3-lightblue w3-round' onclick='AppState.inference = "test"; document.getElementById("confLvlInpt").style.display = "none"; document.getElementById("testInpt").style.display = "block";'>Test Difference</button>
+    </div>
+   </div>
+   <div id='cat2TestInputsDiv' style='display:none'>
+    <div class='w3-cell-row w3-mobile'>
+      <div class='w3-cell  w3-mobile' style='width: 55%'>
+        &nbsp; &nbsp; &nbsp; Test H <sub>0</sub>: The true proportions are equal.
+      </div>
+    </div>
+    <div id='c2TestDirection' class='w3-cell-row w3-mobile' >
+      <div class='w3-cell' >
+        Stronger evidence is a difference in proportions
+      </div>
+      <div class='w3-cell'>
+        <select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow'  onchange='AppState.testDirection = this.value; AppState.nullValue = 0.0; if(AppState.sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>
+          <option value='lower'>Less Than or =</option>
+          <option value='both' selected>As or More Extreme Than</option>
+          <option value='upper'>Greater Than or =</option>
+        </select>
+      </div>
+      <div class='w3-cell' id='cat2ObsdDiff'>
+        &nbsp;&nbsp;
+        the p&#770;<sub>1</sub> - p&#770;<sub>2</sub> observed above.
+      </div>
+    </div>
+    <div class='w3-cell-row w3-mobile' style='margin-top: 10px;'>
+      <button class='w3-button w3-blue w3-round' onclick='AppState.inference = "test"; moreTests(100, false)'>Get Test Samples (100)</button>
+    </div>
+   </div>`;
+  },
+
   /**
-   * Mix repeat trials template
+   * Quantitative 2-variable test inputs template
+   * Creates form for testing regression slope
+   */
+  q2TestInputs: () => {
+    return `<div class='w3-cell-row w3-mobile' style='margin-bottom: 15px;'>
+    <div class='w3-cell w3-mobile' style='width: 48%'>
+      <button class='w3-button w3-blue w3-round' onclick='AppState.inference = "estimate"; document.getElementById("testInpt").style.display = "none"; document.getElementById("confLvlInpt").style.display = "block";'>Estimate Slope (CI)</button>
+    </div>
+    <div class='w3-cell w3-mobile' style='width: 4%'></div>
+    <div class='w3-cell w3-mobile' style='width: 48%'>
+      <button class='w3-button w3-lightblue w3-round' onclick='AppState.inference = "test"; document.getElementById("confLvlInpt").style.display = "none"; document.getElementById("testInpt").style.display = "block";'>Test Slope</button>
+    </div>
+   </div>
+   <div id='q2TestInputsDiv' style='display:none'>
+    <div class='w3-cell-row w3-mobile' style='text-align: left'>
+      <div class='w3-cell' style='width:250px'>
+        Test: Is the true slope zero?
+      </div>
+    </div>
+    <div class='w3-cell-row w3-mobile'>
+      <div class='w3-cell' style='width: 250px' >Stronger evidence is a slope</div>
+      <div class='w3-cell' style='width: 30%'>
+        <select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='q2testDirection' onmouseup='AppState.testDirection = this.value; if(AppState.sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>
+          <option value='lower'>Less Than or =</option>
+          <option value='both' selected>As or More Extreme Than</option>
+          <option value='upper'>Greater Than or =</option>
+        </select>
+      </div>
+      <div class='w3-cell' style='width: 30%' id='q2ObsdSlope'>
+        &nbsp;&nbsp; observed β&#770;<sub>1</sub> = value above
+      </div>
+    </div>
+    <div class='w3-cell-row w3-mobile' style='margin-top: 10px;'>
+      <button class='w3-button w3-blue w3-round' onclick='AppState.inference = "test"; moreTests(100, false)'>Get Test Samples (100)</button>
+    </div>
+   </div>`;
+  },
+
+  /**   * Mix repeat trials template
    */
   mixRepeatTrials: () => {
     return `<div id='repeatMixer' class='w3-container' style='display:none'>

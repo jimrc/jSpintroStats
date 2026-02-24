@@ -3,64 +3,21 @@
 
   function c1q1TestEstimate(){
     var dIn, testInpts, results;
-    dIn =
-    "	<div class='w3-container' id='C1Q1DataIn-Summary'>"	+
-		"	<div class='w3-cell-row w3-mobile' id='C1Q1Data'>"	+
-		"			<div class='w3-cell' style='width:20%'>"	+
-		"				<h4> Choose Data</h4>"	+
-		"			</div>"	+
-		"				<select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='C1Q1DataName'"	+
-    "	          onselect='c1q1DataChange()' onmouseup='c1q1DataChange()' >"	+
-		"			<div class='w3-cell'>"	+
-		"					<option value='SATprep' selected>SAT prep</option>"	+
-		"					<option value='smoker'>Smoking - Birthweight</option>"	+
-		"					<option value='music1'>Music vs Silence</option>"	+
-		"					<option value='REDAvsCntrl'>REDA vs Control</option>"	+
-		"					<option value='REDvsREDA'>RED vs REDA</option>"	+
-		"					<option value='other'>Other</option>"	+
-		"				</select>"	+
-		"			</div>"	+
-		"		</div> "	;
-
-
-    dSumm =
+    dIn = TEMPLATES.c1q1DataInput();
+    var dSumm =
     "	<div class='flex-container' style='display:flex; wrap:nowrap;' >"+
 		"		  <div  id='C1Q1SummaryText' style='width:300px; display: none'>"	+
 		"		  </div>"	+
-    //" 	  <div  style='width:310px' id='C1Q1SummarySVGgoesHere'>"	+
 		"				<svg id='C1Q1SumSVG' height='200px' width='200px'></svg>"	+
-		//"		  </div>"	+
 		"	</div>"	;
-    testInpts =
-    "<div> <br> </div>" +
-    "<div class='w3-cell-row w3-mobile' style = 'text-align: left'>" +
-    "  			<div class='w3-cell' style='width:250px'>"+
-    "  				Test: Are the two means equal?"+
-    "  			</div>"+
-    "   </div>" +
-    "<div> <br> </div>" +
-    " <div class='w3-cell-row w3-mobile'>" +
-     "    <div class='w3-cell' style='width: 250px' >	Stronger evidence is a difference	</div>" +
-  		" 	<div class='w3-cell' style='width: 30%'>" +
-  		"		  <select class='w3-select w3-card w3-border w3-mobile w3-pale-yellow' id='q2testDirection' " +
-     	"  onmouseup='testDirection = this.value; if(sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>" +
-  	 	"  onselect ='testDirection = this.value; if(sample4Test.length > 0){moreTests(0,true)} else{moreTests(100,false)}'>" +
-  	 	"		<option value='lower'>Less Than or =</option>" +
-  		"			<option value='both' selected>As or More Extreme Than</option>" +
-  		"			<option value='upper'>Greater Than or =</option>" +
-  		"		  </select>" +
-  		"	  </div>" +
-  		"	  <div class='w3-cell' style='width: 40%' id='q2Obsd'>" +
-      "		  &nbsp;&nbsp; the observed difference = " + observed +
-    "     </div>" +
-  	"	</div>" ;
-
+    testInpts = TEMPLATES.c1q1TestInputs();
     results = "";
     return [dIn, dSumm, testInpts, results];
   }
 
   function c1q1DataChange(){
-       sample4Test = sample4CI = [];
+       AppState.sample4Test = [];
+       AppState.sample4CI = [];
        document.getElementById('infSVGplot').style.display = 'none'
        document.getElementById('inferenceText').style.display = 'none'
        document.getElementById("confLvlInpt").style.display = 'none'
@@ -122,13 +79,8 @@ function summarizeDiff() {
 	var	c1q1Response;
 
     c1q1SumPlot= document.getElementById("C1Q1SumSVG")
-		x1 = [];
-		x2 = [];
-	//document.getElementById("C1Q1Results").style.display = "none";
-	//	document.getElementById("C1Q1Output").style.display = "none";
-	//} else{
-    //c1q1SumPlot= document.getElementById("C1Q1SumSVG")
-  //}
+	x1 = [];
+	x2 = [];
 
 	c1q1DataName = document.getElementById("C1Q1DataName").value;
 	c1q1RawData = (c1q1DataName === "SATprep") ? SATprep :
@@ -159,9 +111,21 @@ function summarizeDiff() {
 	x2Var = d3.variance(x2);
 	c1q1N2 = x2.length;
 	observed = diff = xbar1 - xbar2;
-  nullValue = 0.0;
+  
+// Show inference controls (confLvlInpt hidden until user clicks Estimate)
+	d3.select("#infSVGplot_svg").remove();
+	DOM.setState({
+		inferenceInputs: 'show',
+		moreTEsims: 'hide',
+		testInpt: 'hide',
+		confLvlInpt: 'hide'
+  });
+  
+  // Initialize AppState for estimation
+  AppState.nullValue = 0.0;
+  AppState.inference = "estimate";
 
-  document.getElementById('q2Obsd').innerHTML = " &nbsp;&nbsp; the observed difference = " + observed.toPrecision(4)
+  document.getElementById('c1q1Obsd').innerHTML = " &nbsp;&nbsp; the observed difference = " + observed.toPrecision(4)
 
 	x1 = x1.sort(function (a, b) {
 		return (a - b);
@@ -236,7 +200,7 @@ function summarizeDiff() {
       //
       observed = diff
       var c1q1N2 = x2.length,
-          shift = observed - nullValue,
+          shift = observed - AppState.nullValue,
           c1q1Shifted = [];
 
 	    for (i = 0; i < c1q1N2; i++) {

@@ -779,18 +779,18 @@ function discreteChart(sample, svgObject){ //, interactFunction ) {
 function ciColor(resample) {
   // input vector must be already sorted numerically
   // sets colors for CI illustration: 1 for outside, 0 for inside the interval
-  // returns a vector of colors (0 or 1), lower bd, upper bd, confidence level
+  // returns a vector of colors (0 or 1), and updates AppState.lowerBd, AppState.upperBd, AppState.cnfLvl
   var color = [],
     quantile,
     twoTail,
     sLen = resample.length;
 
   if (sLen > 0) {
-    twoTail = Math.round((1 - cnfLvl) * sLen);
+    twoTail = Math.round((1 - AppState.cnfLvl) * sLen);
     quantile = Math.floor(twoTail / 2);
     if (twoTail % 2) {
       // check for odd number in the 2 tails
-      cnfLvl = (sLen - twoTail - 1) / sLen; // reduce confidence level to get even number of samples
+      AppState.cnfLvl = (sLen - twoTail - 1) / sLen; // reduce confidence level to get even number of samples
       quantile += 1;
       // reduce to lower confidence
     }
@@ -804,9 +804,9 @@ function ciColor(resample) {
       // color lower tail
       color[sLen - i - 1] = 1;
       // color upper tail
-      lowerBd = resample[i];
+      AppState.lowerBd = resample[i];
       // move lowerBd up
-      upperBd = resample[sLen - i - 1];
+      AppState.upperBd = resample[sLen - i - 1];
       // move upperBd down
     }
   } else {
