@@ -105,8 +105,7 @@ function changeCL(cl){
               .style("stroke","lightblue");
 
        document.getElementById('ciDemoResults').innerHTML =
-        "Observed " +  countr + " blue and " + (nreps - countr) +" red intervals. "+
-        "Coverage: " +  Math.round(countr / nreps * 1000)/10 + "%";
+        `Observed ${countr} blue and ${nreps - countr} red intervals. Coverage: ${Math.round(countr / nreps * 1000)/10}%`;
 
   } else {
     pCIPlot(nn);
@@ -168,7 +167,7 @@ function pCIPlot(nreps){
         .attr("height", pheight + margin.top + margin.bottom)
         .append("g")
         .attr("transform",
-              "translate(" + margin.left + "," + margin.top + ")");
+              `translate(${margin.left},${margin.top})` );
       }
 
    pHats = psvg.selectAll("circle")
@@ -201,10 +200,9 @@ function pCIPlot(nreps){
 
            psvg.append("g")			// Add the X Axis
                .attr("class", "x axis")
-               .attr("transform", "translate(0 ," + (pheight + margin.top) + ")")
+               .attr("transform", `translate(0 ,${pheight + margin.top})`)
                .call(xpAxis);
      // update Results
       document.getElementById('ciDemoResults').innerHTML =
-      "Observed " +  countr + " blue and " + (nreps - countr) +" red intervals. "+
-      "Coverage: " + Math.round(countr / nreps * 1000)/10 + "%";
+      `Observed ${countr} blue and ${nreps - countr} red intervals. Coverage: ${Math.round(countr / nreps * 1000)/10}%`;
  }

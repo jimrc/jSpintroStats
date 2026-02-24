@@ -42,11 +42,11 @@ drawZplot = function(){
     .attr("width", z_width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    .attr("transform", `translate(${margin.left},${margin.top})`);
 
   Zsvg.append("g") // Add the X Axis
     .attr("class", "x axis")
-    .attr("transform", "translate(0," + height + ")")
+    .attr("transform", `translate(0,${height})`)
     .call(xAxis);
 
 //Zsvg.append("g")			// Add the Y Axis
@@ -66,7 +66,7 @@ drawZplot = function(){
   Zsvg.append("text") // create Lower Area Button
     .attr("x", 4)
     .attr("y", 20)
-    .attr("font-size", 18 + "px")
+    .attr("font-size", `${18}px`)
     .text("Lower");
 
    Lbox = Zsvg.append("rect") // and it's frame and activation
@@ -89,7 +89,7 @@ drawZplot = function(){
   Zsvg.append("text") // create Upper Area Button
     .attr("x", 425)
     .attr("y", 20)
-    .attr("font-size", 18 + "px")
+    .attr("font-size", `${18}px`)
     .text("Upper");
 
    Ubox = Zsvg.append("rect") // and it's frame and activation
@@ -112,7 +112,7 @@ drawZplot = function(){
   Zsvg.append("text") // create Center Area Button
     .attr("x", 275)
     .attr("y", 24)
-    .attr("font-size", 18 + "px")
+    .attr("font-size", `${18}px`)
     .text("Center");
 
    Cbox = Zsvg.append("rect") // and it's frame and activation
@@ -135,7 +135,7 @@ drawZplot = function(){
   Zsvg.append("text") // create Extremes Area Button
     .attr("x", 4)
     .attr("y", 114)
-    .attr("font-size", 18 + "px")
+    .attr("font-size", `${18}px`)
     .text("Extremes");
 
   Ebox = Zsvg.append("rect") // and it's frame and activation
@@ -158,7 +158,7 @@ drawZplot = function(){
   Zsvg.append("text") // create 2nd Extremes Area Button
     .attr("x", 397)
     .attr("y", 114)
-    .attr("font-size", 18 + "px")
+    .attr("font-size", `${18}px`)
     .text("Extremes");
 
   Ebox2 = Zsvg.append("rect") // and it's frame and activation

@@ -236,7 +236,7 @@ function mixNtimes(n){
 	//initialMixState();
   mixReplace =  document.getElementById("mix_Replace").value;
 	nMix =   +document.getElementById("nDraws").value;
-  document.getElementById("whichType").innerHTML = "Draw " + nMix + " balls from the box.";
+  document.getElementById("whichType").innerHTML = `Draw ${nMix} balls from the box.`;
   mixPicks =[];
   nDraws = k = nMix;
   mixStopRule = "Fixed";
@@ -271,7 +271,7 @@ function mixTill1(){
     if (mixMatch < 0){
     		alert("You must choose one of the labels.")
     }
-    document.getElementById("whichType").innerHTML = "Draw until you get a " + mixStopper ;
+    document.getElementById("whichType").innerHTML = `Draw until you get a ${mixStopper}`;
     //check state of replacement. If "no" just use sampleWOrep, otherwise use sampleWrep
 	if(mixReplace === "no"){
     pickNdx = sampleWOrep(ballsInit, len, repeat(1, ballsInit.length));
@@ -626,9 +626,9 @@ function dotChart2(plotData) {
     xyData = [],
     xLabel = xLab =
       mixStopRule === 'Fixed'
-        ? 'Number of the first type in ' + document.getElementById('nDraws').value + ' draws'
+        ? `Number of the first type in ${document.getElementById('nDraws').value} draws`
         : mixStopRule === 'OneOfOneType'
-        ? 'Draws to get a ' + mixGroups[mixMatch]
+        ? `Draws to get a ${mixGroups[mixMatch]}`
         : 'Draws to get one of each type';
 
   stopRuleChange = false;
@@ -637,5 +637,5 @@ function dotChart2(plotData) {
   document.getElementById("mixSmrySVGdiv").style.display = 'block';
   makeScatterPlot(xyData, "mixSmrySVGdiv", xLabel, xLab, " ", false);
   document.getElementById("mixSmrySVGdiv").style.display = 'block';
-  document.getElementById("mixSmryCount").innerHTML = "Based on " + plotData.length +" simulations";
+  document.getElementById("mixSmryCount").innerHTML = `Based on ${plotData.length} simulations`;
 }

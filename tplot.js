@@ -41,11 +41,11 @@ drawTcurve = function(){
         .attr("height", height + margin.top + margin.bottom)
     .append("g")
         .attr("transform",
-              "translate(" + margin.left + "," + margin.top + ")");
+              `translate(${margin.left},${margin.top})`);
   }
   tsvg.append("g")			// Add the X Axis
         .attr("class", "x axis")
-        .attr("transform", "translate(0," + height + ")")
+        .attr("transform", `translate(0,${height})`)
         .call(xtAxis);
 
   pdftLine = tsvg.append("path")
@@ -61,7 +61,7 @@ drawTcurve = function(){
         tsvg.append("text")      // create Lower Area Button
           .attr("x",  4  )
           .attr("y", 20)
-          .attr("font-size", 18 + "px")
+          .attr("font-size", `${18}px`)
           .text("Lower");
 
    var   Ltbox = tsvg.append("rect")    // add frame and activation
@@ -83,7 +83,7 @@ drawTcurve = function(){
          tsvg.append("text")      // create Upper Area Button
           .attr("x", 425   )
           .attr("y", 20)
-          .attr("font-size", 18 + "px")
+          .attr("font-size", `${18}px`)
           .text("Upper");
 
    var   Utbox = tsvg.append("rect")    // add frame and activation
@@ -105,7 +105,7 @@ drawTcurve = function(){
          tsvg.append("text")      // create Center Area Button
           .attr("x", 275   )
           .attr("y", 24)
-          .attr("font-size", 18 + "px")
+          .attr("font-size", `${18}px`)
           .text("Center");
 
    var   Ctbox = tsvg.append("rect")    // add frame and activation
@@ -127,7 +127,7 @@ drawTcurve = function(){
          tsvg.append("text")      // create Extremes Area Button
           .attr("x", 4   )
           .attr("y", 114)
-          .attr("font-size", 18 + "px")
+          .attr("font-size", `${18}px`)
           .text("Extremes");
 
    var   Etbox = tsvg.append("rect")    // add frame and activation

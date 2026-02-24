@@ -251,8 +251,7 @@ function moreCI(nreps, concat) {
     makeScatterPlot(AppState.CIData, "infSVGplot", AppState.xLabel, AppState.xLab, " ", false);
   }
   document.getElementById("inferenceText").innerHTML =
-    AppState.ciInftop + sLen + " Re-samples <br>" + Math.round(AppState.cnfLvl * 100) +
-    "% Confidence Interval: (" + AppState.lowerBd.toPrecision(4) + ", " + AppState.upperBd.toPrecision(4) + ") </div>";
+    `${AppState.ciInftop}${sLen} Re-samples <br>${Math.round(AppState.cnfLvl * 100)}% Confidence Interval: (${AppState.lowerBd.toPrecision(4)}, ${AppState.upperBd.toPrecision(4)}) </div>`;
   document.getElementById("inferenceText").style.display = 'block';
 }
 
@@ -277,7 +276,7 @@ function moreTests(nreps, concat) {
         console.log("null probability not in (0,1)")
       }
       AppState.observed = AppState.proportion;
-      AppState.xLabel = "Proportions " + AppState.cat1Label1 + " from resamples under the null ";
+      AppState.xLabel = `Proportions ${AppState.cat1Label1} from resamples under the null`;
       AppState.xLab = "Phat ";
       break;
     }
@@ -385,7 +384,7 @@ makeScatterPlot(AppState.testData, "infSVGplot", AppState.xLabel, AppState.xLab,
 
 //find p-value
 document.getElementById("inferenceText").innerHTML =
-  "P-value: " + formatPvalue(extCount, sLen) + "  based on " + sLen + " resamples.";
+  `P-value: ${formatPvalue(extCount, sLen)}  based on ${sLen} resamples.`;
 document.getElementById("inferenceText").style.display = 'block';
 }
 
